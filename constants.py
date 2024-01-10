@@ -1,0 +1,8 @@
+trident = {
+    'device_type': 'cisco_ios_telnet',
+    'host': '10.27.193.2',
+    'username': 'admin',
+    'password': 'bulat',
+    'secret': 'enable',
+    'port': 2046,
+}
