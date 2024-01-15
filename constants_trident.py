@@ -13,7 +13,7 @@ my_colors = Theme(
 )
 CONSOLE = Console(theme=my_colors)
 
-value_connect = {
+VALUE_CONNECT = {
     'device_type': 'cisco_ios_telnet',
     'host': '10.27.193.2',
     'username': 'admin',
