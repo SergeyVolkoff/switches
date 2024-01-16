@@ -66,8 +66,18 @@ class Connect():
 
     def extended_ping_inet(self):
         self.check_connection(VALUE_CONNECT)
-        result=verbose_ping('8.8.8.8',count=3)
-        print(result)
+        self.ssh.enable()
+        temp = self.ssh.send_command("ping",expect_string="Protocol",read_timeout=1)
+        temp = self.ssh.send_command("ip", expect_string="Target IP address:",read_timeout=1)
+        temp = self.ssh.send_command("8.8.8.8", expect_string="Name of the VRF",read_timeout=1)
+        temp = self.ssh.send_command("", expect_string="Repeat count",read_timeout=1)
+        temp = self.ssh.send_command("", expect_string="Datagram size",read_timeout=1)
+        temp = self.ssh.send_command("", expect_string="Timeout in seconds",read_timeout=1)
+        temp = self.ssh.send_command("", expect_string="Extended commands", read_timeout=1 )
+        print("ping",temp)
+        temp = self.ssh.send_command("", expect_string="DUT", read_timeout=10)
+        # result=verbose_ping('8.8.8.8',count=3)
+        print(temp)
 
 if __name__=="__main__":
     tr1 = Connect()
