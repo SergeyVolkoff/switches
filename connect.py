@@ -10,8 +10,9 @@ import pexpect
 import logging
 import time
 from constants_trident import (
-    VALUE_CONNECT,
+    VALUE_CONS_CONNECT,
     CONSOLE,
+    NAME_DEV,
 )
 from ping3 import ping, verbose_ping
 
@@ -27,17 +28,17 @@ class Connect():
         self.word_ping = "ping ",
         self.ip_inet = "8.8.8.8",
         try:
-            self.ssh = ConnectHandler(**VALUE_CONNECT)
+            self.ssh = ConnectHandler(**VALUE_CONS_CONNECT)
         except ConnectionRefusedError as e:
             CONSOLE.print(
                     "*" * 5, "Error connection to:", 
-                    VALUE_CONNECT['host'],'port:',VALUE_CONNECT['port'], "*" * 5,
+                    VALUE_CONS_CONNECT['host'],'port:',VALUE_CONS_CONNECT['port'], "*" * 5,
                     "\nConnection refused - Console is busy!",
                     style='fail')
             exit()
 
     def send_command(self,command):
-        self.check_connection(VALUE_CONNECT)
+        self.check_connection(VALUE_CONS_CONNECT)
         self.ssh.enable()
         temp = self.ssh.send_command(command)
         return temp
@@ -45,27 +46,27 @@ class Connect():
     def check_connection(self,VALUE_CONNECT, log=True):
         if log:
             CONSOLE.print(
-                'Try connect to', VALUE_CONNECT['host'],
-                'port:',VALUE_CONNECT['port'], "...",
+                'Try connect to', VALUE_CONS_CONNECT['host'],
+                'port:',VALUE_CONS_CONNECT['port'], "...",
                 style="info")
         try:
             CONSOLE.print(
-                VALUE_CONNECT['host'],' port:',
-                VALUE_CONNECT['port'], "connected!",
+                VALUE_CONS_CONNECT['host'],' port:',
+                VALUE_CONS_CONNECT['port'], "connected!",
                 style='success')
         except (NetmikoAuthenticationException, NetmikoTimeoutException) as error:
             CONSOLE.print(
                 "*" * 5, "Error connection to:", 
-                VALUE_CONNECT['host'],'port:',VALUE_CONNECT['port'], "*" * 5,
+                VALUE_CONS_CONNECT['host'],'port:',VALUE_CONS_CONNECT['port'], "*" * 5,
                 style='fail')
             
     def izi_ping_inet(self):
-        self.check_connection(VALUE_CONNECT)
+        self.check_connection(VALUE_CONS_CONNECT)
         result=ping('8.8.8.8')
         print(result)
 
     def extended_ping_inet(self):
-        self.check_connection(VALUE_CONNECT)
+        self.check_connection(VALUE_CONS_CONNECT)
         self.ssh.enable()
         temp = self.ssh.send_command("ping",expect_string="Protocol",read_timeout=1)
         temp = self.ssh.send_command("ip", expect_string="Target IP address:",read_timeout=1)
@@ -74,11 +75,41 @@ class Connect():
         temp = self.ssh.send_command("", expect_string="Datagram size",read_timeout=1)
         temp = self.ssh.send_command("", expect_string="Timeout in seconds",read_timeout=1)
         temp = self.ssh.send_command("", expect_string="Extended commands", read_timeout=1 )
-        print("ping",temp)
         temp = self.ssh.send_command("", expect_string="DUT", read_timeout=10)
         # result=verbose_ping('8.8.8.8',count=3)
-        print(temp)
+        return temp
+    
+    def izi_tracert_ip(self):
+        self.check_connection(VALUE_CONS_CONNECT)
+        ip_dest = input("Input ip destination: ")
+        output_tracert = self.ssh.send_command(f"traceroute {ip_dest}",read_timeout=40,auto_find_prompt=False)
+        return output_tracert
+    
+    def extended_tracert_ip(self):
+        self.check_connection(VALUE_CONS_CONNECT)
+        self.ssh.enable()
+        ip_dest = input("Input ip destination: ")
+        temp = self.ssh.send_command("traceroute",expect_string="Protocol",read_timeout=1)
+        temp = self.ssh.send_command("", expect_string="Target IP address:",read_timeout=1)
+        temp = self.ssh.send_command(f'{ip_dest}', expect_string="Datagram size",read_timeout=1)
+        temp = self.ssh.send_command("", expect_string="Set DF bit in IP header?",read_timeout=1)
+        temp = self.ssh.send_command("", expect_string="Source-address/source-interface/skip parameter",read_timeout=1)
+        temp = self.ssh.send_command("skip", expect_string="Name of the VRF",read_timeout=1)
+        temp = self.ssh.send_command("", expect_string="Numeric display",read_timeout=1)
+        temp = self.ssh.send_command("", expect_string="Timeout in seconds",read_timeout=1)
+        temp = self.ssh.send_command("", expect_string="Probe count",read_timeout=1)
+        temp = self.ssh.send_command("", expect_string="Maximum time to live",read_timeout=1)
+        temp = self.ssh.send_command("5", expect_string="Port Number",read_timeout=1)
+        temp = self.ssh.send_command("", expect_string="DUT", read_timeout=5)
+        return temp
+        
 
+    def cfg_hostname(self):
+        self.check_connection(VALUE_CONS_CONNECT)
+        temp = self.ssh.send_config_set(f"hostname {NAME_DEV}")
+        temp = self.ssh.send_command("write")
+        return temp
+    
 if __name__=="__main__":
     tr1 = Connect()
-    print(tr1.extended_ping_inet())
+    print(tr1.extended_tracert_ip())
