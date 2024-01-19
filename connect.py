@@ -16,6 +16,9 @@ from constants_trident import (
 )
 from ping3 import ping, verbose_ping
 
+
+
+
 class Connect():
     """
     Class represents connect and 
@@ -107,9 +110,14 @@ class Connect():
     def cfg_hostname(self):
         self.check_connection(VALUE_CONS_CONNECT)
         temp = self.ssh.send_config_set(f"hostname {NAME_DEV}")
-        temp = self.ssh.send_command("write")
+        temp = self.ssh.send_command("write", expect_string="DUT")
+        return temp
+    
+    def cfg_int(self):
+        self.check_connection(VALUE_CONS_CONNECT)
+        temp = self.ssh.send_config_from_file('./templates_cfg/cfg_int.txt')
         return temp
     
 if __name__=="__main__":
     tr1 = Connect()
-    print(tr1.extended_tracert_ip())
+    print(tr1.cfg_int())
