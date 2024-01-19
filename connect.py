@@ -107,7 +107,7 @@ class Connect():
     def cfg_hostname(self):
         self.check_connection(VALUE_CONS_CONNECT)
         temp = self.ssh.send_config_set(f"hostname {NAME_DEV}")
-        temp = self.ssh.send_command("write")
+        temp = self.ssh.send_command("write",expect_string="DUT")
         return temp
     
 if __name__=="__main__":
