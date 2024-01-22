@@ -115,7 +115,7 @@ class Connect():
     
     def cfg_int(self):
         self.check_connection(VALUE_CONS_CONNECT)
-        temp = self.ssh.send_config_from_file('./templates_cfg/cfg_int.txt')
+        temp = self.ssh.send_config_from_file('./templates_cfg/cfg_current.txt')
         return temp
     
 if __name__=="__main__":
