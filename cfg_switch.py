@@ -18,20 +18,27 @@ class CfgTemplate(Connect):
         result = {}
         for command in commands_template:
             output = self.ssh.send_command(command,expect_string="DUT",read_timeout=1)
-            print(command ,output)
+            if "No match input detected" in output:
+                result_command = "bad command"
+                CONSOLE.print(f'"{command}" -',result_command,style='fail')
+                result[command] = result_command
+                break
+            if "" in output:
+                result_command = "command passed"
+                result[command]=output
+                CONSOLE.print(f'"{command}" -',result_command,style='success')
             if "reload" in command:
                 time.sleep(5)
                 result=ping('10.27.192.48',timeout=2)
                 while result is None:
                     result=ping('10.27.192.48',timeout=2)
-                    print("DUT is rebooting, wait")
+                    CONSOLE.print("DUT is rebooting, please wait",style='success')
                     time.sleep(5)
                 else:
-                    print("\nDUT up after reboot, wait all protocols!")
+                    CONSOLE.print("\nDUT up after reboot, wait all protocols!",style='success')
                     time.sleep(40)
-                    print( "All up!")
+                    CONSOLE.print( "All up!",style='success')
         output_exit = self.ssh.exit_config_mode()
-        print(output_exit)
         return result
     
 class TridentCfg(CfgTemplate):
@@ -50,9 +57,7 @@ class TridentCfg(CfgTemplate):
 if __name__=="__main__":
     tr1 = TridentCfg()
     tr1.check_connection(VALUE_CONS_CONNECT)
-    output_enable=tr1.ssh.enable()
-    print(output_enable)
+    tr1.ssh.enable()
     with open('./templates_cfg/cfg_current.yaml') as commands:                # команды настройки Ripv2
         commands_template = yaml.safe_load(commands)
-        print(commands_template)
     print(tr1.cfg_base(commands_template))
