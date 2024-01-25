@@ -118,6 +118,14 @@ class Connect():
         temp = self.ssh.send_config_from_file('./templates_cfg/cfg_current.txt')
         return temp
     
+    def reset_cfg(self):
+        self.check_connection(VALUE_CONS_CONNECT)
+        self.ssh.enable()
+        temp = self.ssh.send_command("copy empty-config startup-config")
+        self.ssh.exit_enable_mode()
+        return temp
+
+    
 if __name__=="__main__":
     tr1 = Connect()
-    print(tr1.cfg_int())
+    print(tr1.reset_cfg())

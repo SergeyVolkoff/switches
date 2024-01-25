@@ -24,6 +24,7 @@ spanning-tree mst configuration
 ip pim register-rp-reachability
 !
 interface eth0
+ description eth0_DHCP
  ip address dhcp
 !
 interface lo
@@ -321,3 +322,7 @@ interface xe54/4
 !
 line con 0
  login
+!
+write
+!
+reload
