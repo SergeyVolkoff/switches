@@ -1,8 +1,0 @@
-{
-  "configure terminal",
- "interface xe1",
- "description XE1_",
- "do write",
- "do reload",
-
-}
