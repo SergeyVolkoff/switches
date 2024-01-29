@@ -108,34 +108,33 @@ class Connect():
         
 
     def cfg_hostname(self):
-        promt = self.ssh.find_prompt()
-        print("***1",promt)
         temp = self.ssh.send_command('enable',read_timeout=4,expect_string="BS7510")
-        print(temp)
         temp = self.ssh.send_config_set([f"hostname {NAME_DEV}","do write"], read_timeout=4)       
-        print(temp)
         output_exit = self.ssh.exit_config_mode()
         return temp
     
     def cfg_int_eth(self):
         # self.check_connection(VALUE_CONS_CONNECT)
         # self.ssh.enable()
-        promt = self.ssh.find_prompt()
-        print("***1",promt)
-        temp = self.ssh.send_command('enable',read_timeout=4,expect_string="BS7510")
+        temp = self.ssh.send_command('enable',read_timeout=4,expect_string="BS7510",)
         temp = self.ssh.send_config_from_file('./templates_cfg/cfg_int_eth0.txt')
         output_exit = self.ssh.exit_config_mode()
         return temp
     
     def reset_cfg_extended(self):
         self.check_connection(VALUE_CONS_CONNECT)
-        promt = self.ssh.find_prompt()
         self.ssh.enable()
-        promt = self.ssh.find_prompt()
-        temp = self.ssh.send_command("copy empty-config startup-config")
+        
         CONSOLE.print("Do you realy want to reset config!?", style='fail')
-        result = input("Input y/n:")
-        if result == 'y':
+        result_input = input("Input y/n:")
+        if result_input == 'n':
+            CONSOLE.print(
+            "Configuration not reset, device name  and interface not configured", 
+            style="fail" )
+            output_exit = self.ssh.exit_config_mode()
+            exit
+        if 'y' == result_input:
+            temp = self.ssh.send_command("copy empty-config startup-config")
             output = self.ssh.send_command("reload",expect_string="reboot system" ,read_timeout=1,)
             result_command = "Swich rebooting! Wait, please +-70sec"
             output = self.ssh.send_command ("y",expect_string="")
@@ -143,15 +142,11 @@ class Connect():
             time.sleep(75)
     
             temp=self.ssh.send_command_timing('admin',read_timeout=3)
-            temp=self.ssh.send_command_timing('bulat',read_timeout=3)
+            temp=self.ssh.send_command_timing('bulat',read_timeout=4)
+            temp = self.ssh.send_command_timing('enable',read_timeout=4)
 
-            temp = self.ssh.send_command('enable',read_timeout=4,expect_string="BS7510")
-            print(temp)
-            temp = self.ssh.config_mode()
-            temp = self.ssh.send_command_timing("hostname DUT",read_timeout=2)
+            temp = self.ssh.send_command("hostname DUT",read_timeout=2)
             temp = self.ssh.send_config_from_file('./templates_cfg/cfg_int_eth0.txt')
-
-          
             output_exit = self.ssh.exit_config_mode()
 
             result=ping('10.27.192.48',timeout=2)
@@ -165,13 +160,20 @@ class Connect():
                 CONSOLE.print(
                     "\nDUT up after reboot and int eth0(10.27.192.48) up!, wait all protocols!",
                     style='success')
-                
                 time.sleep(10)
-                CONSOLE.print( "All up!Config reset!",style='success')
+                dev_name = self.ssh.find_prompt()
+                CONSOLE.print(
+                    f"All up!Config reset! New_name: {dev_name} device and interface eth0 configured",
+                    style='success')
                 exit
-
-        return temp
-
+        else:
+            CONSOLE.print(
+            "Wrong input", 
+            style="fail" )
+            output_exit = self.ssh.exit_config_mode()
+            exit
+           
+    
     
 if __name__=="__main__":
     tr1 = Connect()

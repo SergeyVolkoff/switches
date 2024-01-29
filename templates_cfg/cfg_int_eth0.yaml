@@ -1,5 +1,4 @@
 {
-  "configure terminal",
  "interface eth0",
  "description ETH0",
  "ip address dhcp",
