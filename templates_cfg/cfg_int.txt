@@ -1,0 +1,2 @@
+interface lo
+description lo_127

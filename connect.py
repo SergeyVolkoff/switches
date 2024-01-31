@@ -16,6 +16,9 @@ from constants_trident import (
 )
 from ping3 import ping, verbose_ping
 
+
+
+
 class Connect():
     """
     Class represents connect and 
@@ -43,7 +46,7 @@ class Connect():
         temp = self.ssh.send_command(command)
         return temp
     
-    def check_connection(self,VALUE_CONNECT, log=True):
+    def check_connection(self,VALUE_CONS_CONNECT, log=True):
         if log:
             CONSOLE.print(
                 'Try connect to', VALUE_CONS_CONNECT['host'],
@@ -60,12 +63,12 @@ class Connect():
                 VALUE_CONS_CONNECT['host'],'port:',VALUE_CONS_CONNECT['port'], "*" * 5,
                 style='fail')
             
-    def izi_ping_inet(self):
+    def ping_inet_izi(self):
         self.check_connection(VALUE_CONS_CONNECT)
         result=ping('8.8.8.8')
         print(result)
 
-    def extended_ping_inet(self):
+    def ping_inet_extended(self):
         self.check_connection(VALUE_CONS_CONNECT)
         self.ssh.enable()
         temp = self.ssh.send_command("ping",expect_string="Protocol",read_timeout=1)
@@ -79,13 +82,13 @@ class Connect():
         # result=verbose_ping('8.8.8.8',count=3)
         return temp
     
-    def izi_tracert_ip(self):
+    def tracert_ip_izi(self):
         self.check_connection(VALUE_CONS_CONNECT)
         ip_dest = input("Input ip destination: ")
         output_tracert = self.ssh.send_command(f"traceroute {ip_dest}",read_timeout=40,auto_find_prompt=False)
         return output_tracert
     
-    def extended_tracert_ip(self):
+    def tracert_ip_extended(self):
         self.check_connection(VALUE_CONS_CONNECT)
         self.ssh.enable()
         ip_dest = input("Input ip destination: ")
@@ -105,11 +108,74 @@ class Connect():
         
 
     def cfg_hostname(self):
-        self.check_connection(VALUE_CONS_CONNECT)
-        temp = self.ssh.send_config_set(f"hostname {NAME_DEV}")
-        temp = self.ssh.send_command("write",expect_string="DUT")
+
+        temp = self.ssh.send_command('enable',read_timeout=4,expect_string="BS7510")
+        temp = self.ssh.send_config_set([f"hostname {NAME_DEV}","do write"], read_timeout=4)       
+        output_exit = self.ssh.exit_config_mode()
         return temp
+    
+    def cfg_int_eth(self):
+        # self.check_connection(VALUE_CONS_CONNECT)
+        # self.ssh.enable()
+        temp = self.ssh.send_command('enable',read_timeout=4,expect_string="BS7510",)
+        temp = self.ssh.send_config_from_file('./templates_cfg/cfg_int_eth0.txt')
+        output_exit = self.ssh.exit_config_mode()
+        return temp
+    
+    def reset_cfg_extended(self):
+        self.check_connection(VALUE_CONS_CONNECT)
+        self.ssh.enable()
+        
+        CONSOLE.print("Do you realy want to reset config!?", style='fail')
+        result_input = input("Input y/n:")
+        if result_input == 'n':
+            CONSOLE.print(
+            "Configuration not reset, device name  and interface not configured", 
+            style="fail" )
+            output_exit = self.ssh.exit_config_mode()
+            exit
+        if 'y' == result_input:
+            temp = self.ssh.send_command("copy empty-config startup-config")
+            output = self.ssh.send_command("reload",expect_string="reboot system" ,read_timeout=1,)
+            result_command = "Swich rebooting! Wait, please +-70sec"
+            output = self.ssh.send_command ("y",expect_string="")
+            CONSOLE.print(output,result_command,style="success")
+            time.sleep(75)
+    
+            temp=self.ssh.send_command_timing('admin',read_timeout=3)
+            temp=self.ssh.send_command_timing('bulat',read_timeout=4)
+            temp = self.ssh.send_command_timing('enable',read_timeout=4)
+
+            temp = self.ssh.send_command("hostname DUT",read_timeout=2)
+            temp = self.ssh.send_config_from_file('./templates_cfg/cfg_int_eth0.txt')
+            output_exit = self.ssh.exit_config_mode()
+
+            result=ping('10.27.192.48',timeout=2)
+            while result is None:
+                result=ping('10.27.192.48',timeout=2)
+                CONSOLE.print(
+                    "DUT is rebooting, please wait",style='fail'
+                    )
+                time.sleep(5)
+            else:
+                CONSOLE.print(
+                    "\nDUT up after reboot and int eth0(10.27.192.48) up!, wait all protocols!",
+                    style='success')
+                time.sleep(10)
+                dev_name = self.ssh.find_prompt()
+                CONSOLE.print(
+                    f"All up!Config reset! New_name: {dev_name} device and interface eth0 configured",
+                    style='success')
+                exit
+        else:
+            CONSOLE.print(
+            "Wrong input", 
+            style="fail" )
+            output_exit = self.ssh.exit_config_mode()
+            exit
+           
+    
     
 if __name__=="__main__":
     tr1 = Connect()
-    print(tr1.extended_tracert_ip())
+    print(tr1.reset_cfg_extended())
