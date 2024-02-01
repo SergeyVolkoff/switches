@@ -1,4 +1,5 @@
 """base for switches Trident"""
+
 import netmiko
 import paramiko
 from netmiko import (
@@ -121,7 +122,9 @@ class Connect():
         output_exit = self.ssh.exit_config_mode()
         return temp
     
-    def reset_cfg_extended(self):
+    def izi_reset_cfg(self):
+        """Ф-я подкллючится по консоли к ,сбросит настрой"""
+
         self.check_connection(VALUE_CONS_CONNECT)
         self.ssh.enable()
         
@@ -139,33 +142,7 @@ class Connect():
             result_command = "Swich rebooting! Wait, please +-70sec"
             output = self.ssh.send_command ("y",expect_string="")
             CONSOLE.print(output,result_command,style="success")
-            time.sleep(75)
-    
-            temp=self.ssh.send_command_timing('admin',read_timeout=3)
-            temp=self.ssh.send_command_timing('bulat',read_timeout=4)
-            temp = self.ssh.send_command_timing('enable',read_timeout=4)
-
-            temp = self.ssh.send_command("hostname DUT",read_timeout=2)
-            temp = self.ssh.send_config_from_file('./templates_cfg/cfg_int_eth0.txt')
-            output_exit = self.ssh.exit_config_mode()
-
-            result=ping('10.27.192.48',timeout=2)
-            while result is None:
-                result=ping('10.27.192.48',timeout=2)
-                CONSOLE.print(
-                    "DUT is rebooting, please wait",style='fail'
-                    )
-                time.sleep(5)
-            else:
-                CONSOLE.print(
-                    "\nDUT up after reboot and int eth0(10.27.192.48) up!, wait all protocols!",
-                    style='success')
-                time.sleep(10)
-                dev_name = self.ssh.find_prompt()
-                CONSOLE.print(
-                    f"All up!Config reset! New_name: {dev_name} device and interface eth0 configured",
-                    style='success')
-                exit
+            
         else:
             CONSOLE.print(
             "Wrong input", 
