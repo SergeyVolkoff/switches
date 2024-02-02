@@ -1,7 +1,13 @@
 import time
 import yaml
 from ping3 import ping
+import sys
+import os
 
+import yaml
+
+sys.path.insert(1, os.path.join(sys.path[0],'..'))
+print(sys.path)
 from constants_trident import (
     VALUE_CONS_CONNECT,
     CONSOLE,
@@ -81,14 +87,15 @@ class TridentCfg(CfgTemplate):
             time.sleep(75)
             temp=self.ssh.send_command_timing('admin',read_timeout=2)
             temp=self.ssh.send_command_timing('bulat',read_timeout=5)
-            temp = self.ssh.send_command_timing('',read_timeout=1)
-            temp = self.ssh.send_command('enable',read_timeout=1,expect_string="DUT")
-                      
-            print(temp)
-            temp = self.ssh.send_config_from_file('../templates_cfg/cfg_hostnamAndint_eth0.txt')
+            with open('../templates_cfg/cfg_hostnamAndint_eth0.yaml') as commands:
+                commands_template = yaml.safe_load(commands)
+                for command in commands_template:
+                    output = self.ssh.send_command_timing(command,read_timeout=0)
+                    CONSOLE.print(command, output,style='success')
+            
             result=ping('10.27.192.48',timeout=2)
             while result is None:
-                result=ping('10.27.192.48',timeout=2)
+                result=ping('10.27.192.48',timeout=2) 
                 CONSOLE.print(
                     "DUT is rebooting, please wait",style='fail'
                     )
