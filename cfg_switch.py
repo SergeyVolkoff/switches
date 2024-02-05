@@ -25,7 +25,7 @@ class CfgTemplate(Connect):
         result = {}
         for command in commands_template:
             if "do reload" in command:
-                output = self.ssh.send_command(command,expect_string="reboot system" ,read_timeout=.2,)
+                output = self.ssh.send_command(command,expect_string="reboot system" ,read_timeout=.4,)
                 result_command = "- command is checked, wait, please."
                 CONSOLE.print(command, result_command,style='success')
                 result_command = self.ssh.send_command ("y",expect_string="")

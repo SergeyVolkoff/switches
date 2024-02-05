@@ -64,17 +64,17 @@ class Connect():
                 VALUE_CONS_CONNECT['host'],'port:',VALUE_CONS_CONNECT['port'], "*" * 5,
                 style='fail')
             
-    def ping_inet_izi(self):
-        self.check_connection(VALUE_CONS_CONNECT)
-        result=ping('8.8.8.8')
-        print(result)
+    def ping_inet_izi(self,ip_for_ping):
+        # self.check_connection(VALUE_CONS_CONNECT)
+        result=ping(ip)
+        # print(result)
 
-    def ping_inet_extended(self):
+    def ping_inet_extended(self, ip_for_ping):
         self.check_connection(VALUE_CONS_CONNECT)
         self.ssh.enable()
         temp = self.ssh.send_command("ping",expect_string="Protocol",read_timeout=1)
         temp = self.ssh.send_command("ip", expect_string="Target IP address:",read_timeout=1)
-        temp = self.ssh.send_command("8.8.8.8", expect_string="Name of the VRF",read_timeout=1)
+        temp = self.ssh.send_command(ip_for_ping, expect_string="Name of the VRF",read_timeout=1)
         temp = self.ssh.send_command("", expect_string="Repeat count",read_timeout=1)
         temp = self.ssh.send_command("", expect_string="Datagram size",read_timeout=1)
         temp = self.ssh.send_command("", expect_string="Timeout in seconds",read_timeout=1)
@@ -90,7 +90,7 @@ class Connect():
         return output_tracert
     
     def tracert_ip_extended(self):
-        self.check_connection(VALUE_CONS_CONNECT)
+        # self.check_connection(VALUE_CONS_CONNECT)
         self.ssh.enable()
         ip_dest = input("Input ip destination: ")
         temp = self.ssh.send_command("traceroute",expect_string="Protocol",read_timeout=1)
@@ -105,7 +105,7 @@ class Connect():
         temp = self.ssh.send_command("", expect_string="Maximum time to live",read_timeout=1)
         temp = self.ssh.send_command("5", expect_string="Port Number",read_timeout=1)
         temp = self.ssh.send_command("", expect_string="DUT", read_timeout=5)
-        return temp
+        print(temp)
         
 
     def cfg_hostname(self):
@@ -154,4 +154,4 @@ class Connect():
     
 if __name__=="__main__":
     tr1 = Connect()
-    print(tr1.reset_cfg_extended())
+    print(tr1.ping_inet_extended(ip_for_ping='192.168.0.2'))

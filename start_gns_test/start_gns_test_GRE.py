@@ -24,13 +24,13 @@ CONSOLE.print(
     "\nбудет запрошено название лабы gns3 и предложены варианты ответа",
     style='info'
               )
-# time.sleep(5)
-# current_lab = Base_gns() # test wait this lab - SSV_auto_BM10_MWAN
-# print(current_lab.start_nodes_from_project())
+time.sleep(5)
+current_lab = Base_gns() # test wait this lab - SSV_auto_BM10_MWAN
+print(current_lab.start_nodes_from_project())
 
-# CONSOLE.print("Стартует сброс конфига DUT перед настройкой под тест\n",
-#               style='info')
-# time.sleep(5)
+CONSOLE.print("Стартует сброс конфига DUT перед настройкой под тест\n",
+              style='info')
+time.sleep(5)
 # Создание об-а для подключения по консоли
 tr1 = TridentCfg()
 # Сброс конфига
