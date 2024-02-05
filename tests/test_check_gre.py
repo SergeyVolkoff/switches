@@ -3,8 +3,11 @@ import pytest_html
 import sys
 import os
 sys.path.insert(1, os.path.join(sys.path[0],'..'))
-print(sys.path)
+# print(sys.path)
 from checks.check_GRE import *
+
+
+
 
 """
 В блоке ниже используется параметризация mark.parametrize
@@ -32,4 +35,4 @@ task_ids = ['ip_test({})'.format(t)
             # переменную указывающую на данные для проверки (ip_for_check) и ids
 
 def test_check_ping_inter(ip_test,):
-    assert check_ip_interf_tunn(ip_for_ping=f"{ip_test}")==True, f"*** IP {ip_test} недоступен в данный момент ***"
+    assert check_availebel_ip(ip_for_ping=f"{ip_test}")==True, f"*** IP {ip_test} недоступен в данный момент ***"

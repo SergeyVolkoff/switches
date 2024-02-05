@@ -7,7 +7,7 @@ import os
 import yaml
 
 sys.path.insert(1, os.path.join(sys.path[0],'..'))
-print(sys.path)
+# print(sys.path)
 from constants_trident import (
     VALUE_CONS_CONNECT,
     CONSOLE,
