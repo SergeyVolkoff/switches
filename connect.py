@@ -36,7 +36,7 @@ class Connect():
         except ConnectionRefusedError as e:
             CONSOLE.print(
                     "*" * 5, "Error connection to:", 
-                    VALUE_CONS_CONNECT['host'],'port:',VALUE_CONS_CONNECT['port'], "*" * 5,
+                    VALUE_CONS_CONNECT['host'],'port:', VALUE_CONS_CONNECT['port'], "*" * 5,
                     "\nConnection refused - Console is busy!",
                     style='fail')
             exit()
@@ -66,7 +66,7 @@ class Connect():
             
     def ping_inet_izi(self,ip_for_ping):
         # self.check_connection(VALUE_CONS_CONNECT)
-        result=ping(ip)
+        result=ping(ip_for_ping)
         # print(result)
 
     def ping_inet_extended(self, ip_for_ping):
@@ -154,4 +154,4 @@ class Connect():
     
 if __name__=="__main__":
     tr1 = Connect()
-    print(tr1.ping_inet_extended(ip_for_ping='192.168.0.2'))
+    print(tr1.send_command('sh run'))

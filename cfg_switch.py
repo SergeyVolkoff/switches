@@ -21,11 +21,11 @@ class CfgTemplate(Connect):
 
     def cfg_template(self,commands_template):
 
-        """ФУНКЦИЯ управления  заливкой cfg_base"""
+        """ФУНКЦИЯ управления заливкой cfg_base"""
         result = {}
         for command in commands_template:
             if "do reload" in command:
-                output = self.ssh.send_command(command,expect_string="reboot system" ,read_timeout=.4,)
+                output = self.ssh.send_command(command,expect_string="reboot system" ,read_timeout=.2,)
                 result_command = "- command is checked, wait, please."
                 CONSOLE.print(command, result_command,style='success')
                 result_command = self.ssh.send_command ("y",expect_string="")
@@ -40,6 +40,9 @@ class CfgTemplate(Connect):
                     CONSOLE.print("\nDUT up after reboot, wait all protocols!",style='success')
                     time.sleep(40)
                     CONSOLE.print( "All up!",style='success')
+                    temp=self.ssh.send_command_timing('admin',read_timeout=2)
+                    temp=self.ssh.send_command_timing('bulat',read_timeout=5)
+                    self.ssh.disconnect()
                     break
             output = self.ssh.send_command(command,expect_string="DUT" ,read_timeout=2,)
             if "wr" or "write" in command:
@@ -54,9 +57,7 @@ class CfgTemplate(Connect):
                 result_command = "command passed!"
                 result[command]=output
                 CONSOLE.print(f'"{command}" -',result_command,style='success')
-            
-            
-        output_exit = self.ssh.exit_config_mode()
+        
         return result
     
 class TridentCfg(CfgTemplate):
@@ -91,7 +92,7 @@ class TridentCfg(CfgTemplate):
                 commands_template = yaml.safe_load(commands)
                 for command in commands_template:
                     output = self.ssh.send_command_timing(command,read_timeout=0)
-                    CONSOLE.print(command, output,style='success')
+                    # CONSOLE.print(command, output,style='success')
             
             result=ping('10.27.192.48',timeout=2)
             while result is None:
@@ -109,7 +110,6 @@ class TridentCfg(CfgTemplate):
                 CONSOLE.print(
                     f"All up!Config reset! New_name device: {dev_name} and interface eth0 configured",
                     style='success')
-                
                 exit
         else:
             CONSOLE.print(
