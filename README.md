@@ -30,6 +30,7 @@ python3 -m venv env
 
 ```
 python3 -m pip install --upgrade pip
+```
 
 Установить зависимости из файла requirements.txt:
 
