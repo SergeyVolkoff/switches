@@ -7,6 +7,9 @@ sys.path.insert(1, os.path.join(sys.path[0],'..'))
 from checks.check_GRE import *
 
 
+def test_check_ver_platform():
+    assert check_ver_platform()==True, "Firmware version lower than 2.5!"
+
 def test_check_ver_fw_on_DUT():
     assert check_ver_fw()==True, "Firmware version lower than 2.5!"
 
