@@ -19,7 +19,8 @@ def test_check_ip_interf_tunn_on_DUT():
 def test_check_status_interf_tunn_on_DUT():
     assert check_status_interf_tunn()==True, "Interface is not available "
 
-
+def test_check_tracert_tunnUp():
+    assert check_tracert_tunnUp(ip_dest='2.2.2.2')==True, "Трасерт FAIL!"
 """
 В блоке ниже используется параметризация 
 """
@@ -31,7 +32,10 @@ ip_for_check = (
     ('100.100.100.1'),
     ('100.100.100.2'),
     ('1.1.1.1'),
+    ('2.2.2.1'),
+    ('1.1.1.2'),
     ('2.2.2.2'),
+    
 )
 
 task_ids = ['ip_test({})'.format(t)
