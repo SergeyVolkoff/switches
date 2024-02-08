@@ -83,9 +83,10 @@ class Connect():
         # result=verbose_ping('8.8.8.8',count=3)
         return temp
     
-    def tracert_ip_izi(self):
+    def tracert_ip_izi(self, ip_dest):
         self.check_connection(VALUE_CONS_CONNECT)
-        ip_dest = input("Input ip destination: ")
+        # ip_dest = input("Input ip destination: ")
+        self.ssh.enable()
         output_tracert = self.ssh.send_command(f"traceroute {ip_dest}",read_timeout=40,auto_find_prompt=False)
         return output_tracert
     

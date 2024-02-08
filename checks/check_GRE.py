@@ -86,9 +86,13 @@ def check_ip_interf_tunn():
 def check_tracert_tunnUp(ip_dest):
     # ip_dest = '192.168.0.2'
     print("Test 5 \nПроверка трасерта с Dut") 
-    result_trcert = tr1.tracert_ip_extended(ip_dest)
-    print(result_trcert)
-
+    result_trcert = tr1.tracert_ip_izi(ip_dest)
+    if ip_dest in result_trcert and 'ms' in result_trcert :
+        CONSOLE.print (f"\n Трасерт до хопа {ip_dest} идет через тоннель: \n{result_trcert}",style='success')
+        return True
+    else:
+        CONSOLE.print(f'\nТрасерт FAIL : \n{result_trcert}',style='fail')
+        return False
 
 
 def check_availebel_ip(ip_for_ping):
@@ -107,5 +111,5 @@ def check_availebel_ip(ip_for_ping):
 
 
 if __name__ == "__main__":
-    result = check_tracert_tunnUp(ip_dest='192.168.0.2')
+    result = check_tracert_tunnUp(ip_dest='2.2.2.2')
     print(result)
