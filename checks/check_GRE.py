@@ -69,7 +69,7 @@ def check_status_interf_tunn():
         return False
 
 def check_ip_interf_tunn():
-    print("Test 3 \nПроверка назначенного ip-адреса на DUT туннелю:")
+    print("Test 3 \nПроверка назначенного ip-адреса туннелю на DUT :")
     try:
         temp = tr1.ssh.send_command('sh ip interface Tunnel0')
         temp1 = re.search(r'IP address\S\s+(?P<ip_tunn>\d+\S\d+\S\d+\S\d+)',temp)
@@ -81,10 +81,18 @@ def check_ip_interf_tunn():
             CONSOLE.print(f"Ip address tunn {ip_tunn}, fail!",style="fail")
             return False
     except ValueError as err:
-        return False   
+        return False  
+        
+def check_tracert_tunnUp(ip_dest):
+    # ip_dest = '192.168.0.2'
+    print("Test 5 \nПроверка трасерта с Dut") 
+    result_trcert = tr1.tracert_ip_extended(ip_dest)
+    print(result_trcert)
+
+
 
 def check_availebel_ip(ip_for_ping):
-    print("Test 4 \nПроверка доступности интерфейсов в схеме теста:")
+    print("Test 5 \nПроверка доступности интерфейсов в схеме теста:")
     try:
         temp = tr1.ping_inet_extended(ip_for_ping=ip_for_ping)
         if "min/avg/max/mdev" in temp:
@@ -96,6 +104,8 @@ def check_availebel_ip(ip_for_ping):
     except ValueError as err:
         return False
 
+
+
 if __name__ == "__main__":
-    result = check_ip_interf_tunn()
+    result = check_tracert_tunnUp(ip_dest='192.168.0.2')
     print(result)

@@ -89,10 +89,10 @@ class Connect():
         output_tracert = self.ssh.send_command(f"traceroute {ip_dest}",read_timeout=40,auto_find_prompt=False)
         return output_tracert
     
-    def tracert_ip_extended(self):
+    def tracert_ip_extended(self,ip_dest):
         # self.check_connection(VALUE_CONS_CONNECT)
         self.ssh.enable()
-        ip_dest = input("Input ip destination: ")
+        # ip_dest = input("Input ip destination: ")
         temp = self.ssh.send_command("traceroute",expect_string="Protocol",read_timeout=1)
         temp = self.ssh.send_command("", expect_string="Target IP address:",read_timeout=1)
         temp = self.ssh.send_command(f'{ip_dest}', expect_string="Datagram size",read_timeout=1)
