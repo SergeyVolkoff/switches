@@ -19,7 +19,7 @@ tr1 = Connect()
 tr1.check_connection(VALUE_CONS_CONNECT)
 
 def check_ver_platform():
-    print("Test 1 \nПроверка версии прошивки:")
+    print("Test 1 \nПроверка платформы:")
     try:
         temp = tr1.ssh.send_command('show version')
         temp1 = re.search(r'Platform\s+:\s+(?P<ver_Platform>\S+)',temp)
@@ -35,7 +35,7 @@ def check_ver_platform():
         return False
 
 def check_ver_fw():
-    print("Test 1 \nПроверка версии прошивки:")
+    print("Test 2 \nПроверка версии прошивки:")
     try:
         temp = tr1.ssh.send_command('show version')
         temp1 = re.search(r'NOS version\s+:\s+(?P<ver_FW>\S+)',temp)
@@ -51,7 +51,7 @@ def check_ver_fw():
         return False
 
 def check_status_interf_tunn():
-    print("Test 2 \nПроверка статуса туннеля:")
+    print("Test 3 \nПроверка статуса туннеля GRE:")
     try:
         temp = tr1.ssh.send_command('sh ip interface Tunnel0')
         temp1 = re.search(r'Interface Status:\s+link\s+(?P<link_stts>\S+)/admin\s+(?P<admin_stts>\S+)',temp)
@@ -69,7 +69,7 @@ def check_status_interf_tunn():
         return False
 
 def check_ip_interf_tunn():
-    print("Test 3 \nПроверка назначенного ip-адреса туннелю на DUT :")
+    print("Test 4 \nПроверка назначенного ip-адреса туннелю на DUT :")
     try:
         temp = tr1.ssh.send_command('sh ip interface Tunnel0')
         temp1 = re.search(r'IP address\S\s+(?P<ip_tunn>\d+\S\d+\S\d+\S\d+)',temp)
@@ -83,18 +83,6 @@ def check_ip_interf_tunn():
     except ValueError as err:
         return False  
         
-def check_tracert_tunnUp(ip_dest):
-    # ip_dest = '192.168.0.2'
-    print("Test 5 \nПроверка трасерта с Dut") 
-    result_trcert = tr1.tracert_ip_izi(ip_dest)
-    if ip_dest in result_trcert and 'ms' in result_trcert :
-        CONSOLE.print (f"\n Трасерт до хопа {ip_dest} идет через тоннель: \n{result_trcert}",style='success')
-        return True
-    else:
-        CONSOLE.print(f'\nТрасерт FAIL : \n{result_trcert}',style='fail')
-        return False
-
-
 def check_availebel_ip(ip_for_ping):
     print("Test 5 \nПроверка доступности интерфейсов в схеме теста:")
     try:
@@ -108,7 +96,16 @@ def check_availebel_ip(ip_for_ping):
     except ValueError as err:
         return False
 
-
+def check_tracert_tunnUp(ip_dest):
+    # ip_dest = '192.168.0.2'
+    print("Test 6 \nПроверка, чтотрасерт с Dut уходит в тоннель") 
+    result_trcert = tr1.tracert_ip_izi(ip_dest)
+    if ip_dest in result_trcert and 'ms' in result_trcert :
+        CONSOLE.print (f"\n Трасерт до хопа {ip_dest} идет через тоннель: \n{result_trcert}",style='success')
+        return True
+    else:
+        CONSOLE.print(f'\nТрасерт FAIL : \n{result_trcert}',style='fail')
+        return False
 
 if __name__ == "__main__":
     result = check_tracert_tunnUp(ip_dest='2.2.2.2')
