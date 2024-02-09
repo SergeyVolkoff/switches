@@ -60,7 +60,7 @@ def check_status_interf_tunn():
         temp1 = re.search(r'Interface Status:\s+(?P<interface_stts>\S.*)',temp)
         interface_stts = temp1.group('interface_stts')
         if admin_stts == 'up' and link_stts == 'up':
-            CONSOLE.print(f"Interface Tunnel0 status is {interface_stts}, its - ok!",style="success")
+            CONSOLE.print(f"Interface Tunnel0 status is: "{interface_stts}", its - ok!",style="success")
             return True
         else:
             CONSOLE.print(f"Interface Tunnel0 status wrong, is - {interface_stts} ",style='fail')
@@ -88,17 +88,17 @@ def check_availebel_ip(ip_for_ping):
     try:
         temp = tr1.ping_inet_extended(ip_for_ping=ip_for_ping)
         if "min/avg/max/mdev" in temp:
-            CONSOLE.print("Interface availeble ",style="success")
+            CONSOLE.print(f"Interface with ip {ip_for_ping} availeble now",style="success")
             return True
         else:
-            CONSOLE.print("Interface is not available ",style='fail')
+            CONSOLE.print("Interface with ip {ip_for_ping } is not available now ",style='fail')
             return False
     except ValueError as err:
         return False
 
 def check_tracert_tunnUp(ip_dest):
     # ip_dest = '192.168.0.2'
-    print("Test 6 \nПроверка, чтотрасерт с Dut уходит в тоннель") 
+    print("Test 6 \nПроверка, что трассировка с DUT до хопа за тоннеленм уходит в тоннель") 
     result_trcert = tr1.tracert_ip_izi(ip_dest)
     if ip_dest in result_trcert and 'ms' in result_trcert :
         CONSOLE.print (f"\n Трасерт до хопа {ip_dest} идет через тоннель: \n{result_trcert}",style='success')

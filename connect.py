@@ -70,7 +70,7 @@ class Connect():
         # print(result)
 
     def ping_inet_extended(self, ip_for_ping):
-        self.check_connection(VALUE_CONS_CONNECT)
+        # self.check_connection(VALUE_CONS_CONNECT)
         self.ssh.enable()
         temp = self.ssh.send_command("ping",expect_string="Protocol",read_timeout=1)
         temp = self.ssh.send_command("ip", expect_string="Target IP address:",read_timeout=1)

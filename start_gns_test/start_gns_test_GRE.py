@@ -49,4 +49,4 @@ print(tr1.cfg_base(commands_template))
 CONSOLE.print("\nСтартует настройка Pytests под тест 'Проверка поддержки протокола GRE'\n",
               style='info')
 time.sleep(10)
-pytest.main(["-v","--html=BULAT_TEST_TRIDENT_GRE.html","../tests/test_check_gre.py"])
+pytest.main(["-v", "--html=BULAT_TEST_TRIDENT_GRE.html", "--alluredir allure_report", "../tests/test_check_gre.py"])
