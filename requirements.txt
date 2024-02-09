@@ -9,7 +9,7 @@ future==0.18.3
 gns3fy==0.8.0
 idna==3.4
 iniconfig==2.0.0
-netmiko==4.1.2
+netmiko==4.3.0
 ntc-templates==4.0.1
 packaging==23.2
 paramiko==2.11.1
@@ -35,3 +35,4 @@ textfsm==1.1.2
 tomli==2.0.1
 typing-extensions==4.9.0
 urllib3==2.0.5
+pytest_html
