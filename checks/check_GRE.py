@@ -60,7 +60,7 @@ def check_status_interf_tunn():
         temp1 = re.search(r'Interface Status:\s+(?P<interface_stts>\S.*)',temp)
         interface_stts = temp1.group('interface_stts')
         if admin_stts == 'up' and link_stts == 'up':
-            CONSOLE.print(f"Interface Tunnel0 status is: "{interface_stts}", its - ok!",style="success")
+            CONSOLE.print(f"Interface Tunnel0 status is: {interface_stts}, its - ok!",style="success")
             return True
         else:
             CONSOLE.print(f"Interface Tunnel0 status wrong, is - {interface_stts} ",style='fail')
