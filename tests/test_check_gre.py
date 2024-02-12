@@ -63,6 +63,6 @@ def test_check_availebel_ip_from_DUT(ip_test,):
 
 
 @allure.feature('Тесты проверки по ПМИ "Проверка поддержки GRE".')
-@allure.story('Проверка, чтотрасерт с Dut уходит в тоннель')
+@allure.story('Проверка, что трасерт с Dut уходит в тоннель')
 def test_check_tracert_tunnUp():
     assert check_tracert_tunnUp(ip_dest='2.2.2.2')==True, "Трасерт FAIL!"

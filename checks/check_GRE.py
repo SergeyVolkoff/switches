@@ -1,9 +1,11 @@
+import allure
 import re
 import time
 
 import sys
 import os
 import yaml
+
 sys.path.insert(1, os.path.join(sys.path[0],'..'))
 # print(sys.path)
 from constants_trident  import (
@@ -21,50 +23,55 @@ tr1.check_connection(VALUE_CONS_CONNECT)
 def check_ver_platform():
     print("Test 1 \nПроверка платформы:")
     try:
-        temp = tr1.ssh.send_command('show version')
-        temp1 = re.search(r'Platform\s+:\s+(?P<ver_Platform>\S+)',temp)
+        with allure.step('Отправка команды на просмотр версии платформы'):
+            temp = tr1.ssh.send_command('show version')
+        temp1 =  re.search(r'Platform\s+:\s+(?P<ver_Platform>\S+)',temp)
         ver_Platform=temp1.group('ver_Platform')
-        if "BS7510-48" in ver_Platform:
-            CONSOLE.print(f"Platform is {ver_Platform}, its - ok! ",style="success" )
-            print("")
-            return True
-        else:
-            CONSOLE.print(f"Version platform wrong - {ver_Platform}! ", temp, style='fail')
-            return False
+        with allure.step('Сверка версии платформы с "BS7510-48"'):
+            if "BS7510-48" in ver_Platform:
+                CONSOLE.print(f"Platform is {ver_Platform}, its - ok! ",style="success" )
+                print("")
+                return True
+            else:
+                CONSOLE.print(f"Version platform wrong - {ver_Platform}! ", temp, style='fail')
+                return False
     except ValueError as err:
         return False
 
 def check_ver_fw():
     print("Test 2 \nПроверка версии прошивки:")
     try:
-        temp = tr1.ssh.send_command('show version')
-        temp1 = re.search(r'NOS version\s+:\s+(?P<ver_FW>\S+)',temp)
-        ver_FW=temp1.group('ver_FW')
-        if "2.5.0" in ver_FW:
-            CONSOLE.print(f"Version FW is {ver_FW}, its - ok ",style="success" )
-            print("")
-            return True
-        else:
-            CONSOLE.print(f"Firmware version different from the test - {ver_FW}!", temp, style='fail')
-            return False
+        with allure.step('Отправка команды на просмотр версии прошивки'):
+            temp = tr1.ssh.send_command('show version')
+            temp1 = re.search(r'NOS version\s+:\s+(?P<ver_FW>\S+)',temp)
+            ver_FW=temp1.group('ver_FW')
+        with allure.step('Сверка версии прошивки с "2.5.0"'):
+            if "2.5.0" in ver_FW:
+                CONSOLE.print(f"Version FW is {ver_FW}, its - ok ",style="success" )
+                print("")
+                return True
+            else:
+                CONSOLE.print(f"Firmware version different from the test - {ver_FW}!", temp, style='fail')
+                return False
     except ValueError as err:
         return False
 
 def check_status_interf_tunn():
     print("Test 3 \nПроверка статуса туннеля GRE:")
     try:
-        temp = tr1.ssh.send_command('sh ip interface Tunnel0')
-        temp1 = re.search(r'Interface Status:\s+link\s+(?P<link_stts>\S+)/admin\s+(?P<admin_stts>\S+)',temp)
-        link_stts=temp1.group('link_stts')
-        admin_stts=temp1.group('admin_stts')
-        temp1 = re.search(r'Interface Status:\s+(?P<interface_stts>\S.*)',temp)
-        interface_stts = temp1.group('interface_stts')
-        if admin_stts == 'up' and link_stts == 'up':
-            CONSOLE.print(f"Interface Tunnel0 status is: {interface_stts}, its - ok!",style="success")
-            return True
-        else:
-            CONSOLE.print(f"Interface Tunnel0 status wrong, is - {interface_stts} ",style='fail')
-            return False
+        with allure.step('Просмотр статуса туннеля GRE'):
+            temp = tr1.ssh.send_command('sh ip interface Tunnel0')
+            temp1 = re.search(r'Interface Status:\s+link\s+(?P<link_stts>\S+)/admin\s+(?P<admin_stts>\S+)',temp)
+            link_stts=temp1.group('link_stts')
+            admin_stts=temp1.group('admin_stts')
+            temp1 = re.search(r'Interface Status:\s+(?P<interface_stts>\S.*)',temp)
+            interface_stts = temp1.group('interface_stts')
+            if admin_stts == 'up' and link_stts == 'up':
+                CONSOLE.print(f"Interface Tunnel0 status is: {interface_stts}, its - ok!",style="success")
+                return True
+            else:
+                CONSOLE.print(f"Interface Tunnel0 status wrong, is - {interface_stts} ",style='fail')
+                return False
     except ValueError as err:
         return False
 
