@@ -1,4 +1,4 @@
-"""base class for switches Trident."""
+"""Base class for switches Trident."""
 
 from netmiko import (
     ConnectHandler,
