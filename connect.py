@@ -1,5 +1,6 @@
 """Base class for switches Trident."""
 
+import re
 from netmiko import (
     ConnectHandler,
     NetmikoTimeoutException,
@@ -57,6 +58,12 @@ class Connect():
                 VALUE_CONS_CONNECT['host'],
                 'port:', VALUE_CONS_CONNECT['port'], "*" * 5,
                 style='fail')
+            
+    def check_eth0(self):
+        temp = self.ssh.send_command('do sh ip interface eth0')
+        temp1 = re.search(r'IP address\S\s+(?P<ip_eth0>\d+\S\d+\S\d+\S\d+)',temp)
+        ip_eth0 = temp1.group('ip_eth0')
+        return ip_eth0
 
     def ping_inet_izi(self, ip_for_ping):
         """Simple function ping."""
@@ -94,7 +101,7 @@ class Connect():
 
     def tracert_ip_izi(self, ip_dest):
         """Simple fuction traceroute."""
-        self.check_connection(VALUE_CONS_CONNECT)
+        # self.check_connection(VALUE_CONS_CONNECT)
         # ip_dest = input("Input ip destination: ")
         self.ssh.enable()
         output_tracert = self.ssh.send_command(f"traceroute {ip_dest}",
@@ -154,8 +161,6 @@ class Connect():
 
     def cfg_int_eth(self):
         """Fuction cfg interface ETH0."""
-        # self.check_connection(VALUE_CONS_CONNECT)
-        # self.ssh.enable()
         temp = self.ssh.send_command('enable',
                                      read_timeout=4,
                                      expect_string="BS7510",)

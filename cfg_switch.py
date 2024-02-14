@@ -1,5 +1,7 @@
 """Class for reset, cfg switch Trident."""
 
+import json
+import re
 import time
 import yaml
 from ping3 import ping
@@ -34,9 +36,17 @@ class CfgTemplate(Connect):
                     "y", expect_string="")
                 CONSOLE.print(command, result_command, style='success')
                 time.sleep(5)
-                result = ping('10.27.192.48', timeout=2)
+                #  читаем из файла присвоеный ip_eth0:
+                with open("../ip_eth0.txt",'r') as file:
+                    for line in file:
+                        ip_eth0 = line
+                # удаляем файл (будет мешать в след итерации):
+                path = "../ip_eth0.txt"
+                os.remove(path)        
+                # проверяем доступность eth0
+                result = ping(ip_eth0, timeout=2)
                 while result is None:
-                    result = ping('10.27.192.48', timeout=2)
+                    result = ping(ip_eth0, timeout=2)
                     CONSOLE.print(
                         "DUT is rebooting, please wait", style='fail')
                     time.sleep(5)
@@ -113,21 +123,31 @@ class TridentCfg(CfgTemplate):
                 for command in commands_template:
                     output = self.ssh.send_command_timing(
                         command, read_timeout=0)
-            result = ping('10.27.192.48', timeout=2)
+            # определяем ip на eth0:
+            ip_eth0 = Connect.check_eth0(self)
+            # формируем строку ip_eth0:
+            ip_eth0 = str(ip_eth0)
+            print(ip_eth0)
+            # пишем строку с ip_eth0 в файл ip_eth0.txt:
+            with open("../ip_eth0.txt",'w') as file:
+                file.write(ip_eth0)
+            # проверяем доступность eth0:
+            result = ping(ip_eth0, timeout=2)
+            print(result)
             while result is None:
-                result=ping('10.27.192.48', timeout=2)
+                result=ping(ip_eth0, timeout=2)
                 CONSOLE.print(
                     "DUT is rebooting, please wait", style='fail'
                     )
                 time.sleep(5)
             else:
                 CONSOLE.print(
-                    "\nDUT up after reboot and int eth0(10.27.192.48) up!, wait all protocols!",
+                    f"\nDUT up after reboot and int eth0 ({ip_eth0}) up!, wait all protocols!",
                     style='success')
                 time.sleep(10)
                 dev_name = self.ssh.find_prompt()
                 CONSOLE.print(
-                    f"All up!Config reset! New_name device: {dev_name} and interface eth0 configured",
+                    f"All up!Config reset! New_name device: {dev_name} and interface eth0 ({ip_eth0}) configured",
                     style='success')
                 exit
         else:
