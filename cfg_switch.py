@@ -1,7 +1,5 @@
 """Class for reset, cfg switch Trident."""
 
-import json
-import re
 import time
 import yaml
 from ping3 import ping
@@ -21,10 +19,11 @@ class CfgTemplate(Connect):
 
     def cfg_template(self, commands_template):
         """
-        Function for configuration of config from template
-        with start control after reboot.
+        Function for configuration DUT from template,
+        with start control DUT after reboot.
         """
         result = {}
+        # в цикле проверяются команды и отправляются на исполнение
         for command in commands_template:
             if "do reload" in command:
                 output = self.ssh.send_command(
@@ -37,12 +36,11 @@ class CfgTemplate(Connect):
                 CONSOLE.print(command, result_command, style='success')
                 time.sleep(5)
                 #  читаем из файла присвоеный ip_eth0:
-                with open("../ip_eth0.txt",'r') as file:
+                with open("../ip_eth0.txt", 'r') as file:
                     for line in file:
                         ip_eth0 = line
                 # удаляем файл (будет мешать в след итерации):
-                path = "../ip_eth0.txt"
-                os.remove(path)        
+                os.remove(path="../ip_eth0.txt")
                 # проверяем доступность eth0
                 result = ping(ip_eth0, timeout=2)
                 while result is None:
@@ -89,8 +87,8 @@ class TridentCfg(CfgTemplate):
 
     def extended_reset_cfg(self):
         """
-        Function for resetting the config to default settings
-        with start control after a reboot.
+        Function for resetting the config DUT to default settings,
+        with control start DUT after a reboot.
         """
         self.check_connection(VALUE_CONS_CONNECT)
         self.ssh.enable()
@@ -100,13 +98,13 @@ class TridentCfg(CfgTemplate):
         result_input = input("Input y/n:")
         if result_input == 'n':
             CONSOLE.print(
-                "Configuration not reset, device name  and interface not configured",
+                "Configuration not reset!",
+                "Device name  and interface not configured!",
                 style="fail")
             self.ssh.exit_config_mode()
             exit
         if 'y' == result_input:
-            temp = self.ssh.send_command(
-                "copy empty-config startup-config")
+            self.ssh.send_command("copy empty-config startup-config")
             output = self.ssh.send_command(
                 "reload", expect_string="reboot system",
                 read_timeout=1)
@@ -127,27 +125,29 @@ class TridentCfg(CfgTemplate):
             ip_eth0 = Connect.check_eth0(self)
             # формируем строку ip_eth0:
             ip_eth0 = str(ip_eth0)
-            print(ip_eth0)
             # пишем строку с ip_eth0 в файл ip_eth0.txt:
-            with open("../ip_eth0.txt",'w') as file:
+            with open("../ip_eth0.txt", 'w') as file:
                 file.write(ip_eth0)
             # проверяем доступность eth0:
             result = ping(ip_eth0, timeout=2)
             print(result)
             while result is None:
-                result=ping(ip_eth0, timeout=2)
+                result = ping(ip_eth0, timeout=2)
                 CONSOLE.print(
                     "DUT is rebooting, please wait", style='fail'
                     )
                 time.sleep(5)
             else:
                 CONSOLE.print(
-                    f"\nDUT up after reboot and int eth0 ({ip_eth0}) up!, wait all protocols!",
+                    f"\nDUT up after reboot and int eth0 ({ip_eth0}) up!",
+                    "Wait up protocols!",
                     style='success')
                 time.sleep(10)
                 dev_name = self.ssh.find_prompt()
                 CONSOLE.print(
-                    f"All up!Config reset! New_name device: {dev_name} and interface eth0 ({ip_eth0}) configured",
+                    f"All up! Config reset!",
+                    "New_name device: {dev_name}.",
+                    "interface eth0 ({ip_eth0}) configured",
                     style='success')
                 exit
         else:

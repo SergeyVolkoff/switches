@@ -1,16 +1,13 @@
 import allure
 import re
 import time
-
 import sys
 import os
 import yaml
-
 sys.path.insert(1, os.path.join(sys.path[0],'..'))
 # print(sys.path)
 from constants_trident  import (
     VALUE_CONS_CONNECT,
-    
     NAME_DEV,
 )
 from cfg_switch import TridentCfg
@@ -21,7 +18,7 @@ tr1 = Connect()
 tr1.check_connection(VALUE_CONS_CONNECT)
 
 def check_ver_platform():
-    print("Test 1 \nПроверка платформы:")
+    print("Test 1", "Проверка платформы:", sep='\n')
     try:
         with allure.step('Отправка команды на просмотр версии платформы.'):
             temp = tr1.ssh.send_command('show version')
@@ -39,7 +36,7 @@ def check_ver_platform():
         return False
 
 def check_ver_fw():
-    print("Test 2 \nПроверка версии прошивки:")
+    print("Test 2", "Проверка версии прошивки:", sep='\n')
     try:
         with allure.step('Отправка команды на просмотр версии прошивки.'):
             temp = tr1.ssh.send_command('show version')
@@ -57,7 +54,7 @@ def check_ver_fw():
         return False
 
 def check_status_interf_tunn():
-    print("Test 3 \nПроверка статуса туннеля GRE:")
+    print("Test 3", "Проверка статуса туннеля GRE:", sep='\n')
     try:
         with allure.step('Отправка команды на просмотр статуса туннеля GRE.'):
             temp = tr1.ssh.send_command('sh ip interface Tunnel0')
@@ -77,7 +74,7 @@ def check_status_interf_tunn():
         return False
 
 def check_ip_interf_tunn():
-    print("Test 4 \nПроверка назначенного ip-адреса туннелю на DUT :")
+    print("Test 4", "Проверка назначенного ip-адреса туннелю на DUT :", sep='\n')
     try:
         with allure.step('Отправка команды на просмотр статуса туннеля GRE.'):
             temp = tr1.ssh.send_command('sh ip interface Tunnel0')
@@ -94,7 +91,7 @@ def check_ip_interf_tunn():
         return False  
         
 def check_availebel_ip(ip_for_ping):
-    print("Test 5 \nПроверка доступности интерфейсов в схеме теста:")
+    print("Test 5", "Проверка доступности интерфейсов в схеме теста:", sep='\n')
     try:
         with allure.step(f'Отправка команды ping для проверки доступности интерфейса {ip_for_ping}'):
             temp = tr1.ping_inet_extended(ip_for_ping=ip_for_ping)
@@ -110,12 +107,12 @@ def check_availebel_ip(ip_for_ping):
 
 def check_tracert_tunnUp(ip_dest):
     ip_for_check = '192.168.0.2'
-    print("Test 6 \nПроверка, что трассировка с DUT до хопа за тоннелем уходит в тоннель")
+    print("Test 6", "Проверка, что трассировка с DUT до хопа за тоннелем уходит в тоннель", sep='\n')
     with allure.step('Отправка команды tracert для проверки'):
         result_trcert = tr1.tracert_ip_izi(ip_dest)
     with allure.step(f'Проверка, что трасерт до {ip_dest} проходит через туннель - в выводе должен быть ip туннеля.'):
         if ip_dest in result_trcert and 'ms' in result_trcert :
-            print (f'\n Трасерт до хопа {ip_dest} идет через тоннель: \n{result_trcert}')
+            print (f'\nТрасерт до хопа {ip_dest} идет через тоннель: \n{result_trcert}')
             return True
         else:
             print(f'\nТрасерт FAIL : \n{result_trcert}')
