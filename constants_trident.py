@@ -1,3 +1,4 @@
+import json
 from rich import print
 from rich.theme import Theme
 from rich.console import Console
@@ -13,13 +14,24 @@ my_colors = Theme(
 )
 CONSOLE = Console(theme=my_colors)
 
-VALUE_CONS_CONNECT = {
+NAME_DEV = "DUT"
+CONSOLE.print(
+    "В форме ниже введите 4х значный порт",
+    "консольного сервера за которым находится DUT.",
+    style='info',
+    sep='\n')
+CONSOLE.print("ВНИМАНИЕ!", style='fail')
+CONSOLE.print(
+    "В ходе дальнейших операций устройство за этим портом будет",
+    "сброшено на заводские настройки и перезагружено!",
+    style='info',
+    sep='\n')
+input_console = input("УКАЖИТЕ ПОРТ КОНСОЛИ:")
+VALUE_CONS_CONNECT  = {
     'device_type': 'cisco_ios_telnet',
     'host': '10.27.193.2',
     'username': 'admin',
     'password': 'bulat',
     'secret': 'enable',
-    'port': 2048,
-
+    'port': int(input_console),
 }
-NAME_DEV = "DUT"
