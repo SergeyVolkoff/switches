@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+ 
+{% block content %}
+{{ super() }}
+<h2>Tests menu:</h2>
+{%- block secondmenu -%}
+<ul class="secondmenu">
+        {% for m in secondmenu -%}
+<li><a href="{{m.url}}">{{m.name}}</a></li>
+         {% endfor -%}
+</ul>
+         {% endblock secondmenu -%}
+
+{% endblock %}
