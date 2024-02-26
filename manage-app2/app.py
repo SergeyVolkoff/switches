@@ -22,5 +22,9 @@ def cfg():
 def reset():
     return render_template('cfg.html', title = "Сброс конфига на деволтные", menu = menu)
 
+@app.route("/test1")
+def test1():
+    return render_template('gre.html', title = "GRE", menu = menu)
+
 if __name__ == "__main__":
     app.run(debug=True)
