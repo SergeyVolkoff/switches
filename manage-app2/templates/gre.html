@@ -2,11 +2,14 @@
  
 {% block content %}
 {{ super() }}
+{% for msg in get_flashed_messages() %}
+<div class="flash">{{msg}}</div>
+{% endfor %}
 Содержимое страницы Проверка поддержки GRE
 <form action="/start_test_gre" method="POST">
     <!-- скрытый параметр -->
     <input type="hidden" name="index" value="1">
-    <input type="submit" class="btn btn-dark" value="Button 1">
+    <input type="submit" class="btn btn-dark" value="Start test">
 </form>
 
 <form action="/start_test_gre" method="POST">

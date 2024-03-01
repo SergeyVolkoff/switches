@@ -16,6 +16,7 @@ class FDataBase:
         except:
             print("Error read from DB")
         return[]
+    
     def getSecondmenu(self):
         sql = '''SELECT * FROM secondmenu'''
         try:
@@ -25,3 +26,22 @@ class FDataBase:
         except:
             print("Error read from DB")
         return[]
+    
+    def getConstants_trident(self):
+        sql = '''SELECT * FROM constants_trident'''
+        try:
+            self.__cur.execute(sql) #
+            res = self.__cur.fetchall() # вычитываем все записи
+            if res: return res
+        except:
+            print("Error read from DB")
+        return[]
+    
+    def addConstants_trident(self,val):
+        try:
+            self.__cur.execute("UPDATE constants_trident SET val=(?) WHERE id = 6",(val,))
+            self.__db.commit()
+        except sqlite3.Error as err:
+            print("Add port console error! "+ str(err))
+            return False
+        return True

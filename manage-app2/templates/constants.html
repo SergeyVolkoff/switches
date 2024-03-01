@@ -2,16 +2,20 @@
  
 {% block content %}
 {{ super() }}
+{% for cat, msg in get_flashed_messages(True) %}
+<div class="flash" {{cat}}>{{msg}}</div>
+{% endfor %}
+Текущие настройки подключения
+{%- block constants -%}
+<ul class="constants">
+    {% for m in constants -%}
+<li><a>{{m.title}}:{{m.val}}</a></li>
+        {% endfor -%}
+</ul>
+        {% endblock constants -%} 
 Меню настройки подключения и тестов конфига
-<form action="/constants" method="post" class="form-contact">
-    <p><label> Тип устройства </label> <input type="text" name="device_type" value="" required</p>
-    <p><label> Хост </label> <input type="text" name="host" value="" required</p>
-    <p><label> Логин </label> <input type="text" name="username" value="" required</p>
-    <p><label> Пароль </label> <input type="text" name="password" value="" required</p>
-    <p><label> Сикрет </label> <input type="text" name="secret" value="" required</p>
-    <p><label> Порт консоли </label> <input type="text" name="port" value="" required</p>
-    <p><input type="submit" value="Send"</p>
 
-</form>
-
+<form action="{{url_for('add_constants')}}" method="post" class="form-contact">
+    <p><label> Port console:</label><input type="text" name="port" value="" required</p>
+    <p><input type="submit" value="Submitted"</p>
 {% endblock %}

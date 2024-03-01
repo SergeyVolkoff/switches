@@ -8,6 +8,8 @@ import os
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from base_gns3 import Base_gns
 from FDataBase import FDataBase
+# from cfg_switch import TridentCfg
+
 # from start_gns_test_GRE import StartGRE
 
 
@@ -81,11 +83,33 @@ def cfg():
 def reset():
     return render_template('cfg.html', title = "Сброс конфига на деволтные", menu = dbase.getMainmenu())
 
-@app.route("/constants", methods = ['POST', 'GET'])
-def constants():
+
+@app.route("/add_constants", methods = ['POST', 'GET'])
+def add_constants():
     if request.method == 'POST':
-        print(type(int(request.form["port"])))
-    return render_template('constants.html',title = "Меню настройки подключения и тестов", menu = dbase.getMainmenu())
+        res = dbase.addConstants_trident(request.form['port'])
+        if not res:
+            flash("Error changed port console")
+        else:
+            flash("Settings changed and transferred to the database!")
+        if res:
+            flash("OK")
+    # return render_template(
+    #     'add_constants.html',
+    #     title = "Меню настройки console",
+    #     menu = dbase.getMainmenu(),
+    #     )
+    return redirect(url_for("get_constants"))
+
+@app.route("/constants")
+def get_constants():
+    return render_template('constants.html',
+        title = "Constants",
+        menu = dbase.getMainmenu(),
+        constants = dbase.getConstants_trident(),
+        )  
+
+
 
 @app.route("/test1")
 def test1():
@@ -94,11 +118,13 @@ def test1():
 @app.route("/start_test_gre",methods = ['POST', 'GET'])
 def start_test_gre():
     if request.method == "POST":
-        print("Button is pushed!")
         flash("Button is pushed!")
-        current_lab = Base_gns()  # test wait this lab: SSV_auto_Tr_GRE
-        print(current_lab.start_nodes_from_project())
-    return render_template('gre.html', title = "GRE", menu = dbase.getMainmenu(), secondmenu = dbase.getSecondmenu())  
+        
+    return render_template(
+        'gre.html', title = "GRE",
+        menu = dbase.getMainmenu(),
+        secondmenu = dbase.getSecondmenu(),
+        )  
 
 
 if __name__ == "__main__":
