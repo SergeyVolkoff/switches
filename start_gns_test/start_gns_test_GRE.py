@@ -20,9 +20,9 @@ CONSOLE.print(
     "и предложены варианты ответа",
     style='info', sep='\n'
               )
-time.sleep(10)
-current_lab = Base_gns()  # test wait this lab: SSV_auto_Tr_GRE
-print(current_lab.start_nodes_from_project())
+# time.sleep(10)
+# current_lab = Base_gns()  # test wait this lab: SSV_auto_Tr_GRE
+# print(current_lab.start_nodes_from_project())
 
 CONSOLE.print("Стартует сброс настроек DUT на дефолтные",
               style='info', sep='\n')
