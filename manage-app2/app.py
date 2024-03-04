@@ -1,8 +1,11 @@
+import json
 import sqlite3
 import os
-from flask import Flask, flash,render_template, redirect, url_for, request, g 
+from flask import Flask, Response, flash,render_template, redirect, url_for, request, g 
 import sys
 import os
+
+import yaml
 
 
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
@@ -46,6 +49,7 @@ def get_db():
 def before_request():
     """Установка соединения с БД перед выполнением запроса"""
     global dbase
+    global db
     db = get_db()
     dbase = FDataBase(db)
 
@@ -88,6 +92,8 @@ def reset():
 def add_constants():
     if request.method == 'POST':
         res = dbase.addConstants_trident(request.form['port'])
+        port_con = request.form.get('port')
+        print(port_con)
         if not res:
             flash("Error changed port console")
         else:
@@ -103,13 +109,26 @@ def add_constants():
 
 @app.route("/constants")
 def get_constants():
+    cur = db.cursor()
+    cur.execute("SELECT title, val FROM constants_trident")
+    VALUE_CONS_CONNECT = cur.fetchall()
+    with open('../constants_trident1.yaml','w') as f:
+        yaml.dump("VALUE_CONS_CONNECT = ",f)
+        for i in VALUE_CONS_CONNECT:
+            to_file = {i['title']:i['val']}
+            print(to_file)
+            for i in to_file:
+                yaml.dump(to_file,f)
+    with open('../constants_trident1.yaml') as f:
+        print(f.read())
+
     return render_template('constants.html',
         title = "Constants",
         menu = dbase.getMainmenu(),
         constants = dbase.getConstants_trident(),
-        )  
+        )
 
-
+    
 
 @app.route("/test1")
 def test1():

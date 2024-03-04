@@ -35,7 +35,7 @@ class FDataBase:
             if res: return res
         except:
             print("Error read from DB")
-        return[]
+        return res 
     
     def addConstants_trident(self,val):
         try:
