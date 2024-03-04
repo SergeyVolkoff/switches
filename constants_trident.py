@@ -4,6 +4,8 @@ from rich.theme import Theme
 from rich.console import Console
 from pprint import pprint
 
+import yaml
+
 my_colors = Theme(
      #добавляет цветовую градацию для rich
     {
@@ -26,12 +28,16 @@ CONSOLE.print(
     "сброшено на заводские настройки и перезагружено!",
     style='info',
     sep='\n')
-input_console = input("УКАЖИТЕ ПОРТ КОНСОЛИ:")
-VALUE_CONS_CONNECT  = {
-    'device_type': 'cisco_ios_telnet',
-    'host': '10.27.193.2',
-    'username': 'admin',
-    'password': 'bulat',
-    'secret': 'enable',
-    'port': int(input_console),
-}
+# input_console = input("УКАЖИТЕ ПОРТ КОНСОЛИ:")
+# VALUE_CONS_CONNECT  = {
+#     'device_type': 'cisco_ios_telnet',
+#     'host': '10.27.193.2',
+#     'username': 'admin',
+#     'password': 'bulat',
+#     'secret': 'enable',
+#     'port': int(input_console),
+# }
+with open("../constants_trident1.yaml") as f2:
+                temp = yaml.safe_load(f2)
+                for t in temp:
+                    VALUE_CONS_CONNECT = dict(t)

@@ -1,7 +1,6 @@
-'VALUE_CONS_CONNECT = '
-device_type: cisco_ios_telnet
-host: 10.27.193.2
-username: admin
-password: bulat
-secret: enable
-port: 34
+- device_type: cisco_ios_telnet
+  host: 10.27.193.2
+  username: admin
+  password: bulat
+  secret: enable
+  port: 2043

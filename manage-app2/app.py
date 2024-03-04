@@ -113,7 +113,6 @@ def get_constants():
     cur.execute("SELECT title, val FROM constants_trident")
     VALUE_CONS_CONNECT = cur.fetchall()
     with open('../constants_trident1.yaml','w') as f:
-        yaml.dump("VALUE_CONS_CONNECT = ",f)
         for i in VALUE_CONS_CONNECT:
             to_file = {i['title']:i['val']}
             print(to_file)
