@@ -2,7 +2,6 @@ import json
 import sqlite3
 import os
 from flask import Flask, Response, flash,render_template, redirect, url_for, request, g 
-from flask_socketio import SocketIO
 
 import sys
 import os
@@ -19,14 +18,11 @@ from FDataBase import FDataBase
 
 
 # configuration
+app = Flask(__name__)
+SECRET_KEY = '*'
+app.config.from_object(__name__)
 DATABASE = '/manage_app2/manage_app2.db'
 DEBUG = True
-
-
-app = Flask(__name__)
-app.config.from_object(__name__)
-SECRET_KEY = 'qwerty12345'
-socketio = SocketIO(app)
 
 app.config.update(dict(DATABASE=os.path.join(app.root_path, 'manage_app2.db')))
 
@@ -150,4 +146,5 @@ def start_test_gre():
 
 
 if __name__ == "__main__":
+    # socketio.run(app, debug=True)
     app.run(debug=True)
