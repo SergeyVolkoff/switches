@@ -1,8 +1,13 @@
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
 
+#xterm
+node_modules/
+package-lock.json
+package.json
 # C extensions
 *.so
 
@@ -27,6 +32,8 @@ share/python-wheels/
 allure
 allure_report
 MANIFEST
+
+/node_modules
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

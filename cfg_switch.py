@@ -8,7 +8,6 @@ import os
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 # print(sys.path)
 from constants_trident import (
-    VALUE_CONS_CONNECT,
     CONSOLE,
 )
 from connect import Connect
@@ -90,7 +89,7 @@ class TridentCfg(CfgTemplate):
         Function for resetting the config DUT to default settings,
         with control start DUT after a reboot.
         """
-        self.check_connection(VALUE_CONS_CONNECT)
+        self.check_connection(self.VALUE_CONS_CONNECT)
         self.ssh.enable()
         CONSOLE.print(
             "Do you realy want to reset config!?",
@@ -157,14 +156,14 @@ class TridentCfg(CfgTemplate):
 
     def cfg_base(self, commands_template):
         """ФУНКЦИЯ-шаблон настройки базового конфига."""
-        # self.check_connection(VALUE_CONS_CONNECT)
+        # self.check_connection(self.VALUE_CONS_CONNECT)
         CfgTemplate.cfg_template(self, commands_template)
         return
 
 
 if __name__ == "__main__":
     tr1 = TridentCfg()
-    tr1.check_connection(VALUE_CONS_CONNECT)
+    tr1.check_connection(Connect.VALUE_CONS_CONNECT)
     tr1.ssh.enable()
     with open('./templates_cfg/cfg_current1.yaml') as commands:
         commands_template = yaml.safe_load(commands)

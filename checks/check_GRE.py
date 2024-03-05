@@ -7,15 +7,14 @@ import yaml
 sys.path.insert(1, os.path.join(sys.path[0],'..'))
 # print(sys.path)
 from constants_trident  import (
-    VALUE_CONS_CONNECT,
-    NAME_DEV,
+    NAME_DEV
 )
 from cfg_switch import TridentCfg
 from connect import Connect
 
 
 tr1 = Connect()
-tr1.check_connection(VALUE_CONS_CONNECT)
+tr1.check_connection()
 
 def check_ver_platform():
     print("Test 1", "Проверка платформы:", sep='\n')
