@@ -37,6 +37,7 @@ CONSOLE.print(
 #     'secret': 'enable',
 #     'port': int(input_console),
 # }
+<<<<<<< HEAD
 # with open("../constants_trident1.yaml") as f2:
 #     VALUE_CONS_CONNECT = yaml.safe_load(f2)
     # print(temp)
@@ -44,3 +45,9 @@ CONSOLE.print(
     #     print(t)
     #     VALUE_CONS_CONNECT = dict(t)
     # print(VALUE_CONS_CONNECT)
+=======
+with open("../constants_trident1.yaml") as f2:
+                temp = yaml.safe_load(f2)
+                for t in temp:
+                    VALUE_CONS_CONNECT = dict(t)
+>>>>>>> 2e1ed9cd3bd0c7d7e11c04d56f3e14718b737da0
