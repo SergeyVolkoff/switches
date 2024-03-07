@@ -45,6 +45,6 @@ CONSOLE.print(
     #     VALUE_CONS_CONNECT = dict(t)
     # print(VALUE_CONS_CONNECT)
 with open("../constants_trident1.yaml") as f2:
-                temp = yaml.safe_load(f2)
-                for t in temp:
-                    VALUE_CONS_CONNECT = dict(t)
+                VALUE_CONS_CONNECT = yaml.safe_load(f2)
+                # for t in temp:
+                #     VALUE_CONS_CONNECT = dict(t)
