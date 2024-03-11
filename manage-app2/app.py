@@ -142,21 +142,29 @@ def get_constants():
         )
 
     
-@app.route("/test/<int:id_post>")
+@app.route("/test/<int:id_post>",methods = ['POST', 'GET'])
 def get_test(id_post):
-
+    
     img = FDataBase.readSchemaFromFile(id_post)
     if not img:
         return "Err load img"
-    binar = sq.Binary(img)
+    binary = sq.Binary(img)
     cur = db.cursor()
     if img:
-        cur.execute("UPDATE posts SET schema= ? WHERE id = ?", (binar,id_post,))
+        cur.execute("UPDATE posts SET schema= ? WHERE id = ?", (binary,id_post,))
         db.commit()
-        # db.close()
     id, schema, title, test_specification, test_progress,result = dbase.getPost(id_post)
     cur.execute("SELECT schema FROM posts WHERE id=?", (id_post,))
     image_path = cur.fetchone()[0]
+    if request.method == "POST":
+        # response = request.form['index']
+        # print(response)
+        flash("Button is pushed!")
+        # from start_gns_test_GRE import StartGRE        
+        # return response
+        current_lab = Base_gns()
+        print(current_lab.start_nodes_from_project())
+
     return render_template(
         'gre.html',  
         menu = dbase.getMainmenu(), secondmenu = dbase.getSecondmenu(),

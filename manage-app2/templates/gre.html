@@ -9,18 +9,18 @@
 {{title}}
 {{post}}
 <body>
-    <div class="schema"><img src="{{ image_path }}"  alt="Изображение"></div>
+    <br><img src="{{ url_for('static', filename='images/1.jpg') }}">
 </body>
 <br>{{test_specification}}
 <br>{{test_progress}}
 <br>{{result}}
-<form action="/start_test_gre" method="POST">
+<form action="/test/1" method="POST">
     <!-- скрытый параметр -->
     <input type="hidden" name="index" value="1">
     <input type="submit" class="btn btn-dark" value="Start test">
 </form>
 
-<form action="/start_test_gre" method="POST">
+<form action="/test/1" method="POST">
     <!-- скрытый параметр -->
     <input type="hidden" name="index" value="3">
     <input type="submit" class="btn btn-dark" value="Button 2">
