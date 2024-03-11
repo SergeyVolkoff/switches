@@ -45,3 +45,29 @@ class FDataBase:
             print("Add port console error! "+ str(err))
             return False
         return True
+    
+    # def addPost(self,title,schema, test_specification, test_progress,result):
+        # try:
+        #     self.__cur.execute("INSERT INTO posts VALUES (NULL,?,?,?,?,?)", (title,schema, test_specification, test_progress,result,))
+        #     self.__db.commit()
+        # except sqlite3.Error as err:
+        #     print("Add posts  error! "+ str(err))
+        #     return False
+        
+    def getPost(self, postId):
+        try:
+            self.__cur.execute(f"SELECT id, schema, title, test_specification, test_progress,result FROM posts WHERE id = {postId}") #
+            res = self.__cur.fetchone() # вычитываем  запис
+            if res: return res
+        except:
+            print("Error read from DB")
+        return False 
+    
+    def readSchemaFromFile(n):
+        try:
+            with open(f"media/schema/{n}.jpg", "rb") as f:
+                return f.read()
+        except IOError as e:
+            print(e)
+            return False
+        

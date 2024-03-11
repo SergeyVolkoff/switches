@@ -4,12 +4,12 @@ import logging
 import pty
 import select
 import shlex
-import sqlite3
+import sqlite3 as sq
 import os
 import struct
 import subprocess
 import termios
-from flask import Flask, Response, flash,render_template, redirect, url_for, request, g 
+from flask import Flask, Response, abort, flash,render_template, redirect, url_for, request, g 
 
 import sys
 import os
@@ -29,6 +29,7 @@ from FDataBase import FDataBase
 # configuration
 app = Flask(__name__)
 SECRET_KEY = '*'
+MAX_CONTENT_LEN=1024*1024
 app.config.from_object(__name__)
 app.config["child_pid"] = None
 app.config["fd"] = None
@@ -40,8 +41,8 @@ DEBUG = True
 app.config.update(dict(DATABASE=os.path.join(app.root_path, 'manage_app2.db')))
 
 def connect_db():
-    conn = sqlite3.connect(app.config['DATABASE']) # методу коннект передаем путь к базе
-    conn.row_factory = sqlite3.Row  # представит записи из базы в виде словаря
+    conn = sq.connect(app.config['DATABASE']) # методу коннект передаем путь к базе
+    conn.row_factory = sq.Row  # представит записи из базы в виде словаря
     return conn
 
 def create_db():
@@ -141,35 +142,56 @@ def get_constants():
         )
 
     
+@app.route("/test/<int:id_post>")
+def get_test(id_post):
 
-@app.route("/test1")
-def test1():
-    return render_template('gre.html', title = "GRE", menu = dbase.getMainmenu(), secondmenu = dbase.getSecondmenu())
-
-@app.route("/start_test_gre",methods = ['POST', 'GET'])
-def start_test_gre():
-    if request.method == "POST":
-        
-        # response = request.form['index']
-        # print(response)
-        flash("Button is pushed!")
-        # from start_gns_test_GRE import StartGRE        
-        # return response
-        current_lab = Base_gns()
-        print(current_lab.start_nodes_from_project())
-
+    img = FDataBase.readSchemaFromFile(id_post)
+    if not img:
+        return "Err load img"
+    binar = sq.Binary(img)
+    cur = db.cursor()
+    if img:
+        cur.execute("UPDATE posts SET schema= ? WHERE id = ?", (binar,id_post,))
+        db.commit()
+        # db.close()
+    id, schema, title, test_specification, test_progress,result = dbase.getPost(id_post)
+    cur.execute("SELECT schema FROM posts WHERE id=?", (id_post,))
+    image_path = cur.fetchone()[0]
     return render_template(
-        'gre.html', title = "GRE",
-        menu = dbase.getMainmenu(),
-        secondmenu = dbase.getSecondmenu(),
-        )  
+        'gre.html',  
+        menu = dbase.getMainmenu(), secondmenu = dbase.getSecondmenu(),
+        post=id,
+        image_path=image_path,
+        title=title,
+        test_specification=test_specification,
+        test_progress=test_progress,result=result
+        )
+
+
+# @app.route("/test1",methods = ['POST', 'GET'])
+# def start_test_gre():
+#     db = get_db()
+#     dbase = FDataBase(db)
+#     title, schema, test_specification, test_progress,result = dbase.getPost()
+#     if request.method == "POST":
+#         # response = request.form['index']
+#         # print(response)
+#         flash("Button is pushed!")
+#         # from start_gns_test_GRE import StartGRE        
+#         # return response
+#         current_lab = Base_gns()
+#         print(current_lab.start_nodes_from_project())
+
+#     return render_template(
+#         'gre.html', title = "GRE",
+#         menu = dbase.getMainmenu(),
+#         secondmenu = dbase.getSecondmenu(),
+#         )  
 
 
 
 
-
-
-
+"""socketio and PTY"""
 
 logging.getLogger("werkzeug").setLevel(logging.ERROR)
 __version__ = "0.5.0.2"

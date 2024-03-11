@@ -12,11 +12,11 @@ url text NOT NULL
 
 CREATE TABLE IF NOT EXISTS posts (
 id integer  PRIMARY KEY AUTOINCREMENT,
-title text NOT NULL,
+title text DEFAULT NULL,
 schema blob DEFAULT NULL,
-test_specification text NOT NULL,
-test_progress text NOT NULL,
-result text NOT NULL
+test_specification text DEFAULT NULL,
+test_progress text DEFAULT NULL,
+result text DEFAULT NULL
 );
 
 CREATE TABLE IF NOT EXISTS constants_trident (
@@ -31,9 +31,9 @@ INSERT INTO mainmenu (title, url) VALUES ('Меню конфигов', 'cfg');
 INSERT INTO mainmenu (title, url) VALUES ('Меню сброса настроек', 'reset');
 INSERT INTO mainmenu (title, url) VALUES ('Меню настроек теста', 'constants');
 
-INSERT INTO secondmenu (title, url) VALUES ('Проверка поддержки GRE', 'test1');
-INSERT INTO secondmenu (title, url) VALUES ('Проверка поддержки test2', 'test2');
-INSERT INTO secondmenu (title, url) VALUES ('Проверка поддержки test3', 'test3');
+INSERT INTO secondmenu (title, url) VALUES ('Проверка поддержки GRE', 'test/1');
+INSERT INTO secondmenu (title, url) VALUES ('Проверка поддержки test2', 'test/2');
+INSERT INTO secondmenu (title, url) VALUES ('Проверка поддержки test3', 'test/3');
 
 INSERT INTO posts (title, schema, test_specification, test_progress,result) 
 VALUES (
@@ -42,8 +42,20 @@ VALUES (
 'Здесь будет прогресс теста',
 'Здесь будет результат теста'
 );
-
-
+INSERT INTO posts (title, schema, test_specification, test_progress,result) 
+VALUES (
+'Test Проверка поддержки test2', ?,
+'Здесь будет описание test2',
+'Здесь будет прогресс test2',
+'Здесь будет результат test2'
+);
+INSERT INTO posts (title, schema, test_specification, test_progress,result) 
+VALUES (
+'Test Проверка поддержки test3', ?,
+'Здесь будет описание test3',
+'Здесь будет прогресс test3',
+'Здесь будет результат test3'
+);
 INSERT INTO constants_trident (title, val, url) VALUES ('device_type', 'cisco_ios_telnet','constants');
 INSERT INTO constants_trident (title, val, url) VALUES ('host', '10.27.193.2','constants');
 INSERT INTO constants_trident (title, val, url) VALUES ('username', 'admin','constants');
