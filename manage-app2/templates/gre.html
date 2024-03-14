@@ -5,16 +5,48 @@
 {% for msg in get_flashed_messages() %}
 <div class="flash">{{msg}}</div>
 {% endfor %}
-Содержимое страницы 
-{{title}}
-{{post}}
-<body>
-    <br><img src="{{ url_for('static', filename='images/1.jpg') }}">
-</body>
-<br>{{test_specification}}
+<div>
+<h3>Название: {{title}}</h3>
+<p>Цель: убедиться в работоспособности</p>
+<p>Версия </p>
+    <div>
+    <p>Топология:</p>   
+    <br><img src={{ image_path }} >
+    </div>
+
+    <p>Начальные условия:  Собрать схему согласно топологии выше.</p>
+    <p>Настройки: Выполнить конфигурацию устройств согласно файлам конфигурации.</p>
+    <p>Процедура:</p>
+    <p>1.	На DUT1 создать интерфейс Tunnel указав:
+        -	mode gre;
+        -	source xe1;
+        -	destination 100.100.100.x;
+        -	ip address 192.168.0.1/30.
+        </p>
+    <p>2.	На DUT1 создать два статических маршрута:
+        -	к подсети 2.2.2.0/24 через интерфейс Tunnel
+        -	к подсети 100.100.100.0/30 через 200.200.200.x;
+        </p>
+    <p>3.	На DUT2 создать интерфейс Tunnel указав:
+        -	mode gre;
+        -	source xe1;
+        -	destination 200.200.200.x;
+        -	ip address 192.168.0.2/30.
+        </p>
+    <p>4.	На DUT2 создать два статических маршрута:
+        -	к подсети 1.1.1.0/24 через туннельный интерфейс;
+        -	к подсети 200.200.200.0/30 через 100.100.100.x.
+        </p>
+    <p>5.	Посредством CLI убедиться, что интерфейсы Tunnel находятся состоянии «UP».</p>
+    <p>6. Убедиться, что трасерт между хостами проходит через тоннель</p>
+    <p>   Ожидаемый результат:</p>
+    <li> 1.	Поддерживается протокол туннелирования GRE.
+        <p>2.	При передаче трафика посредством GRE отсутствуют потери пакетов,
+        трасерт проходит через тоннель.</p></p>
+</div>
 <br>{{test_progress}}
 <br>{{result}}
-<form action="/test/1" method="POST">
+<form action="/1" method="POST">
     <!-- скрытый параметр -->
     <input type="hidden" name="index" value="1">
     <input type="submit" class="btn btn-dark" value="Start test">
@@ -24,8 +56,6 @@
     <!-- скрытый параметр -->
     <input type="hidden" name="index" value="3">
     <input type="submit" class="btn btn-dark" value="Button 2">
-
-
 
 
 

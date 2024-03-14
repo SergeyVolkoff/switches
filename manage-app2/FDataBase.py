@@ -65,7 +65,7 @@ class FDataBase:
     
     def readSchemaFromFile(n):
         try:
-            with open(f"media/schema/{n}.png", "rb") as f:
+            with open(f"media/schema/{n}.jpg", "rb") as f:
                 return f.read()
         except IOError as e:
             print(e)

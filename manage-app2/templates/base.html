@@ -14,6 +14,18 @@
 </head>
 <body>
 {% block content -%}
+
+{%- block constants -%}
+<ul class="constants">
+    <table border="1" align="right">
+        <tr><td colspan=2> Текущие настройки подключения</tr></td>
+    {% for m in constants -%}
+        <tr><td>{{m.title}}</td><td>{{m.val}}</td></tr>
+    {% endfor -%}
+    </table>
+</ul>
+{% endblock constants -%} 
+  
          {%- block mainmenu -%}
 <ul class="mainmenu">
          {% for m in menu -%}
@@ -22,7 +34,7 @@
 </ul>
          {% endblock mainmenu -%}
 
-         
+              
          
 <div class="clear"></div>
 <div class="content">

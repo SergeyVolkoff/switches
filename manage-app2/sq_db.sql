@@ -31,14 +31,14 @@ INSERT INTO mainmenu (title, url) VALUES ('Меню конфигов', 'cfg');
 INSERT INTO mainmenu (title, url) VALUES ('Меню сброса настроек', 'reset');
 INSERT INTO mainmenu (title, url) VALUES ('Меню настроек теста', 'constants');
 
-INSERT INTO secondmenu (title, url) VALUES ('Проверка поддержки GRE', 'test/1');
-INSERT INTO secondmenu (title, url) VALUES ('Проверка поддержки test2', 'test/2');
-INSERT INTO secondmenu (title, url) VALUES ('Проверка поддержки test3', 'test/3');
+INSERT INTO secondmenu (title, url) VALUES ('Проверка поддержки GRE', '1');
+INSERT INTO secondmenu (title, url) VALUES ('Проверка поддержки test2', '2');
+INSERT INTO secondmenu (title, url) VALUES ('Проверка поддержки test3', '3');
 
 INSERT INTO posts (title, schema, test_specification, test_progress,result) 
 VALUES (
-'Test Проверка поддержки GRE', ?,
-'Здесь будет описание теста',
+'Проверка поддержки GRE', ?,
+'Здесь пока пусто',
 'Здесь будет прогресс теста',
 'Здесь будет результат теста'
 );
