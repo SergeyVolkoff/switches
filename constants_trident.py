@@ -17,17 +17,17 @@ my_colors = Theme(
 CONSOLE = Console(theme=my_colors)
 
 NAME_DEV = "DUT"
-CONSOLE.print(
-    "В форме ниже введите 4х значный порт",
-    "консольного сервера за которым находится DUT.",
-    style='info',
-    sep='\n')
-CONSOLE.print("ВНИМАНИЕ!", style='fail')
-CONSOLE.print(
-    "В ходе дальнейших операций устройство за этим портом может быть",
-    "сброшено на заводские настройки и перезагружено!",
-    style='info',
-    sep='\n')
+# CONSOLE.print(
+#     "В форме ниже введите 4х значный порт",
+#     "консольного сервера за которым находится DUT.",
+#     style='info',
+#     sep='\n')
+# CONSOLE.print("ВНИМАНИЕ!", style='fail')
+# CONSOLE.print(
+#     "В ходе дальнейших операций устройство за этим портом может быть",
+#     "сброшено на заводские настройки и перезагружено!",
+#     style='info',
+#     sep='\n')
 # input_console = input("УКАЖИТЕ ПОРТ КОНСОЛИ:")
 # VALUE_CONS_CONNECT  = {
 #     'device_type': 'cisco_ios_telnet',
@@ -44,7 +44,7 @@ CONSOLE.print(
     #     print(t)
     #     VALUE_CONS_CONNECT = dict(t)
     # print(VALUE_CONS_CONNECT)
-with open("../constants_trident1.yaml") as f2:
-                VALUE_CONS_CONNECT = yaml.safe_load(f2)
+# with open("../constants_trident1.yaml") as f2:
+#                 VALUE_CONS_CONNECT = yaml.safe_load(f2)
                 # for t in temp:
                 #     VALUE_CONS_CONNECT = dict(t)

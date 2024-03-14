@@ -6,6 +6,9 @@ from netmiko import (
     NetmikoTimeoutException,
     NetmikoAuthenticationException
 )
+import sys
+import os
+sys.path.insert(1, os.path.join(sys.path[0], '..'))
 import yaml
 from constants_trident import (
     CONSOLE,
@@ -23,7 +26,7 @@ class Connect():
         self.ip_inet = "8.8.8.8",
         with open("../constants_trident1.yaml") as f2:
                 temp = yaml.safe_load(f2)
-        self.VALUE_CONS_CONNECT =temp
+        self.VALUE_CONS_CONNECT = temp
         try:
             with open("../constants_trident1.yaml") as f2:
                 self.VALUE_CONS_CONNECT = yaml.safe_load(f2)
@@ -65,9 +68,13 @@ class Connect():
                 style='fail')
             
     def check_eth0(self):
-        temp = self.ssh.send_command('do sh ip interface eth0')
+        
+        temp = self.ssh.send_command('do sh ip interface eth0',read_timeout=5)
         temp1 = re.search(r'IP address\S\s+(?P<ip_eth0>\d+\S\d+\S\d+\S\d+)',temp)
-        ip_eth0 = temp1.group('ip_eth0')
+        try:
+            ip_eth0 = temp1.group('ip_eth0')
+        except NetmikoTimeoutException as err:
+            print("Не смог получить и обработать ip_eth0 error", err)
         return ip_eth0
 
     def ping_inet_izi(self, ip_for_ping):
