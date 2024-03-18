@@ -84,12 +84,32 @@ def index():
         secondmenu = dbase.getSecondmenu(),
         constants = dbase.getConstants_trident())
 
-@app.route("/cfg")
+@app.route("/cfg",methods = ['POST', 'GET'])
 def cfg():
+    result = ''
+    if request.method == "POST":
+        response = request.form['index'] # name="index" in reset.html
+        print(response)
+        result  = subprocess.run(["python3","/home/ssw/Documents/switches/cfg_gre.py"],stdout=subprocess.PIPE, text=True)
+        # result  = result.returncode 
+        if result:
+            flash("Attention! The DUT configuration is in progress!",category='success')
+        else:
+            flash("Attention!configuration error send!",category='error')
+
+        result = result.stdout
+        print("###",type(result)) 
+        print(result)
+        return render_template(
+            'cfg.html', title = "настройка DUT под тест",
+            menu = dbase.getMainmenu(),
+            data = result)
+
     return render_template(
         'cfg.html', title = "Заливка конфига",
         menu = dbase.getMainmenu(),
-        constants = dbase.getConstants_trident())
+        constants = dbase.getConstants_trident(),
+        )
 
 @app.route("/reset",methods = ['POST', 'GET'])
 def reset():

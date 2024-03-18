@@ -45,6 +45,8 @@ ul.mainmenu li a:hover {
     color: #FDA83D;
 }
 
+
+
 div.content {
     margin: 10px;
 }
@@ -60,6 +62,14 @@ div.content {
 }
 
 .flash {padding: 10px;}
+.flash.success {
+  border: 1px solid #21DB56;
+  background:#AEFFC5 ;
+}
+.flash.error {
+  border: 1px solid #FF4343;
+  background: #ff9C9C; ;
+}
 .row{
   padding:50px 0;
 }
@@ -71,6 +81,7 @@ div.content {
   border:none;
 }
 .title{
+  display: inline-block;
   text-align: center;
   
   .row{

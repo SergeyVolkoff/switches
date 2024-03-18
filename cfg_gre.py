@@ -10,13 +10,15 @@ sys.path.insert(1, os.path.join(sys.path[0], '..'))
 import yaml
 from constants_trident import (
     CONSOLE,
-    NAME_DEV,
 )
-from ping3 import ping
 from cfg_switch import  TridentCfg
 
 if __name__ == "__main__":
     tr1 = TridentCfg()
     tr1.check_connection()
     tr1.ssh.enable()
-    print(tr1.extended_reset_cfg1())
+    # команды настройки конфига...
+    with open("../templates_cfg/cfg_GRE.yaml") as commands:
+        commands_template = yaml.safe_load(commands)
+    # ...построчно передаются в cfg_base которая вызовет cfg_template
+    print(tr1.cfg_base(commands_template))
