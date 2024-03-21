@@ -10,6 +10,12 @@ title text NOT NULL,
 url text NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS thirdmenu (
+id integer  PRIMARY KEY AUTOINCREMENT,
+title text NOT NULL,
+url text NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS posts (
 id integer  PRIMARY KEY AUTOINCREMENT,
 title text DEFAULT NULL,
@@ -27,13 +33,17 @@ url text
 );
 
 INSERT INTO mainmenu (title, url) VALUES ('Меню тестов', '/');
-INSERT INTO mainmenu (title, url) VALUES ('Меню конфигов', 'cfg');
-INSERT INTO mainmenu (title, url) VALUES ('Меню сброса настроек', 'reset');
-INSERT INTO mainmenu (title, url) VALUES ('Меню настроек теста', 'constants');
+INSERT INTO mainmenu (title, url) VALUES ('Меню конфигов', '/cfg');
+INSERT INTO mainmenu (title, url) VALUES ('Меню сброса настроек', '/reset');
+INSERT INTO mainmenu (title, url) VALUES ('Меню настроек теста', '/constants');
 
 INSERT INTO secondmenu (title, url) VALUES ('Проверка поддержки GRE', '1');
 INSERT INTO secondmenu (title, url) VALUES ('Проверка поддержки test2', '2');
 INSERT INTO secondmenu (title, url) VALUES ('Проверка поддержки test3', '3');
+
+INSERT INTO thirdmenu (title, url) VALUES ('Конфиг под тест GRE', '/cfg/1');
+INSERT INTO thirdmenu (title, url) VALUES ('Конфиг под test2', '/cfg/2');
+INSERT INTO thirdmenu (title, url) VALUES ('Конфиг под  test3', '/cfg/3');
 
 INSERT INTO posts (title, schema, test_specification, test_progress,result) 
 VALUES (

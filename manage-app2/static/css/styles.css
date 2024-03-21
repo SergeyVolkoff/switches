@@ -6,17 +6,36 @@ html, body {
     width: 100%;
 }
 
-a {
-    color: #0059b2;
-    text-decoration: none;
+.wrapper {
+  height: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
 }
 
-a:hover {
-    color: #CC0000;
-    text-decoration: underline;
+.page {
+  min-height: 90%;
+  padding-bottom: 90px;
+  box-sizing: border-box;
 }
 
-.clear {clear: both;}
+.header {
+  max-width: 1100px;
+  height: 300px;
+  background: #fff url('/images/logo_bulat2.png') no-repeat center;
+}
+.footer {
+  height: 90px;
+  margin-top: -90px;
+  box-sizing: border-box;
+
+  background: rgba(204, 204, 204, .43);
+  border-radius: 0 0 20px 20px;
+  padding: 5px;
+  color: #777;
+  font-size: 11px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  text-align: center;
+}
 
 ul.mainmenu {
     list-style: none;
@@ -51,35 +70,10 @@ div.content {
     margin: 10px;
 }
 
-.form-contact label {
-    display: inline-block;
-    min-width: 80px;
-}
-
-.form-contact p {margin: 10px 0 10px 0;}
-.form-contact input[type=submit], texture {
-    font-size: 16px;
-}
-
-.flash {padding: 10px;}
-.flash.success {
-  border: 1px solid #21DB56;
-  background:#AEFFC5 ;
-}
-.flash.error {
-  border: 1px solid #FF4343;
-  background: #ff9C9C; ;
-}
 .row{
   padding:50px 0;
 }
-.seperator{
-  margin-bottom: 30px;
-  width:35px;
-  height:3px;
-  background:#777;
-  border:none;
-}
+
 .title{
   display: inline-block;
   text-align: center;
@@ -96,161 +90,3 @@ div.content {
     margin: 0 auto 10px;
   }
 }
-.item {
-  position: relative;
-  margin-bottom: 30px;
-  min-height: 1px;
-  float: left;
-  -webkit-backface-visibility: hidden;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  
-  .item-in {
-    background: #fff;
-    padding: 40px;
-    position: relative;
-    
-    &:hover:before {
-      width: 100%;
-    }
-   
-    &::before {
-    content: "";
-    position: absolute;
-    bottom: 0px;
-    height: 2px;
-    width: 0%;
-    background: #333333;
-    right: 0px;
-    -webkit-transition: width 0.4s;
-    transition: width 0.4s;
-    }
-  }
-}
-.item{
-    
-  h4{
-      font-size: 18px;
-      margin-top: 25px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-    p{
-      font-size: 12px;
-    }
-    a{
-      font-family: 'Montserrat', sans-serif;
-      font-size: 12px;
-      text-transform: uppercase;
-      color: #666666;
-      margin-top: 10px;
-
-      i {
-        opacity: 0;
-        padding-left: 0px;
-        transition: 0.4s;
-        font-size: 24px;
-        display: inline-block;
-        top: 5px;
-        position: relative;
-       }
-      
-      &:hover {
-        text-decoration:none;
-        i {
-          padding-left: 10px;
-          opacity: 1;
-          font-weight: 300;
-          }
-        }
-      }
-    }
-.row{
-    padding: 50px 0 0;
-  }
-  
-  h1{
-    text-transform: uppercase;
-  }
-  
-  .seperator{
-    margin: 0 auto 10px;
-  }
-}
-.item {
-  position: relative;
-  margin-bottom: 30px;
-  min-height: 1px;
-  float: left;
-  -webkit-backface-visibility: hidden;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  
-  .item-in {
-    background: #fff;
-    padding: 40px;
-    position: relative;
-    
-    &:hover:before {
-      width: 100%;
-    }
-   
-    &::before {
-    content: "";
-    position: absolute;
-    bottom: 0px;
-    height: 2px;
-    width: 0%;
-    background: #333333;
-    right: 0px;
-    -webkit-transition: width 0.4s;
-    transition: width 0.4s;
-    }
-  }
-}
-.item{
-    
-  h4{
-      font-size: 18px;
-      margin-top: 25px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-    p{
-      font-size: 12px;
-    }
-    a{
-      font-family: 'Montserrat', sans-serif;
-      font-size: 12px;
-      text-transform: uppercase;
-      color: #666666;
-      margin-top: 10px;
-
-      i {
-        opacity: 0;
-        padding-left: 0px;
-        transition: 0.4s;
-        font-size: 24px;
-        display: inline-block;
-        top: 5px;
-        position: relative;
-       }
-      
-      &:hover {
-        text-decoration:none;
-        i {
-          padding-left: 10px;
-          opacity: 1;
-          font-weight: 300;
-          }
-        }
-      }
-    }

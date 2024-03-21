@@ -39,6 +39,9 @@ class CfgTemplate(Connect):
                     "y", expect_string="")
                 CONSOLE.print(command, result_command, style='success')
                 time.sleep(5)
+
+                
+
                 #  читаем из файла присвоеный ip_eth0:
                 with open("../ip_eth0.txt", 'r') as file:
                     for line in file:
@@ -150,8 +153,8 @@ class TridentCfg(CfgTemplate):
                 dev_name = self.ssh.find_prompt()
                 CONSOLE.print(
                     f"All up! Config reset!",
-                    "New_name device: {dev_name}.",
-                    "interface eth0 ({ip_eth0}) configured",
+                    f"New_name device: {dev_name}.",
+                    f"interface eth0 ({ip_eth0}) configured",
                     style='success')
                 exit
         else:

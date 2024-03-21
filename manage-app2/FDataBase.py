@@ -27,6 +27,16 @@ class FDataBase:
             print("Error read from DB")
         return[]
     
+    def getThirdmenu(self):
+        sql = '''SELECT * FROM thirdmenu'''
+        try:
+            self.__cur.execute(sql) #
+            res = self.__cur.fetchall() # вычитываем все записи
+            if res: return res
+        except:
+            print("Error read from DB")
+        return[]
+    
     def getConstants_trident(self):
         sql = '''SELECT * FROM constants_trident'''
         try:

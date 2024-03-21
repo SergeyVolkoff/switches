@@ -2,14 +2,17 @@
 {% block content %}
 {{ super() }}
 
-<br>Содержимое страницы Заливка конфига </div>
-<form action="/cfg" method="POST"class ="form_contact">
-    <!-- скрытый параметр -->
-    <input type="hidden" name="index" value="Запущена настройка конфигурации!">
-    <input type="submit" class="btn btn-dark" value="НАСТРОЙКА КОНФИГУРАЦИИ">
-{% for cat, msg in get_flashed_messages(True) %}
-    <div class="flash {{cat}}">{{msg}}</div>
-{% endfor %}
-<br>{{data}}
+<br>Используя нижерасположенную кнопку НАСТРОЙКА КОНФИГУРАЦИИ"
+можно настроить коммутатор на нужные настройки.
+
+{%- block thirdmenu -%}
+<ul class="thirdmenu">
+        {% for m in thirdmenu -%}
+            <li><a href="{{m.url}}">{{m.title}}</a></li>
+        {% endfor -%}
+</ul>
+        {% endblock thirdmenu -%} 
+
+
 </form>
 {% endblock content%}

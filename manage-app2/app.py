@@ -84,32 +84,7 @@ def index():
         secondmenu = dbase.getSecondmenu(),
         constants = dbase.getConstants_trident())
 
-@app.route("/cfg",methods = ['POST', 'GET'])
-def cfg():
-    result = ''
-    if request.method == "POST":
-        response = request.form['index'] # name="index" in reset.html
-        print(response)
-        result  = subprocess.run(["python3","/home/ssw/Documents/switches/cfg_gre.py"],stdout=subprocess.PIPE, text=True)
-        # result  = result.returncode 
-        if result:
-            flash("Attention! The DUT configuration is in progress!",category='success')
-        else:
-            flash("Attention!configuration error send!",category='error')
 
-        result = result.stdout
-        print("###",type(result)) 
-        print(result)
-        return render_template(
-            'cfg.html', title = "настройка DUT под тест",
-            menu = dbase.getMainmenu(),
-            data = result)
-
-    return render_template(
-        'cfg.html', title = "Заливка конфига",
-        menu = dbase.getMainmenu(),
-        constants = dbase.getConstants_trident(),
-        )
 
 @app.route("/reset",methods = ['POST', 'GET'])
 def reset():
@@ -121,9 +96,13 @@ def reset():
       
         result  = subprocess.run(["python3","/home/ssw/Documents/switches/reset_cfg.py"],stdout=subprocess.PIPE, text=True)
         # result  = result.returncode  
-        result = result.stdout
+        result = result.stdout.split('\n')
         print(result)
-        return render_template('reset.html', title = "Сброс конфига на дефолтные", menu = dbase.getMainmenu(),data = result)
+        return render_template(
+            'reset.html', 
+            title = "Сброс конфига на дефолтные",
+            menu = dbase.getMainmenu(),
+            result = result)
     return render_template(
         'reset.html', title = "Сброс конфига на дефолтные",
         menu = dbase.getMainmenu(),
@@ -196,7 +175,8 @@ def get_test(id_post):
         # return response
         current_lab = Base_gns()
         print(current_lab.start_nodes_from_project())
-
+        # REALIZOVAT!
+        
     return render_template(
         'gre.html',  
         menu = dbase.getMainmenu(), secondmenu = dbase.getSecondmenu(),
@@ -207,8 +187,42 @@ def get_test(id_post):
         test_progress=test_progress,result=result,
         constants = dbase.getConstants_trident()
         )
+@app.route("/cfg",methods = ['GET'])
+def cfg():
+    return render_template(
+        'cfg.html', title = "Заливка конфига",
+        menu = dbase.getMainmenu(),
+        constants = dbase.getConstants_trident(),
+        thirdmenu = dbase.getThirdmenu(),
+        )
 
-
+@app.route("/cfg/<int:id_post>",methods = ['POST', 'GET'])
+def getCfgPage(id_post):
+    result = ''
+    if request.method == "POST":
+        response = request.form['index'] # name="index" in reset.html
+        print(response)
+        result  = subprocess.run(["python3","/home/ssw/Documents/switches/cfg_gre.py"],stdout=subprocess.PIPE, text=True)
+        # result  = result.returncode 
+        if result:
+            flash("Attention! The DUT configuration is in progress!",category='success')
+        else:
+            flash("Attention!configuration error send!",category='error')
+        result = result.stdout.split('\n')
+        # result = result.split('\n')
+        # result = result.replace('\r\n', '<br>')
+        print(result)
+        return render_template(
+            'cfg_gre.html', title = "настройка DUT под тест",
+            menu = dbase.getMainmenu(),
+            thirdmenu = dbase.getThirdmenu(),
+            result = result)
+    return render_template(
+        'cfg_gre.html', title = "Заливка конфига",
+        menu = dbase.getMainmenu(),
+        constants = dbase.getConstants_trident(),
+        thirdmenu = dbase.getThirdmenu(),
+        )
 
 
 

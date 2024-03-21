@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+ 
+{% block content %}
+    {{ super() }}
+    {% for msg in get_flashed_messages() %}
+        <div class="flash">{{msg}}</div>
+    {% endfor %}
+    <div>
+    <form action="{{url_for('getCfgPage',id_post='1')}}" method="POST"class ="form_contact">
+        <!-- скрытый параметр -->
+        <input type="hidden" name="index" value="Запущена настройка конфигурации!">
+        <input type="submit" class="btn btn-dark" value="НАСТРОЙКА КОНФИГУРАЦИИ">
+    </div>
+
+{% for i in result %}
+    {% if 'please' in i %}
+            <br>
+    {% endif %}
+    <li>{{ i }} </li>
+{% endfor %}
+{% endblock content%}
