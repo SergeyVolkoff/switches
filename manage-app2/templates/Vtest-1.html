@@ -44,20 +44,29 @@
         <p>2.	При передаче трафика посредством GRE отсутствуют потери пакетов,
         трасерт проходит через тоннель.</p></p>
 </div>
-<br>{{test_progress}}
-<br>{{result}}
-<form action="{{url_for('index',id_post='1')}}" method="POST">
+<br>Ниже кнопка вызова тестов:
+
+<form action="{{ url_for('get_test',id_post='1') }}" method="POST">
     <!-- скрытый параметр -->
-    <input type="hidden" name="index" value="1">
+    <input type="hidden" name="in" value="1">
     <input type="submit" class="btn btn-dark" value="Start test">
 </form>
 
-<form action="/test/1" method="POST">
+<p>Для перехода на страницу с последним html-отчетом правой кнопкой окройте ссылку ниже в новом окне: </p>
+<li><a href="file:///home/ssw/Documents/switches/manage-app2/templates/BULAT_TEST_TRIDENT_GRE.html" target="_blank">Отчет по тесту в html</a></li>
+
+<br>Ниже кнопка вызова отчетов сервера Allure:
+<form action=" {{ url_for('get_test',id_post='999') }} " method="GET">
     <!-- скрытый параметр -->
-    <input type="hidden" name="index" value="3">
-    <input type="submit" class="btn btn-dark" value="Button 2">
-
-
+    <input type="hidden" name="in" value="999" >
+    <input type="submit" class="btn btn-dark" value="Отчет сервера Allure">
+</form>
+{% for i in result %}
+    {% if ',' in i %}
+            <br>
+    {% endif %}
+    <li>{{ i }} </li>
+{% endfor %}
 
 {% endblock %}
 

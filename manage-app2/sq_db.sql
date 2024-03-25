@@ -22,7 +22,7 @@ title text DEFAULT NULL,
 schema blob DEFAULT NULL,
 test_specification text DEFAULT NULL,
 test_progress text DEFAULT NULL,
-result text DEFAULT NULL
+test_result text DEFAULT NULL
 );
 
 CREATE TABLE IF NOT EXISTS constants_trident (
@@ -45,21 +45,21 @@ INSERT INTO thirdmenu (title, url) VALUES ('Конфиг под тест GRE', '
 INSERT INTO thirdmenu (title, url) VALUES ('Конфиг под test2', '/cfg/2');
 INSERT INTO thirdmenu (title, url) VALUES ('Конфиг под  test3', '/cfg/3');
 
-INSERT INTO posts (title, schema, test_specification, test_progress,result) 
+INSERT INTO posts (title, schema, test_specification, test_progress,test_result) 
 VALUES (
 'Проверка поддержки GRE', ?,
 'Здесь пока пусто',
 'Здесь будет прогресс теста',
 'Здесь будет результат теста'
 );
-INSERT INTO posts (title, schema, test_specification, test_progress,result) 
+INSERT INTO posts (title, schema, test_specification, test_progress,test_result) 
 VALUES (
 'Test Проверка поддержки test2', ?,
 'Здесь будет описание test2',
 'Здесь будет прогресс test2',
 'Здесь будет результат test2'
 );
-INSERT INTO posts (title, schema, test_specification, test_progress,result) 
+INSERT INTO posts (title, schema, test_specification, test_progress,test_result) 
 VALUES (
 'Test Проверка поддержки test3', ?,
 'Здесь будет описание test3',

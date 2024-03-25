@@ -66,7 +66,7 @@ class FDataBase:
         
     def getPost(self, postId):
         try:
-            self.__cur.execute(f"SELECT id, schema, title, test_specification, test_progress,result FROM posts WHERE id = {postId}") #
+            self.__cur.execute(f"SELECT id, schema, title, test_specification, test_progress,test_result FROM posts WHERE id = {postId}") #
             res = self.__cur.fetchone() # вычитываем  запис
             if res: return res
         except:

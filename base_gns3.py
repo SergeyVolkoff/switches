@@ -16,7 +16,7 @@ console = Console(theme=my_colors)
 
 class Base_gns():
 
-    def __init__(self):
+    def __init__(self,name_lab):
 
         """ Определение коннектора(connector) и проекта (lab) """
 
@@ -24,8 +24,8 @@ class Base_gns():
         self.connector = Gns3Connector(url=self.server_url)
         self.list_labs = (tabulate(self.connector.projects_summary(is_print=False), headers=["Project Name"]))
         print(self.list_labs)
-
-        self.name_lab = input("Input lab name: ")
+        self.name_lab = name_lab
+        # self.name_lab = input("Input lab name: ")
         
 
     def all_proj (self):

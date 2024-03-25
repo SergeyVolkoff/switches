@@ -153,40 +153,51 @@ def get_constants():
     
 @app.route("/<int:id_post>",methods = ['POST', 'GET'])
 def get_test(id_post):
-    
-    # img = FDataBase.readSchemaFromFile(id_post)
-    # if not img:
-    #     return "Err load img"
-    # binary = sq.Binary(img)
-    # cur = db.cursor()
-    # if img:
-    #     cur.execute("UPDATE posts SET schema= ? WHERE id = ?", (binary,id_post,))
-    #     db.commit()
-    # cur.execute("SELECT schema FROM posts WHERE id=?", (id_post,))
-    # image_path = cur.fetchone()[0]
-    id, schema, title, test_specification, test_progress,result = dbase.getPost(id_post)
+    """Ф-я выводит в веб старницу тестов,кнопки старта и отчета
+      и только текстовый результат тестов """
+    id, schema, title, test_specification, test_progress,test_result = dbase.getPost(id_post)
     image_path=f'static/images/{id_post}.jpg'
     print(title)
     if request.method == "POST":
-        # response = request.form['index']
-        # print(response)
         flash("Button is pushed!")
-        # from start_gns_test_GRE import StartGRE        
-        # return response
-        current_lab = Base_gns()
+        current_lab = Base_gns('SSV_auto_Tr_GRE')
         print(current_lab.start_nodes_from_project())
-        # REALIZOVAT!
+        response = request.form['in'] # name="index" in reset.html
+        print("***",response)
+        result  = subprocess.run(["python3","/home/ssw/Documents/switches/gre_test.py"],stdout=subprocess.PIPE, text=True)
+        if result:
+            flash("Attention! The DUT test is in progress!",category='success')
+        else:
+            flash("Attention!Start test error send!",category='error')
+        result = result.stdout.split('\n')
+
+        print(result)
+        return render_template(
+            f'Vtest-{id_post}.html', title = "настройка DUT под тест",
+            menu = dbase.getMainmenu(),
+            thirdmenu = dbase.getThirdmenu(),
+            result = result)
         
     return render_template(
-        'gre.html',  
+        f'Vtest-1.html',  # Реализовать вызов универсальных стр(переделать HTML)
         menu = dbase.getMainmenu(), secondmenu = dbase.getSecondmenu(),
         post=id,
         image_path=image_path,
         title=title,
         test_specification=test_specification,
-        test_progress=test_progress,result=result,
+        test_progress=test_progress,
         constants = dbase.getConstants_trident()
         )
+# переделать маршрут и запуск аллюре из места с тестами!!!
+@app.route("/999",methods = ['GET'])
+def get_test_html():
+    """Ф-я """
+   
+    flash("Button 'result HTML test' is pushed!")
+    os.system("allure serve allure_report")
+    
+    return render_template("/")
+
 @app.route("/cfg",methods = ['GET'])
 def cfg():
     return render_template(
@@ -200,7 +211,7 @@ def cfg():
 def getCfgPage(id_post):
     result = ''
     if request.method == "POST":
-        response = request.form['index'] # name="index" in reset.html
+        response = request.form['index'] # name="index" in ..html
         print(response)
         result  = subprocess.run(["python3","/home/ssw/Documents/switches/cfg_gre.py"],stdout=subprocess.PIPE, text=True)
         # result  = result.returncode 
