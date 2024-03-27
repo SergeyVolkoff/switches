@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+ 
+{% block content %}
+    {{ super() }}
+    <form action="/login" method="post" class="form-contact">
+        <p><label>ИМЯ <input type="text" name="username" value="" required />
+        <p><label>ПАРОЛЬ <input type="password" name="psw" value="" required />
+        <p><input type="checkbox" name="remainme" /> 
+        <p><input type="submit" value="ВОЙТИ" />
+        <hr align=left width="300px">
+        <p><a href="{{url_for('register')}}">Registration</a>
+        
+    </form>
+
+{% endblock %}

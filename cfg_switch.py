@@ -229,7 +229,7 @@ class TridentCfg(CfgTemplate):
                 "interface eth0 ({ip_eth0}) configured",
                 style='success')
             exit
-        return "Sw errashed!!!"
+        return "Switch reset to factory settings!"
         # else:
         #     CONSOLE.print("Wrong input", style="fail")
         #     self.ssh.exit_config_mode()

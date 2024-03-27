@@ -36,6 +36,7 @@ INSERT INTO mainmenu (title, url) VALUES ('Меню тестов', '/');
 INSERT INTO mainmenu (title, url) VALUES ('Меню конфигов', '/cfg');
 INSERT INTO mainmenu (title, url) VALUES ('Меню сброса настроек', '/reset');
 INSERT INTO mainmenu (title, url) VALUES ('Меню настроек теста', '/constants');
+INSERT INTO mainmenu (title, url) VALUES ('Авторизация', '/login');
 
 INSERT INTO secondmenu (title, url) VALUES ('Проверка поддержки GRE', '1');
 INSERT INTO secondmenu (title, url) VALUES ('Проверка поддержки test2', '2');

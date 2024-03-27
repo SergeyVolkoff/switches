@@ -8,7 +8,7 @@ html, body {
 
 .wrapper {
   height: 100%;
-  max-width: 1500px;
+  max-width: 1550px;
   margin: 0 auto;
 }
 
@@ -49,11 +49,11 @@ ul.mainmenu {
 }
 
 ul.mainmenu li {
-    float: left;
+    float: right;
     margin: 18px 40px 0 50px;
 }
 
-ul.mainmenu li.last {float: right;}
+ul.mainmenu li.last {float: left;}
 
 ul.mainmenu li a {
     color: #fdc073;
@@ -64,6 +64,12 @@ ul.mainmenu li a:hover {
     color: #FDA83D;
 }
 
+hr {
+  width: 350px;
+  margin: 1px ;
+  border: 1px solid black;
+  text-align: left;
+}
 
 
 div.content {

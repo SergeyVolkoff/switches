@@ -11,7 +11,7 @@ sys.path.insert(1, os.path.join(sys.path[0], '..'))
 import struct
 import subprocess
 import termios
-from flask import Flask, Response, abort, flash, make_response,render_template, redirect, url_for, request, g 
+from flask import Flask, Response, abort, flash, make_response,render_template, redirect, session, url_for, request, g 
 
 import sys
 import os
@@ -88,6 +88,7 @@ def index():
 
 @app.route("/reset",methods = ['POST', 'GET'])
 def reset():
+    """Ф-я выводит страницу сброса конфига"""
     result = ''
     if request.method == "POST":
         response = request.form['index'] # name="index" in reset.html
@@ -111,9 +112,9 @@ def reset():
 
 @app.route("/add_constants", methods = ['POST', 'GET'])
 def add_constants():
+    """Ф-я передает настройки устр-ва и возвращает страницу настроек"""
     if request.method == 'POST':
         res = dbase.addConstants_trident(request.form['port'])
-      
         port_con = request.form.get('port')
         print(port_con)
         if not res:
@@ -131,6 +132,7 @@ def add_constants():
 
 @app.route("/constants")
 def get_constants():
+    """Ф-я выводит страницу настройки устр-ва"""
     cur = db.cursor()
     cur.execute("SELECT title, val FROM constants_trident")
     VALUE_CONS_CONNECT = cur.fetchall()
@@ -149,11 +151,9 @@ def get_constants():
         constants = dbase.getConstants_trident(),
         )
 
-
-    
 @app.route("/<int:id_post>",methods = ['POST', 'GET'])
 def get_test(id_post):
-    """Ф-я выводит в веб старницу тестов,кнопки старта и отчета
+    """Ф-я выводит в веб страрницу тестов,кнопки старта и отчета
       и только текстовый результат тестов """
     id, schema, title, test_specification, test_progress,test_result = dbase.getPost(id_post)
     image_path=f'static/images/{id_post}.jpg'
@@ -170,14 +170,12 @@ def get_test(id_post):
         else:
             flash("Attention!Start test error send!",category='error')
         result = result.stdout.split('\n')
-
         print(result)
         return render_template(
             f'Vtest-{id_post}.html', title = "настройка DUT под тест",
             menu = dbase.getMainmenu(),
             thirdmenu = dbase.getThirdmenu(),
             result = result)
-        
     return render_template(
         f'Vtest-1.html',  # Реализовать вызов универсальных стр(переделать HTML)
         menu = dbase.getMainmenu(), secondmenu = dbase.getSecondmenu(),
@@ -188,18 +186,18 @@ def get_test(id_post):
         test_progress=test_progress,
         constants = dbase.getConstants_trident()
         )
+
 # переделать маршрут и запуск аллюре из места с тестами!!!
 @app.route("/999",methods = ['GET'])
 def get_test_html():
-    """Ф-я """
-   
+    """Ф-я запускает сервер allure и открывает страницу с отчетом"""
     flash("Button 'result HTML test' is pushed!")
     os.system("allure serve allure_report")
-    
     return render_template("/")
 
 @app.route("/cfg",methods = ['GET'])
 def cfg():
+    """Ф-я открывает страницу с заливкой конфига"""
     return render_template(
         'cfg.html', title = "Заливка конфига",
         menu = dbase.getMainmenu(),
@@ -209,25 +207,24 @@ def cfg():
 
 @app.route("/cfg/<int:id_post>",methods = ['POST', 'GET'])
 def getCfgPage(id_post):
+    """Ф-я запускает заливку конфига и возвращает страницу заливки"""
     result = ''
     if request.method == "POST":
-        response = request.form['index'] # name="index" in ..html
+        response = request.form['index']# name="index" in ..html
         print(response)
-        result  = subprocess.run(["python3","/home/ssw/Documents/switches/cfg_gre.py"],stdout=subprocess.PIPE, text=True)
+        path_cfg="/home/ssw/Documents/switches/cfg_gre.py"
+        result  = subprocess.run(["python3",path_cfg],stdout=subprocess.PIPE, text=True)
         # result  = result.returncode 
         if result:
-            flash("Attention! The DUT configuration is in progress!",category='success')
+            flash("Внимание! Выполняется заливка конфига.",category='success')
         else:
-            flash("Attention!configuration error send!",category='error')
+            flash("Внимание! Произошла ошибка при заливке конфига",category='error')
         result = result.stdout.split('\n')
-        # result = result.split('\n')
-        # result = result.replace('\r\n', '<br>')
-        print(result)
         return render_template(
             'cfg_gre.html', title = "настройка DUT под тест",
             menu = dbase.getMainmenu(),
             thirdmenu = dbase.getThirdmenu(),
-            result = result)
+            result=result)
     return render_template(
         'cfg_gre.html', title = "Заливка конфига",
         menu = dbase.getMainmenu(),
@@ -236,6 +233,30 @@ def getCfgPage(id_post):
         )
 
 
+
+@app.errorhandler(404)
+def pageNotFounretd(error):
+    return render_template (
+        'page404.html',
+        title='Страница не найдена, но если она очень нужна - я ее сделаю.',
+        menu=dbase.getMainmenu())
+
+@app.route("/login", methods=["GET","POST"])
+def login():
+    if "userLogged" in session:
+        return redirect(url_for('profile',username=session['userLogged']))
+    elif request.method == 'POST' and request.form['username'] == "selfedu" and request.form['psw'] =="123":
+        session['userLogged'] = request.form['username']
+        return redirect(url_for('profile',username=session['userLogged']))
+    return render_template('login.html',title="Авторизация", menu=dbase.getMainmenu())
+
+@app.route("/register")
+def register():
+    return render_template("register.html",menu = dbase.getMainmenu,title="Registration") 
+
+@app.route("/profile/<username>")
+def profile(username):
+    return f"Profile user:{username}"
 
 
 

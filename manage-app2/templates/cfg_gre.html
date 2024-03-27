@@ -5,13 +5,25 @@
     {% for msg in get_flashed_messages() %}
         <div class="flash">{{msg}}</div>
     {% endfor %}
-    <div>
-    <form action="{{url_for('getCfgPage',id_post='1')}}" method="POST"class ="form_contact">
-        <!-- скрытый параметр -->
-        <input type="hidden" name="index" value="Запущена настройка конфигурации!">
-        <input type="submit" class="btn btn-dark" value="НАСТРОЙКА КОНФИГУРАЦИИ">
+    <div class="title">
+        Ниже находится ссылка просмотра конфига под тест GRE:
     </div>
-
+    <p><a href="file:///home/ssw/Documents/switches/templates_cfg/cfg_GRE.yaml" target="_blank">Конфиг устр-ва под тест GRE</a></li>
+      
+    <br>
+    <div class="title">
+        Ниже находится кнопка заливки конфига под тест GRE:
+    </div>
+    <div>
+        <form action="{{url_for('getCfgPage',id_post='1')}}" method="POST"class ="form_contact">
+            <!-- скрытый параметр -->
+            <input type="hidden" name="index" value="1">
+            <input type="submit" class="btn btn-dark" value="НАСТРОЙКА КОНФИГУРАЦИИ">
+    </div>
+    <br>
+    <hr>
+    <div class="title"> Здесь может быть отчет о ходе заливки конфига!</div>
+    <br> 
 {% for i in result %}
     {% if 'please' in i %}
             <br>
