@@ -11,7 +11,12 @@ sys.path.insert(1, os.path.join(sys.path[0], '..'))
 import struct
 import subprocess
 import termios
-from flask import Flask, Response, abort, flash, make_response,render_template, redirect, session, url_for, request, g 
+from flask import (Flask, Response, abort,
+                   flash, make_response,
+                   render_template, redirect,
+                   session, url_for, request, g)
+from flask_login import LoginManager, current_user, login_required, login_user, logout_user
+from werkzeug.security import generate_password_hash, check_password_hash
 
 import sys
 import os
@@ -21,7 +26,7 @@ import yaml
 from cfg_switch import TridentCfg
 
 from constants_trident import CONSOLE
-
+from UserLogin import UserLogin
 
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from base_gns3 import Base_gns
@@ -43,6 +48,17 @@ DATABASE = '/manage_app2/manage_app2.db'
 DEBUG = True
 
 app.config.update(dict(DATABASE=os.path.join(app.root_path, 'manage_app2.db')))
+login_manager = LoginManager(app)
+login_manager.login_view = 'login' # перенаправлять пользователя на форму авторизации, атрибуту login_view присваиваем имя функции представления для формы авторизации.
+login_manager.login_message = "Авторизуйтесь для доступа к закрытым страницам"
+login_manager.login_message_category = "success"
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    """здесь будет создаваться объект UserLogin при каждом запросе, если пользователь авторизован"""
+    print('load_user')
+    return UserLogin().fromDB(user_id,dbase)
 
 def connect_db():
     conn = sq.connect(app.config['DATABASE']) # методу коннект передаем путь к базе
@@ -77,6 +93,15 @@ def close_db(error):
     if hasattr(g,'link_db'):
         g.link_db.close()
 
+@app.route("/post/<alias>")
+@login_required
+def showPost(alias):
+    title, post = dbase.getPost(alias)
+    if not title:
+        abort(404)
+ 
+    return render_template('post.html', menu=dbase.getMenu(), title=title, post=post)
+
 @app.route("/")
 def index():
     return render_template(
@@ -84,9 +109,8 @@ def index():
         secondmenu = dbase.getSecondmenu(),
         constants = dbase.getConstants_trident())
 
-
-
 @app.route("/reset",methods = ['POST', 'GET'])
+@login_required
 def reset():
     """Ф-я выводит страницу сброса конфига"""
     result = ''
@@ -232,8 +256,6 @@ def getCfgPage(id_post):
         thirdmenu = dbase.getThirdmenu(),
         )
 
-
-
 @app.errorhandler(404)
 def pageNotFounretd(error):
     return render_template (
@@ -243,20 +265,52 @@ def pageNotFounretd(error):
 
 @app.route("/login", methods=["GET","POST"])
 def login():
-    if "userLogged" in session:
-        return redirect(url_for('profile',username=session['userLogged']))
-    elif request.method == 'POST' and request.form['username'] == "selfedu" and request.form['psw'] =="123":
-        session['userLogged'] = request.form['username']
-        return redirect(url_for('profile',username=session['userLogged']))
+    """Обработчик для авторизации пользователя"""
+    if current_user.is_authenticated:   # через прокси-юзер current_user проверяем: является ли пользователь авторизованным
+        return redirect(url_for('profile')) 
+
+    if request.method == 'POST':
+        user= dbase.getUserByEmail(request.form['email']) # обращаемся к БД и считываем информацию о пользователе по email
+        if user and check_password_hash(user['psw'],request.form['psw']): # Если верно введен пароль..
+            userlogin = UserLogin().create(user) #..то формируется объект класса UserLogin
+            rm = True if request.form.get('remainme') else False # проверка чек-бокс Запомнить меня
+            login_user(userlogin, remember=rm)
+            return redirect(request.args.get('next') or url_for('profile')) # перейдем либо на предыдущую страницу, либо в профайл
+        flash('Неверная пара логин\пароль','error')
     return render_template('login.html',title="Авторизация", menu=dbase.getMainmenu())
 
-@app.route("/register")
+@app.route("/register", methods=["POST", "GET"])
 def register():
-    return render_template("register.html",menu = dbase.getMainmenu,title="Registration") 
+    if request.method == "POST":
+        session.pop('_flashes', None)
+        if len(request.form['name']) >= 4 and len(request.form['email']) >= 4 \
+            and len(request.form['psw']) >= 4 and request.form['psw'] == request.form['psw2']:
+            hash = generate_password_hash(request.form['psw'])
+            res = dbase.addUser(request.form['name'], request.form['email'], hash)
+            if res:
+                flash("Вы успешно зарегистрированы", "success")
+                return redirect(url_for('login'))
+            else:
+                flash("Ошибка при добавлении в БД", "error")
+        else:
+            flash("Неверно заполнены поля", "error")
+ 
+    return render_template("register.html", menu=dbase.getMainmenu(), title="Регистрация") 
 
-@app.route("/profile/<username>")
-def profile(username):
-    return f"Profile user:{username}"
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash("Вы вышли из аккаунта", "success")
+    return redirect(url_for('login'))
+
+@app.route('/profile')
+@login_required
+def profile():
+    return render_template("profile.html", menu=dbase.getMainmenu(), title="Профиль пользователя") 
+
+    # return f"""<a href="{url_for('logout')}">Выйти из профиля</a>
+    #             user info: {current_user.get_id()}"""
 
 
 

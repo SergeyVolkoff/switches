@@ -32,6 +32,14 @@ val integer NOT NULL,
 url text
 );
 
+CREATE TABLE IF NOT EXISTS users (
+id integer  PRIMARY KEY AUTOINCREMENT,
+name text NOT NULL,
+email integer NOT NULL,
+psw text NOT NULL,
+time integer NOT NULL
+);
+
 INSERT INTO mainmenu (title, url) VALUES ('Меню тестов', '/');
 INSERT INTO mainmenu (title, url) VALUES ('Меню конфигов', '/cfg');
 INSERT INTO mainmenu (title, url) VALUES ('Меню сброса настроек', '/reset');

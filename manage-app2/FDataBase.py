@@ -81,3 +81,42 @@ class FDataBase:
             print(e)
             return False
         
+    def addUser(self, name, email, hpsw):
+        """Добавления юзера в БД с проверкой мыла на повтор"""
+        try:
+            self.__cur.execute(f"SELECT COUNT() as 'count' FROM users WHERE email LIKE '{email}'") # проверям мыло на существование в БД
+            res = self.__cur.fetchone() # вычитываем  запис
+            if res['count'] > 0:
+                print('Пользователь с таким email уже есть в БД')
+                return False
+            tm = math.floor(time.time())
+            self.__cur.execute("INSERT INTO users VALUES (NULL, ?, ?, ?, ?)", (name, email, hpsw, tm))
+            self.__db.commit()
+        except sqlite3.Error as er:
+            print("Error add user into DB"+str(er))
+            return False
+        return True 
+    
+    def getUser(self, user_id):
+        try:
+            self.__cur.execute(f"SELECT * FROM users WHERE id ='{user_id}' LIMIT 1")  # проверям мыло на существование в БД
+            res = self.__cur.fetchone() # вычитываем  запис
+            if not res:
+                print('Пользователь с таким email no')
+                return False
+            return res
+        except sqlite3.Error as er:
+            print("Error get user from DB"+str(er))
+        return False
+        
+    def getUserByEmail(self, email):
+        try:
+            self.__cur.execute(f"SELECT * FROM users WHERE email='{email}' LIMIT 1")  # проверям мыло на существование в БД
+            res = self.__cur.fetchone() # вычитываем  запис
+            if not res:
+                print('Пользователь с таким email no')
+                return False
+            return res
+        except sqlite3.Error as er:
+            print("Error get user from DB"+str(er))
+        return False
