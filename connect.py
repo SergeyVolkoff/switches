@@ -6,8 +6,11 @@ from netmiko import (
     NetmikoTimeoutException,
     NetmikoAuthenticationException
 )
+import sys
+import os
+sys.path.insert(1, os.path.join(sys.path[0], '..'))
+import yaml
 from constants_trident import (
-    VALUE_CONS_CONNECT,
     CONSOLE,
     NAME_DEV,
 )
@@ -21,20 +24,25 @@ class Connect():
         """Init Connect-class."""
         self.word_ping = "ping ",
         self.ip_inet = "8.8.8.8",
+        with open("../constants_trident1.yaml") as f2:
+                temp = yaml.safe_load(f2)
+        self.VALUE_CONS_CONNECT = temp
         try:
-            self.ssh = ConnectHandler(**VALUE_CONS_CONNECT)
+            with open("../constants_trident1.yaml") as f2:
+                self.VALUE_CONS_CONNECT = yaml.safe_load(f2)
+            self.ssh = ConnectHandler(**self.VALUE_CONS_CONNECT)
         except ConnectionRefusedError:
             CONSOLE.print(
                     "*" * 5, "Error connection to:",
-                    VALUE_CONS_CONNECT['host'],
-                    'port:', VALUE_CONS_CONNECT['port'], "*" * 5,
+                    self.VALUE_CONS_CONNECT['host'],
+                    'port:', self.VALUE_CONS_CONNECT['port'], "*" * 5,
                     "\nConnection refused - Console is busy!",
                     style='fail')
             exit()
 
     def send_command(self, command):
         """Redefinition send_command - no use."""
-        self.check_connection(VALUE_CONS_CONNECT)
+        self.check_connection(self.VALUE_CONS_CONNECT)
         self.ssh.enable()
         temp = self.ssh.send_command(command)
         return temp
@@ -43,26 +51,30 @@ class Connect():
         """Check connection to DUT."""
         if log:
             CONSOLE.print(
-                'Try connect to', VALUE_CONS_CONNECT['host'],
-                'port:', VALUE_CONS_CONNECT['port'], "...",
+                'Try connect to', self.VALUE_CONS_CONNECT['host'],
+                'port:', self.VALUE_CONS_CONNECT['port'], "...",
                 style="info")
         try:
             CONSOLE.print(
-                VALUE_CONS_CONNECT['host'], 'port:',
-                VALUE_CONS_CONNECT['port'], "connected!",
+                self.VALUE_CONS_CONNECT['host'], 'port:',
+                self.VALUE_CONS_CONNECT['port'], "connected!",
                 style='success')
         except (NetmikoAuthenticationException,
                 NetmikoTimeoutException):
             CONSOLE.print(
                 "*" * 5, "Error connection to:",
-                VALUE_CONS_CONNECT['host'],
-                'port:', VALUE_CONS_CONNECT['port'], "*" * 5,
+                self.VALUE_CONS_CONNECT['host'],
+                'port:', self.VALUE_CONS_CONNECT['port'], "*" * 5,
                 style='fail')
             
     def check_eth0(self):
-        temp = self.ssh.send_command('do sh ip interface eth0')
+        
+        temp = self.ssh.send_command('do sh ip interface eth0',read_timeout=5)
         temp1 = re.search(r'IP address\S\s+(?P<ip_eth0>\d+\S\d+\S\d+\S\d+)',temp)
-        ip_eth0 = temp1.group('ip_eth0')
+        try:
+            ip_eth0 = temp1.group('ip_eth0')
+        except NetmikoTimeoutException as err:
+            print("Не смог получить и обработать ip_eth0 error", err)
         return ip_eth0
 
     def ping_inet_izi(self, ip_for_ping):
@@ -172,7 +184,7 @@ class Connect():
 
     def izi_reset_cfg(self):
         """Simple fuction copy empty-config to startup cfg."""
-        self.check_connection(VALUE_CONS_CONNECT)
+        self.check_connection(self.VALUE_CONS_CONNECT)
         self.ssh.enable()
         CONSOLE.print("Do you realy want to reset config!?", style='fail')
         result_input = input("Input y/n:")
