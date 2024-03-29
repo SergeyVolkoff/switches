@@ -65,17 +65,26 @@
     <input type="submit" class="btn btn-dark" value="ЗАПУСК теста">
 </form>
 <br>
+<hr>
 <div class="title">
     Для перехода на страницу с последним html-отчетом, правой кнопкой окройте ссылку ниже в новом окне.
     Откроется последний сохранненый в системе отчет: </div>
 <p><a href="file:///home/ssw/Documents/switches/manage-app2/templates/BULAT_TEST_TRIDENT_GRE.html" target="_blank">ОТЧЕТ по тесту в html</a></li>
-
-    <p>Ниже находится кнопка вызова отчетов сервера Allure:
-<form action=" {{ url_for('get_test',id_post='999') }} " method="GET">
+<br>
+<hr>
+    <p>Ниже находится кнопка запуска сервера отчетов сервера Allure:
+<form action=" {{ url_for('get_test_html',id_post='999') }} " method="POST">
     <!-- скрытый параметр -->
     <input type="hidden" name="in" value="999" >
-    <input type="submit" class="btn btn-dark" value="ОТЧЕТ сервера Allure">
+    <input type="submit" class="btn btn-dark" value="СТАРТ сервера Allure">
 </form>
+<br>
+<hr>
+<div class="title">
+    Для перехода на страницу с последним Allure-отчетом, правой кнопкой окройте ссылку ниже в новом окне.
+    Откроется последний сохранненый в системе отчет: </div>
+<p><a href='http://127.0.1.1:38671/index.html' target="_blank">ОТЧЕТ по тесту в Allure</a></li>
+
 <br>
 <hr>
 <div class="title"> Здесь может быть отчет о выполенном тесте!

@@ -3,4 +3,4 @@ host: 10.27.193.2
 username: admin
 password: bulat
 secret: enable
-port: 0
+port: 2043

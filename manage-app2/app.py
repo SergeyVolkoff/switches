@@ -2,6 +2,7 @@ import argparse
 import fcntl
 import logging
 import pty
+import re
 import select
 import shlex
 import sqlite3 as sq
@@ -119,7 +120,7 @@ def reset():
         print(response)
         flash("Warning! Switch settings will be reset to default settings!")
       
-        result  = subprocess.run(["python3","/home/ssw/Documents/switches/reset_cfg.py"],stdout=subprocess.PIPE, text=True)
+        result  = subprocess.run(["python3","../reset_cfg.py"],stdout=subprocess.PIPE, text=True)
         # result  = result.returncode  
         result = result.stdout.split('\n')
         print(result)
@@ -188,7 +189,7 @@ def get_test(id_post):
         print(current_lab.start_nodes_from_project())
         response = request.form['in'] # name="index" in reset.html
         print("***",response)
-        result  = subprocess.run(["python3","/home/ssw/Documents/switches/gre_test.py"],stdout=subprocess.PIPE, text=True)
+        result  = subprocess.run(["python3","../gre_test.py"],stdout=subprocess.PIPE, text=True)
         if result:
             flash("Attention! The DUT test is in progress!",category='success')
         else:
@@ -212,13 +213,23 @@ def get_test(id_post):
         )
 
 # переделать маршрут и запуск аллюре из места с тестами!!!
-@app.route("/999",methods = ['GET'])
+@app.route("/999",methods = ['GET','POST'])
 def get_test_html():
     """Ф-я запускает сервер allure и открывает страницу с отчетом"""
-    flash("Button 'result HTML test' is pushed!")
-    os.system("allure serve allure_report")
-    return render_template("/")
-
+    if request.method == "POST":
+        flash("Button 'result HTML test' is pushed!")
+        os.system("allure serve  -p 38671 allure_report")
+    # print(temp)
+    # temp1 = re.search(r'//\d+.\d+.\d+.\d+:(?P<servAllurePort>\d+)',temp)
+    # print(temp1)
+    # servAllurePort = temp1.group('servAllurePort')
+    # print(servAllurePort)
+    #     return f"""<a href='http://http://127.0.0.1:38671'</a>"""
+    return render_template(
+        'index.html',menu = dbase.getMainmenu(),
+        secondmenu = dbase.getSecondmenu(),
+        constants = dbase.getConstants_trident())
+        
 @app.route("/cfg",methods = ['GET'])
 def cfg():
     """Ф-я открывает страницу с заливкой конфига"""
@@ -236,7 +247,7 @@ def getCfgPage(id_post):
     if request.method == "POST":
         response = request.form['index']# name="index" in ..html
         print(response)
-        path_cfg="/home/ssw/Documents/switches/cfg_gre.py"
+        path_cfg="../cfg_gre.py"
         result  = subprocess.run(["python3",path_cfg],stdout=subprocess.PIPE, text=True)
         # result  = result.returncode 
         if result:
@@ -447,4 +458,4 @@ def profile():
 
 if __name__ == "__main__":
 #     # socketio.run(app, debug=True)
-    app.run()
+    app.run(debug=True)
