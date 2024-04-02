@@ -1,46 +1,27 @@
-import argparse
-import fcntl
-import logging
-import pty
-import re
-import select
-import shlex
+"""Приложение для обработки страниц тестирования коммутатора."""
 import sqlite3 as sq
 import os
 import sys
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
-import struct
 import subprocess
-import termios
-from flask import (Flask, Response, abort,
+import yaml
+sys.path.insert(1, os.path.join(sys.path[0], '..'))
+from flask import (abort,Flask, Response, 
                    flash, make_response,
                    render_template, redirect,
                    session, url_for, request, g)
-from flask_login import LoginManager, current_user, login_required, login_user, logout_user
-from werkzeug.security import generate_password_hash, check_password_hash
-
-import sys
-import os
+from flask_login import (
+    LoginManager, current_user, login_required, login_user,
+    logout_user)
 from flask_socketio import SocketIO
-
-import yaml
-from cfg_switch import TridentCfg
-
-from constants_trident import CONSOLE
-from UserLogin import UserLogin
-
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
+from werkzeug.security import generate_password_hash, check_password_hash
 from base_gns3 import Base_gns
 from FDataBase import FDataBase
-# from cfg_switch import TridentCfg
-
-# from start_gns_test_GRE import StartGRE
-
+from UserLogin import UserLogin
 
 # configuration
 app = Flask(__name__)
 SECRET_KEY = '*'
-MAX_CONTENT_LEN=1024*1024
+MAX_CONTENT_LEN = 1024*1024
 app.config.from_object(__name__)
 app.config["child_pid"] = None
 app.config["fd"] = None
@@ -50,94 +31,119 @@ DEBUG = True
 
 app.config.update(dict(DATABASE=os.path.join(app.root_path, 'manage_app2.db')))
 login_manager = LoginManager(app)
-login_manager.login_view = 'login' # перенаправлять пользователя на форму авторизации, атрибуту login_view присваиваем имя функции представления для формы авторизации.
+"""перенаправлять пользователя на форму авторизации, атрибуту
+login_view присваиваем имя функции представления для формы авторизации."""
+login_manager.login_view = 'login'
 login_manager.login_message = "Авторизуйтесь для доступа к закрытым страницам"
 login_manager.login_message_category = "success"
 
 
 @login_manager.user_loader
 def load_user(user_id):
-    """здесь будет создаваться объект UserLogin при каждом запросе, если пользователь авторизован"""
+    """объект UserLogin.
+
+    Здесь будет создваться объект UserLogin
+    при каждом запросе, если пользователь авторизован.
+    """
     print('load_user')
-    return UserLogin().fromDB(user_id,dbase)
+    return UserLogin().fromDB(user_id, dbase)
+
 
 def connect_db():
-    conn = sq.connect(app.config['DATABASE']) # методу коннект передаем путь к базе
-    conn.row_factory = sq.Row  # представит записи из базы в виде словаря
+    """методу коннект передаем путь к базе."""
+    conn = sq.connect(app.config['DATABASE'])
+    """представит записи из базы в виде словаря."""
+    conn.row_factory = sq.Row
     return conn
 
+
 def create_db():
-    """Функция для создания таблиц БД"""
+    """Функция для создания таблиц БД."""
     db = connect_db()
-    with app.open_resource('sq_db.sql', mode='r') as f: # читаем скрипты sql для создания таблиц
-        db.cursor().executescript(f.read())  # из установленного соединения db черезid класс cursor() запускаем выполнение скриптов sql
+    # читаем скрипты sql для создания таблиц
+    with app.open_resource('sq_db.sql', mode='r') as f:
+        # из установленного соединения db черезid класс cursor()
+        # запускаем выполнение скриптов sql
+        db.cursor().executescript(f.read())
     db.commit()
     db.close()
 
+
 def get_db():
-    """Соединение с БД, если оно еще не установлено"""
-    if not hasattr(g,'link_db'):
+    """Соединение с БД, если оно еще не установлено."""
+    if not hasattr(g, 'link_db'):
         g.link_db = connect_db()
     return g.link_db
 
+
 @app.before_request
 def before_request():
-    """Установка соединения с БД перед выполнением запроса"""
+    """Установка соединения с БД перед выполнением запроса."""
     global dbase
     global db
     db = get_db()
     dbase = FDataBase(db)
 
+
 @app.teardown_appcontext
 def close_db(error):
-    """Закрываем соединение с БД, если оно установлено"""
-    if hasattr(g,'link_db'):
+    """Закрываем соединение с БД, если оно установлено."""
+    if hasattr(g, 'link_db'):
         g.link_db.close()
+
 
 @app.route("/post/<alias>")
 @login_required
 def showPost(alias):
+    """Пустая ф-я."""
     title, post = dbase.getPost(alias)
     if not title:
         abort(404)
- 
-    return render_template('post.html', menu=dbase.getMenu(), title=title, post=post)
+    return render_template(
+        'post.html', menu=dbase.getMenu(), title=title, post=post)
+
 
 @app.route("/")
 def index():
+    """Обработчик main-страницы."""
     return render_template(
-        'index.html',menu = dbase.getMainmenu(),
-        secondmenu = dbase.getSecondmenu(),
-        constants = dbase.getConstants_trident())
+        'index.html', menu=dbase.getMainmenu(),
+        secondmenu=dbase.getSecondmenu(),
+        constants=dbase.getConstants_trident())
 
-@app.route("/reset",methods = ['POST', 'GET'])
+
+@app.route("/reset", methods=['POST', 'GET'])
 @login_required
 def reset():
-    """Ф-я выводит страницу сброса конфига"""
+    """Обработчик страницы сброса конфига."""
     result = ''
     if request.method == "POST":
-        response = request.form['index'] # name="index" in reset.html
+        response = request.form['index']  # name="index" in reset.html
         print(response)
         flash("Warning! Switch settings will be reset to default settings!")
-      
-        result  = subprocess.run(["python3","../reset_cfg.py"],stdout=subprocess.PIPE, text=True)
-        # result  = result.returncode  
+        result = subprocess.run(
+            ["python3",
+             "../reset_cfg.py"],
+            stdout=subprocess.PIPE, text=True)
         result = result.stdout.split('\n')
         print(result)
         return render_template(
-            'reset.html', 
-            title = "Сброс конфига на дефолтные",
-            menu = dbase.getMainmenu(),
-            result = result)
+            'reset.html',
+            title="Сброс конфига на дефолтные",
+            menu=dbase.getMainmenu(),
+            result=result)
     return render_template(
-        'reset.html', title = "Сброс конфига на дефолтные",
-        menu = dbase.getMainmenu(),
-        constants = dbase.getConstants_trident())
+        'reset.html', title="Сброс конфига на дефолтные",
+        menu=dbase.getMainmenu(),
+        constants=dbase.getConstants_trident())
 
 
-@app.route("/add_constants", methods = ['POST', 'GET'])
+@app.route("/add_constants", methods=['POST', 'GET'])
 def add_constants():
-    """Ф-я передает настройки устр-ва и возвращает страницу настроек"""
+    """Add in table constants.
+
+    Обработчик ввода порта в табличку настройки устр-ва и возвращает
+    страницу настроек."""
     if request.method == 'POST':
         res = dbase.addConstants_trident(request.form['port'])
         port_con = request.form.get('port')
@@ -155,18 +161,25 @@ def add_constants():
     #     )
     return redirect(url_for("get_constants"))
 
+
 @app.route("/constants")
 def get_constants():
-    """Ф-я выводит страницу настройки устр-ва"""
-    cur = db.cursor()
+    """Обработчик выводит страницу настройки устр-ва."""
+    cur = db.cursor()  # Создаем курсор для выполнения SQL-запросов
+    # Выполняем запрос для получения данных из таблицы constants_trident
     cur.execute("SELECT title, val FROM constants_trident")
     VALUE_CONS_CONNECT = cur.fetchall()
-    with open('../constants_trident1.yaml','w') as f:
+    # Открываем файл constants_trident1.yaml в режиме записи
+    with open('../constants_trident1.yaml', 'w') as f:
+        # Проходим по всем данным, полученным из БД
         for i in VALUE_CONS_CONNECT:
-            to_file = {i['title']:i['val']}
+            # Создаем словарь с ключом "title" и значением "val"
+            to_file = {i['title']: i['val']}
             print(to_file)
             for i in to_file:
-                yaml.dump(to_file,f)
+                 # Записываем словарь to_file в файл f с использованием YAML
+                yaml.dump(to_file, f)
+    # Открываем файл constants_trident1.yaml в режиме чтения
     with open('../constants_trident1.yaml') as f:
         print(f.read())
 
@@ -178,8 +191,8 @@ def get_constants():
 
 @app.route("/<int:id_post>",methods = ['POST', 'GET'])
 def get_test(id_post):
-    """Ф-я выводит в веб страрницу тестов,кнопки старта и отчета
-      и только текстовый результат тестов """
+    """Ф-я выводит в веб страницу тестов,кнопки старта и отчета
+      и  текстовый результат тестов """
     id, schema, title, test_specification, test_progress,test_result = dbase.getPost(id_post)
     image_path=f'static/images/{id_post}.jpg'
     print(title)
@@ -292,6 +305,7 @@ def login():
 
 @app.route("/register", methods=["POST", "GET"])
 def register():
+    """Обработчик для регистрации пользователя"""
     if request.method == "POST":
         session.pop('_flashes', None)
         if len(request.form['name']) >= 4 and len(request.form['email']) >= 4 \
@@ -311,6 +325,7 @@ def register():
 @app.route('/logout')
 @login_required
 def logout():
+    """Обработчик для выхода пользователя"""
     logout_user()
     flash("Вы вышли из аккаунта", "success")
     return redirect(url_for('login'))
@@ -318,10 +333,8 @@ def logout():
 @app.route('/profile')
 @login_required
 def profile():
+    """Обработчик для профиля пользователя"""
     return render_template("profile.html", menu=dbase.getMainmenu(), title="Профиль пользователя") 
-
-    # return f"""<a href="{url_for('logout')}">Выйти из профиля</a>
-    #             user info: {current_user.get_id()}"""
 
 
 
