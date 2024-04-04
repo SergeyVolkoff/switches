@@ -51,20 +51,20 @@ class Connect():
         """Check connection to DUT."""
         if log:
             CONSOLE.print(
-                'Try connect to', self.VALUE_CONS_CONNECT['host'],
-                'port:', self.VALUE_CONS_CONNECT['port'], "...",
+                'Пробую подключиться к', self.VALUE_CONS_CONNECT['host'],
+                'порт:', self.VALUE_CONS_CONNECT['port'], "...",
                 style="info")
         try:
-            CONSOLE.print(
-                self.VALUE_CONS_CONNECT['host'], 'port:',
-                self.VALUE_CONS_CONNECT['port'], "connected!",
+            CONSOLE.print('Коммутатор',
+                self.VALUE_CONS_CONNECT['host'], 'порт:',
+                self.VALUE_CONS_CONNECT['port'], "подключен!",
                 style='success')
         except (NetmikoAuthenticationException,
                 NetmikoTimeoutException):
             CONSOLE.print(
-                "*" * 5, "Error connection to:",
+                "*" * 5, "Ошибка подключения к:",
                 self.VALUE_CONS_CONNECT['host'],
-                'port:', self.VALUE_CONS_CONNECT['port'], "*" * 5,
+                'порт:', self.VALUE_CONS_CONNECT['port'], "*" * 5,
                 style='fail')
             
     def check_eth0(self):

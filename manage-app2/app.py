@@ -3,6 +3,7 @@ import sqlite3 as sq
 import os
 import sys
 import subprocess
+from threading import Thread
 import yaml
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from flask import (abort,Flask, Response, 
@@ -118,20 +119,37 @@ def reset():
     """Обработчик страницы сброса конфига."""
     result = ''
     if request.method == "POST":
+        flash(
+            "Внимание! Коммутатор будет сброшен на заводские настройки",
+            category='error')
         response = request.form['index']  # name="index" in reset.html
         print(response)
-        flash("Warning! Switch settings will be reset to default settings!")
-        result = subprocess.run(
-            ["python3",
-             "../reset_cfg.py"],
-            stdout=subprocess.PIPE, text=True)
-        result = result.stdout.split('\n')
-        print(result)
+        # result = subprocess.run(
+        #     ["python3",
+        #      "../reset_cfg.py"],
+        #     stdout=subprocess.PIPE, text=True)
+        # result = result.stdout.split('\n')
+
+        args=["python3", "../reset_cfg.py"]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE) 
+        for line in process.stdout:
+            print("stdout:", line.decode('utf-8'))
+            with open("../process_reset.txt", 'w') as file:
+                file.write(line.decode('utf-8'))
+
+        #     result = os.system("python3 ../reset_cfg.py")
+           
+        # if '' in result:
+        #     flash('Сброс прошел успешно',category='success')
+        # else:
+        #     flash('Сброс прошел с ошибкой',category='error' )
+            
         return render_template(
             'reset.html',
             title="Сброс конфига на дефолтные",
             menu=dbase.getMainmenu(),
-            result=result)
+            constants=dbase.getConstants_trident(),
+            result=line)
     return render_template(
         'reset.html', title="Сброс конфига на дефолтные",
         menu=dbase.getMainmenu(),
@@ -200,7 +218,7 @@ def get_test(id_post):
         flash("Button is pushed!")
         current_lab = Base_gns('SSV_auto_Tr_GRE')
         print(current_lab.start_nodes_from_project())
-        response = request.form['in'] # name="index" in reset.html
+        response = request.form['in'] # name="index" in Vtest.html
         print("***",response)
         result  = subprocess.run(["python3","../gre_test.py"],stdout=subprocess.PIPE, text=True)
         if result:

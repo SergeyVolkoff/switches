@@ -17,6 +17,6 @@ from cfg_switch import  TridentCfg
 
 if __name__ == "__main__":
     tr1 = TridentCfg()
-    tr1.check_connection()
+    # tr1.check_connection()
     tr1.ssh.enable()
     print(tr1.extended_reset_cfg1())

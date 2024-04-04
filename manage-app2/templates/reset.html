@@ -3,7 +3,7 @@
 {% block content %}
 {{ super() }}
 {% for cat, msg in get_flashed_messages(True) %}
-<div class="flash" {{cat}}>{{msg}}</div>
+    <div class="flash {{cat}}">{{msg}}</div>
 {% endfor %}
 <br>Используя нижерасположенную кнопку СБРОС КОНФИГУРАЦИИ
  можно сбросить коммутатор на дефолтные настройки. 
@@ -19,12 +19,6 @@
     <input type="hidden" name="index" value="Запущен сброс конфига!">
     <input type="submit" class="btn btn-dark" value="СБРОС КОНФИГУРАЦИИ">
 <br>
-{% for i in result %}
-    {% if 'please' in i %}
-            <br>
-    {% endif %}
-    <li>{{ i }} </li>
-{% endfor %}
 
 </form>
 {% endblock %}

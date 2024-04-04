@@ -224,12 +224,12 @@ class TridentCfg(CfgTemplate):
             time.sleep(10)
             dev_name = self.ssh.find_prompt()
             CONSOLE.print(
-                f"All up! Config reset!",
-                "New_name device: {dev_name}.",
-                "interface eth0 ({ip_eth0}) configured",
+                f"Устройство доступно! Конфиг сброшен!",
+                f"Новое имя устр-ва: {dev_name}.",
+                f"интерфейс {ip_eth0} настроен по dhcp.",
                 style='success')
             exit
-        return "Switch reset to factory settings!"
+        return "Коммутатор сброшен на заводские настройки успешно."
         # else:
         #     CONSOLE.print("Wrong input", style="fail")
         #     self.ssh.exit_config_mode()
