@@ -1,1 +1,50 @@
-Коммутатор сброшен на заводские настройки успешно.
+Пробую подключиться к 10.27.193.2 порт: 2043 ...
+Коммутатор 10.27.193.2 порт: 2043 подключен!
+enable - command is checked, wait, please.
+"enable" - command passed!
+conf t - command is checked, wait, please.
+"conf t" - command passed!
+interface xe47 - command is checked, wait, please.
+"interface xe47" - command passed!
+no switchport - command is checked, wait, please.
+"no switchport" - command passed!
+speed 1g - command is checked, wait, please.
+"speed 1g" - command passed!
+ip address 200.200.200.1/30 - command is checked, wait, please.
+"ip address 200.200.200.1/30" - command passed!
+interface xe48 - command is checked, wait, please.
+"interface xe48" - command passed!
+ip address 1.1.1.1/24 - command is checked, wait, please.
+"ip address 1.1.1.1/24" - command passed!
+interface Tunnel0 - command is checked, wait, please.
+"interface Tunnel0" - command passed!
+ip address 192.168.0.1/30 - command is checked, wait, please.
+"ip address 192.168.0.1/30" - command passed!
+tunnel mode gre - command is checked, wait, please.
+"tunnel mode gre" - command passed!
+tunnel source 200.200.200.1 - command is checked, wait, please.
+"tunnel source 200.200.200.1" - command passed!
+tunnel destination 100.100.100.1  - command is checked, wait, please.
+"tunnel destination 100.100.100.1 " - command passed!
+ip route 2.2.2.0/24 Tunnel0 - command is checked, wait, please.
+"ip route 2.2.2.0/24 Tunnel0" - command passed!
+ip route 100.100.100.0/30 200.200.200.2 - command is checked, wait, please.
+"ip route 100.100.100.0/30 200.200.200.2" - command passed!
+do wr - command is checked, wait, please.
+"do wr" - command passed!
+do reload - command is checked, wait, please.
+do reload 
+DUT is rebooting, please wait
+DUT is rebooting, please wait
+DUT is rebooting, please wait
+DUT is rebooting, please wait
+DUT is rebooting, please wait
+DUT is rebooting, please wait
+DUT is rebooting, please wait
+DUT is rebooting, please wait
+DUT is rebooting, please wait
+DUT is rebooting, please wait
+
+DUT up after reboot, wait all protocols!
+All up!
+None

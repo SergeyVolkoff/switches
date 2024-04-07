@@ -7,7 +7,7 @@ from threading import Thread
 import yaml
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from flask import (abort,Flask, Response, 
-                   flash, make_response,
+                   flash, jsonify, make_response,
                    render_template, redirect,
                    session, url_for, request, g)
 from flask_login import (
@@ -133,10 +133,12 @@ def reset():
         args=["python3", "../reset_cfg.py"]
         process = subprocess.Popen(args, stdout=subprocess.PIPE) 
         for line in process.stdout:
-            print("stdout:", line.decode('utf-8'))
-            with open("../process_reset.txt", 'w') as file:
-                file.write(line.decode('utf-8'))
+            # print("stdout:", line.decode('utf-8'))
+            with open("../process_reset.txt", 'a') as file:
+                str_result = line.decode('utf-8')
+                file.write(str_result)
 
+                    
         #     result = os.system("python3 ../reset_cfg.py")
            
         # if '' in result:
@@ -149,7 +151,7 @@ def reset():
             title="Сброс конфига на дефолтные",
             menu=dbase.getMainmenu(),
             constants=dbase.getConstants_trident(),
-            result=line)
+            result=str_result)
     return render_template(
         'reset.html', title="Сброс конфига на дефолтные",
         menu=dbase.getMainmenu(),
@@ -278,25 +280,42 @@ def getCfgPage(id_post):
     if request.method == "POST":
         response = request.form['index']# name="index" in ..html
         print(response)
-        path_cfg="../cfg_gre.py"
-        result  = subprocess.run(["python3",path_cfg],stdout=subprocess.PIPE, text=True)
-        # result  = result.returncode 
-        if result:
-            flash("Внимание! Выполняется заливка конфига.",category='success')
-        else:
-            flash("Внимание! Произошла ошибка при заливке конфига",category='error')
-        result = result.stdout.split('\n')
+
+        # path_cfg="../cfg_gre.py"
+        # result  = subprocess.run(["python3",path_cfg],stdout=subprocess.PIPE, text=True)
+        # # result  = result.returncode 
+        # if result:
+        #     flash("Внимание! Выполняется заливка конфига.",category='success')
+        # else:
+        #     flash("Внимание! Произошла ошибка при заливке конфига",category='error')
+        # result = result.stdout.split('\n')
+
+        args=["python3", "../cfg_gre.py"]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE) 
+        for line in process.stdout:
+            # print("stdout:", line.decode('utf-8'))
+            with open("../process_reset.txt", 'a') as file:
+                str_result = line.decode('utf-8')
+                file.write(str_result)
+
         return render_template(
             'cfg_gre.html', title = "настройка DUT под тест",
             menu = dbase.getMainmenu(),
             thirdmenu = dbase.getThirdmenu(),
-            result=result)
+            result=str_result)
     return render_template(
         'cfg_gre.html', title = "Заливка конфига",
         menu = dbase.getMainmenu(),
         constants = dbase.getConstants_trident(),
         thirdmenu = dbase.getThirdmenu(),
         )
+
+@app.route('/get_content')
+def get_content():
+    with open('../process_reset.txt', 'r') as file:
+        content = file.readlines()
+    return jsonify({'content': content})
+
 
 @app.errorhandler(404)
 def pageNotFounretd(error):

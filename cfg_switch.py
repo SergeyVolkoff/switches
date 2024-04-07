@@ -166,7 +166,7 @@ class TridentCfg(CfgTemplate):
         """
         replica
         """
-        self.check_connection(self.VALUE_CONS_CONNECT)
+        # self.check_connection(self.VALUE_CONS_CONNECT)
         
         self.ssh.enable()
         
@@ -190,7 +190,7 @@ class TridentCfg(CfgTemplate):
         output = self.ssh.send_command("y", expect_string="")
         CONSOLE.print(
             output,
-            "Swich rebooting! Wait, please +-70sec",
+            "Коммутатор перезагружается, время ожидания около 70 сек.",
             style="success")
         time.sleep(75)
         self.ssh.send_command_timing('admin', read_timeout=2)

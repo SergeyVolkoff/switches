@@ -24,10 +24,28 @@
     <hr>
     <div class="title"> Здесь может быть отчет о ходе заливки конфига!</div>
     <br> 
-{% for i in result %}
-    {% if 'please' in i %}
-            <br>
-    {% endif %}
-    <li>{{ i }} </li>
-{% endfor %}
+    
+    <ul id="content-list"></ul>
+    <script>
+        function getContent() {
+            fetch('/get_content')
+                .then(response => response.json())
+                .then(data => {
+                    const contentList = document.getElementById('content-list');
+                    contentList.innerHTML = '';
+                    data.content.forEach(line => {
+                        const li = document.createElement('li');
+                        li.textContent = line;
+                        contentList.appendChild(li);
+                    });
+                });
+        }
+
+        setInterval(getContent, 1000); // Обновление содержимого каждую секунду
+
+        getContent(); // Получение содержимого при загрузке страницы
+    </script>
+    
+    <li>{{ result }} </li>
+
 {% endblock content%}
