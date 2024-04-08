@@ -33,7 +33,7 @@ class CfgTemplate(Connect):
                 output = self.ssh.send_command(
                     command, expect_string="reboot system",
                     read_timeout=.2)
-                result_command = "- command is checked, wait, please."
+                result_command = "- команда проверяется, пожалуйста, подождите."
                 CONSOLE.print(command, result_command, style='success')
                 result_command = self.ssh.send_command(
                     "y", expect_string="")
@@ -53,14 +53,14 @@ class CfgTemplate(Connect):
                 while result is None:
                     result = ping(ip_eth0, timeout=2)
                     CONSOLE.print(
-                        "DUT is rebooting, please wait", style='fail')
+                        "DUT перезагружается, пожалуйста, подождите!", style='fail')
                     time.sleep(5)
                 else:
                     CONSOLE.print(
-                        "\nDUT up after reboot, wait all protocols!",
+                        "\nDUT поднялся после перезагрузки, ждем поднятия сервисов и протоколов!",
                         style='success')
                     time.sleep(40)
-                    CONSOLE.print("All up!", style='success')
+                    CONSOLE.print("Коммутатор доступен!", style='success')
                     self.ssh.send_command_timing(
                         'admin', read_timeout=2)
                     self.ssh.send_command_timing(
@@ -70,18 +70,18 @@ class CfgTemplate(Connect):
             output = self.ssh.send_command(
                 command, expect_string="DUT", read_timeout=2)
             if "wr" or "write" in command:
-                result_command = "- command is checked, wait, please."
+                result_command = "- команда проверяется, пожалуйста, подождите."
                 CONSOLE.print(
                     command, result_command, style='fail')
                 time.sleep(3)
             if "No match input detected" in output:
-                result_command = f"bad command! {output}"
+                result_command = f"Ошибочная или излишняя команда! {output}"
                 CONSOLE.print(
                     f'"{command}" -',
                     result_command, style='fail')
                 result[command] = result_command
             else:
-                result_command = "command passed!"
+                result_command = "команда выполнена!"
                 result[command] = output
                 CONSOLE.print(
                     f'"{command}" -',
@@ -183,6 +183,9 @@ class TridentCfg(CfgTemplate):
         #     exit
         # if 'y' == result_input:
         self.ssh.send_command("copy empty-config startup-config")
+        CONSOLE.print(
+            "В коммутатор записан базовый конфиг.",
+            style="success")
         output = self.ssh.send_command(
             "reload", expect_string="reboot system",
             read_timeout=1)
@@ -200,6 +203,7 @@ class TridentCfg(CfgTemplate):
             for command in commands_template:
                 output = self.ssh.send_command_timing(
                     command, read_timeout=0)
+        time.sleep(10)
         # определяем ip на eth0:
         ip_eth0 = Connect.check_eth0(self)
         # формируем строку ip_eth0:
@@ -213,13 +217,13 @@ class TridentCfg(CfgTemplate):
         while result is None:
             result = ping(ip_eth0, timeout=2)
             CONSOLE.print(
-                "DUT is rebooting, please wait", style='fail'
+                "Коммутатор перезагружается, время ожидания около 70 сек.", style='fail'
                 )
             time.sleep(5)
         else:
             CONSOLE.print(
-                f"\nDUT up after reboot and int eth0 ({ip_eth0}) up!",
-                "Wait up protocols!",
+                f"\nDUT поднялся после перезагрузки и интерфейс eth0 ({ip_eth0}) поднялся!",
+                "Ждем поднятия всех протоколов.",
                 style='success')
             time.sleep(10)
             dev_name = self.ssh.find_prompt()

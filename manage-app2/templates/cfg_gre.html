@@ -2,8 +2,8 @@
  
 {% block content %}
     {{ super() }}
-    {% for msg in get_flashed_messages() %}
-        <div class="flash">{{msg}}</div>
+    {% for cat, msg in get_flashed_messages(True) %}
+        <div class="flash {{cat}}">{{msg}}</div>
     {% endfor %}
     <div class="title">
         Ниже находится ссылка просмотра конфига под тест GRE:
@@ -24,28 +24,34 @@
     <hr>
     <div class="title"> Здесь может быть отчет о ходе заливки конфига!</div>
     <br> 
-    
     <ul id="content-list"></ul>
     <script>
+        let lastUpdateTime = Date.now();
+        // функция будет вызываться для получения содержимого.
         function getContent() {
-            fetch('/get_content')
-                .then(response => response.json())
+            fetch('/get_content') //для отправки запроса на сервер по URL
+                .then(response => response.json()) // метод json() для преобразования ответа в формат JSON
+                // полученные данные обрабатываются в функции обратного вызова, где извлекается список содержимого data.content.
                 .then(data => {
-                    const contentList = document.getElementById('content-list');
+                    const contentList = document.getElementById('content-list');  // выбирается элемент с id '-list' и очищается его содержимое.
                     contentList.innerHTML = '';
-                    data.content.forEach(line => {
+                    // Для каждого элемента в списке содержимого создается новый элемент списка <li> и добавляется текстовое содержимое (line).
+                    data.content.forEach(line => { 
                         const li = document.createElement('li');
                         li.textContent = line;
-                        contentList.appendChild(li);
+                        contentList.appendChild(li); //Новый элемент списка добавляется в родительский элемент 'content-list'.
                     });
+                    lastUpdateTime = Date.now(); // обновляем время последнего обновления
                 });
+                // Проверяем, прошло ли уже 10 секунд с момента последнего обновления
+                if (Date.now()- lastUpdateTime > 10000) {
+                clearInterval(intervalID); // останавливаем выполнение скрипта
+                }
         }
-
-        setInterval(getContent, 1000); // Обновление содержимого каждую секунду
-
-        getContent(); // Получение содержимого при загрузке страницы
+        const intervalID = setInterval(getContent, 1000); // Обновление содержимого каждую секунду
+        getContent(); // Получение содержимого при загрузке страницы!!
     </script>
-    
+         
     <li>{{ result }} </li>
 
 {% endblock content%}

@@ -4,6 +4,7 @@ import os
 import sys
 import subprocess
 from threading import Thread
+import time
 import yaml
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from flask import (abort,Flask, Response, 
@@ -52,7 +53,7 @@ def load_user(user_id):
 
 def connect_db():
     """методу коннект передаем путь к базе."""
-    conn = sq.connect(app.config['DATABASE'])
+    conn = sq.connect(app.config['DATABASE'],check_same_thread=False)
     """представит записи из базы в виде словаря."""
     conn.row_factory = sq.Row
     return conn
@@ -85,12 +86,12 @@ def before_request():
     db = get_db()
     dbase = FDataBase(db)
 
-
-@app.teardown_appcontext
-def close_db(error):
-    """Закрываем соединение с БД, если оно установлено."""
-    if hasattr(g, 'link_db'):
-        g.link_db.close()
+# Мешает выводу консоли в html
+# @app.teardown_appcontext
+# def close_db(error):
+#     """Закрываем соединение с БД, если оно установлено."""
+#     if hasattr(g, 'link_db'):
+#         g.link_db.close()
 
 
 @app.route("/post/<alias>")
@@ -112,50 +113,6 @@ def index():
         secondmenu=dbase.getSecondmenu(),
         constants=dbase.getConstants_trident())
 
-
-@app.route("/reset", methods=['POST', 'GET'])
-@login_required
-def reset():
-    """Обработчик страницы сброса конфига."""
-    result = ''
-    if request.method == "POST":
-        flash(
-            "Внимание! Коммутатор будет сброшен на заводские настройки",
-            category='error')
-        response = request.form['index']  # name="index" in reset.html
-        print(response)
-        # result = subprocess.run(
-        #     ["python3",
-        #      "../reset_cfg.py"],
-        #     stdout=subprocess.PIPE, text=True)
-        # result = result.stdout.split('\n')
-
-        args=["python3", "../reset_cfg.py"]
-        process = subprocess.Popen(args, stdout=subprocess.PIPE) 
-        for line in process.stdout:
-            # print("stdout:", line.decode('utf-8'))
-            with open("../process_reset.txt", 'a') as file:
-                str_result = line.decode('utf-8')
-                file.write(str_result)
-
-                    
-        #     result = os.system("python3 ../reset_cfg.py")
-           
-        # if '' in result:
-        #     flash('Сброс прошел успешно',category='success')
-        # else:
-        #     flash('Сброс прошел с ошибкой',category='error' )
-            
-        return render_template(
-            'reset.html',
-            title="Сброс конфига на дефолтные",
-            menu=dbase.getMainmenu(),
-            constants=dbase.getConstants_trident(),
-            result=str_result)
-    return render_template(
-        'reset.html', title="Сброс конфига на дефолтные",
-        menu=dbase.getMainmenu(),
-        constants=dbase.getConstants_trident())
 
 
 @app.route("/add_constants", methods=['POST', 'GET'])
@@ -202,11 +159,57 @@ def get_constants():
     # Открываем файл constants_trident1.yaml в режиме чтения
     with open('../constants_trident1.yaml') as f:
         print(f.read())
-
+    # global constants
     return render_template('constants.html',
         title = "Constants",
         menu = dbase.getMainmenu(),
         constants = dbase.getConstants_trident(),
+        )
+
+@app.route("/reset", methods=['POST', 'GET'])
+def reset():
+    """Обработчик страницы сброса конфига."""
+    result = ''
+    if request.method == "POST":
+        flash(
+            "Внимание! Коммутатор будет сброшен на заводские настройки",
+            category='error')
+        response = request.form['index']  # name="index" in reset.html
+        print(response)
+        # result = subprocess.run(
+        #     ["python3",
+        #      "../reset_cfg.py"],
+        #     stdout=subprocess.PIPE, text=True)
+        # result = result.stdout.split('\n')
+
+        args=["python3", "../reset_cfg.py"]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE) 
+        for line in process.stdout:
+            # print("stdout:", line.decode('utf-8'))
+            with open("../process_reset.txt", 'a') as file:
+                str_result = line.decode('utf-8')
+                file.write(str_result)
+
+                    
+        #     result = os.system("python3 ../reset_cfg.py")
+           
+        # if '' in result:
+        #     flash('Сброс прошел успешно',category='success')
+        # else:
+        #     flash('Сброс прошел с ошибкой',category='error' )
+            
+        return render_template(
+            'reset.html',
+            title="Сброс конфига на дефолтные",
+            menu=dbase.getMainmenu(),
+            constants = dbase.getConstants_trident(),
+            result=str_result
+            )
+    
+    return render_template(
+        'reset.html', title="Сброс конфига на дефолтные",
+        menu=dbase.getMainmenu(),
+        constants = dbase.getConstants_trident()
         )
 
 @app.route("/<int:id_post>",methods = ['POST', 'GET'])
@@ -261,7 +264,8 @@ def get_test_html():
     return render_template(
         'index.html',menu = dbase.getMainmenu(),
         secondmenu = dbase.getSecondmenu(),
-        constants = dbase.getConstants_trident())
+        constants = dbase.getConstants_trident()
+        )
         
 @app.route("/cfg",methods = ['GET'])
 def cfg():
@@ -276,7 +280,7 @@ def cfg():
 @app.route("/cfg/<int:id_post>",methods = ['POST', 'GET'])
 def getCfgPage(id_post):
     """Ф-я запускает заливку конфига и возвращает страницу заливки"""
-    result = ''
+    
     if request.method == "POST":
         response = request.form['index']# name="index" in ..html
         print(response)
@@ -284,33 +288,37 @@ def getCfgPage(id_post):
         # path_cfg="../cfg_gre.py"
         # result  = subprocess.run(["python3",path_cfg],stdout=subprocess.PIPE, text=True)
         # # result  = result.returncode 
-        # if result:
-        #     flash("Внимание! Выполняется заливка конфига.",category='success')
-        # else:
-        #     flash("Внимание! Произошла ошибка при заливке конфига",category='error')
         # result = result.stdout.split('\n')
 
         args=["python3", "../cfg_gre.py"]
-        process = subprocess.Popen(args, stdout=subprocess.PIPE) 
+        process = subprocess.Popen(args, stdout=subprocess.PIPE)
+        
         for line in process.stdout:
             # print("stdout:", line.decode('utf-8'))
             with open("../process_reset.txt", 'a') as file:
                 str_result = line.decode('utf-8')
                 file.write(str_result)
-
+        time.sleep(5)
+        with open("../process_reset.txt", 'w'):
+            pass
+        flash("Устройство успешно сконфигурировано! ",category='success')
+        
         return render_template(
-            'cfg_gre.html', title = "настройка DUT под тест",
+            'cfg_gre.html', title = "Настройка устройства под тест",
             menu = dbase.getMainmenu(),
             thirdmenu = dbase.getThirdmenu(),
-            result=str_result)
+            constants = dbase.getConstants_trident()
+            )
+    
     return render_template(
-        'cfg_gre.html', title = "Заливка конфига",
+        'cfg_gre.html', title = "Конфигурация устройства",
         menu = dbase.getMainmenu(),
-        constants = dbase.getConstants_trident(),
         thirdmenu = dbase.getThirdmenu(),
+        constants = dbase.getConstants_trident()
         )
 
-@app.route('/get_content')
+@app.route('/get_content',methods = ['POST', 'GET'])
+# Ф-я для получения вывода с консоли записаного в файл.
 def get_content():
     with open('../process_reset.txt', 'r') as file:
         content = file.readlines()
