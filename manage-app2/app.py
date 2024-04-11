@@ -171,9 +171,7 @@ def reset():
     """Обработчик страницы сброса конфига."""
     result = ''
     if request.method == "POST":
-        flash(
-            "Внимание! Коммутатор будет сброшен на заводские настройки",
-            category='error')
+        
         response = request.form['index']  # name="index" in reset.html
         print(response)
         # result = subprocess.run(
@@ -197,7 +195,12 @@ def reset():
         #     flash('Сброс прошел успешно',category='success')
         # else:
         #     flash('Сброс прошел с ошибкой',category='error' )
-            
+        time.sleep(5)
+        with open("../process_reset.txt", 'w'):
+            pass
+        flash(
+            "Внимание! Коммутатор сброшен на заводские настройки",
+            category='error')
         return render_template(
             'reset.html',
             title="Сброс конфига на дефолтные",
@@ -224,19 +227,33 @@ def get_test(id_post):
         current_lab = Base_gns('SSV_auto_Tr_GRE')
         print(current_lab.start_nodes_from_project())
         response = request.form['in'] # name="index" in Vtest.html
-        print("***",response)
-        result  = subprocess.run(["python3","../gre_test.py"],stdout=subprocess.PIPE, text=True)
-        if result:
-            flash("Attention! The DUT test is in progress!",category='success')
-        else:
-            flash("Attention!Start test error send!",category='error')
-        result = result.stdout.split('\n')
-        print(result)
+        
+        # result  = subprocess.run(["python3","../gre_test.py"],stdout=subprocess.PIPE, text=True)
+        # if result:
+        #     flash("Attention! The DUT test is in progress!",category='success')
+        # else:
+        #     flash("Attention!Start test error send!",category='error')
+        # result = result.stdout.split('\n')
+        # print(result)
+
+        args=["python3", "../gre_test.py"]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE) 
+        for line in process.stdout:
+            # print("stdout:", line.decode('utf-8'))
+            with open("../process_reset.txt", 'a') as file:
+                str_result = line.decode('utf-8')
+                file.write(str_result)
+        with open("../process_reset.txt", 'w'):
+            pass
+        flash(
+            "Внимание! Тесты выполнены, ознакомьтесь с результатами в отчетах.",
+            category='error')
         return render_template(
             f'Vtest-{id_post}.html', title = "настройка DUT под тест",
             menu = dbase.getMainmenu(),
             thirdmenu = dbase.getThirdmenu(),
-            result = result)
+            result = str_result)
+    
     return render_template(
         f'Vtest-1.html',  # Реализовать вызов универсальных стр(переделать HTML)
         menu = dbase.getMainmenu(), secondmenu = dbase.getSecondmenu(),
@@ -298,11 +315,10 @@ def getCfgPage(id_post):
             with open("../process_reset.txt", 'a') as file:
                 str_result = line.decode('utf-8')
                 file.write(str_result)
-        time.sleep(5)
+        time.sleep(15)
         with open("../process_reset.txt", 'w'):
             pass
         flash("Устройство успешно сконфигурировано! ",category='success')
-        
         return render_template(
             'cfg_gre.html', title = "Настройка устройства под тест",
             menu = dbase.getMainmenu(),
@@ -316,6 +332,7 @@ def getCfgPage(id_post):
         thirdmenu = dbase.getThirdmenu(),
         constants = dbase.getConstants_trident()
         )
+
 
 @app.route('/get_content',methods = ['POST', 'GET'])
 # Ф-я для получения вывода с консоли записаного в файл.
@@ -350,7 +367,12 @@ def login():
 
 @app.route("/register", methods=["POST", "GET"])
 def register():
-    """Обработчик для регистрации пользователя"""
+    """Обработчик для регистрации пользователя"""@app.route('/get_content',methods = ['POST', 'GET'])
+# Ф-я для получения вывода с консоли записаного в файл.
+def get_content():
+    with open('../process_reset.txt', 'r') as file:
+        content = file.readlines()
+    return jsonify({'content': content})
     if request.method == "POST":
         session.pop('_flashes', None)
         if len(request.form['name']) >= 4 and len(request.form['email']) >= 4 \

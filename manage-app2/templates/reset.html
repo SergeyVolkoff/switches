@@ -2,9 +2,7 @@
  
 {% block content %}
 {{ super() }}
-{% for cat, msg in get_flashed_messages(True) %}
-    <div class="flash {{cat}}">{{msg}}</div>
-{% endfor %}
+
 <br>Используя нижерасположенную кнопку СБРОС КОНФИГУРАЦИИ
  можно сбросить коммутатор на дефолтные настройки. 
  <p>ВНИМАНИЕ!</p>
@@ -19,35 +17,38 @@
     <input type="hidden" name="index" value="Запущен сброс конфига!">
     <input type="submit" class="btn btn-dark" value="СБРОС КОНФИГУРАЦИИ">
 <br>
-
-<script>
-    let lastUpdateTime = Date.now();
-    // функция будет вызываться для получения содержимого.
-    function getContent() {
-        fetch('/get_content') //для отправки запроса на сервер по URL
-            .then(response => response.json()) // метод json() для преобразования ответа в формат JSON
-            // полученные данные обрабатываются в функции обратного вызова, где извлекается список содержимого data.content.
-            .then(data => {
-                const contentList = document.getElementById('content-list');  // выбирается элемент с id '-list' и очищается его содержимое.
-                contentList.innerHTML = '';
-                // Для каждого элемента в списке содержимого создается новый элемент списка <li> и добавляется текстовое содержимое (line).
-                data.content.forEach(line => { 
-                    const li = document.createElement('li');
-                    li.textContent = line;
-                    contentList.appendChild(li); //Новый элемент списка добавляется в родительский элемент 'content-list'.
+<body>
+    <ul id="content-list"></ul>
+    <script>
+        let lastUpdateTime = Date.now();
+        // функция будет вызываться для получения содержимого.
+        function getContent() {
+            fetch('/get_content') //для отправки запроса на сервер по URL
+                .then(response => response.json()) // метод json() для преобразования ответа в формат JSON
+                // полученные данные обрабатываются в функции обратного вызова, где извлекается список содержимого data.content.
+                .then(data => {
+                    const contentList = document.getElementById('content-list');  // выбирается элемент с id '-list' и очищается его содержимое.
+                    contentList.innerHTML = '';
+                    // Для каждого элемента в списке содержимого создается новый элемент списка <li> и добавляется текстовое содержимое (line).
+                    data.content.forEach(line => { 
+                        const li = document.createElement('li');
+                        li.textContent = line;
+                        contentList.appendChild(li); //Новый элемент списка добавляется в родительский элемент 'content-list'.
+                    });
+                    lastUpdateTime = Date.now(); // обновляем время последнего обновления
                 });
-                lastUpdateTime = Date.now(); // обновляем время последнего обновления
-            });
-            // Проверяем, прошло ли уже 10 секунд с момента последнего обновления
-            if (Date.now()- lastUpdateTime > 10000) {
-            clearInterval(intervalID); // останавливаем выполнение скрипта
-            }
-    }
-    const intervalID = setInterval(getContent, 1000); // Обновление содержимого каждую секунду
-    getContent(); // Получение содержимого при загрузке страницы!!
-</script>
-
-<ul id="content-list"></ul>
+                // Проверяем, прошло ли уже 10 секунд с момента последнего обновления
+                if (Date.now()- lastUpdateTime > 10000) {
+                clearInterval(intervalID); // останавливаем выполнение скрипта
+                }
+        }
+        const intervalID = setInterval(getContent, 1000); // Обновление содержимого каждую секунду
+        getContent(); // Получение содержимого при загрузке страницы!!
+    </script>
+</body>
+{% for cat, msg in get_flashed_messages(True) %}
+    <div class="flash {{cat}}">{{msg}}</div>
+{% endfor %}
 
 <li>{{ result }} </li>
 <!-- <meta http-equiv="refresh" content="10"> -->
