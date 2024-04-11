@@ -315,7 +315,7 @@ def getCfgPage(id_post):
             with open("../process_reset.txt", 'a') as file:
                 str_result = line.decode('utf-8')
                 file.write(str_result)
-        time.sleep(15)
+        time.sleep(5)
         with open("../process_reset.txt", 'w'):
             pass
         flash("Устройство успешно сконфигурировано! ",category='success')
@@ -365,14 +365,12 @@ def login():
         flash('Неверная пара логин\пароль','error')
     return render_template('login.html',title="Авторизация", menu=dbase.getMainmenu())
 
+
 @app.route("/register", methods=["POST", "GET"])
 def register():
     """Обработчик для регистрации пользователя"""@app.route('/get_content',methods = ['POST', 'GET'])
 # Ф-я для получения вывода с консоли записаного в файл.
-def get_content():
-    with open('../process_reset.txt', 'r') as file:
-        content = file.readlines()
-    return jsonify({'content': content})
+
     if request.method == "POST":
         session.pop('_flashes', None)
         if len(request.form['name']) >= 4 and len(request.form['email']) >= 4 \
