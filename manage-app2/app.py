@@ -402,6 +402,21 @@ def profile():
     return render_template("profile.html", menu=dbase.getMainmenu(), title="Профиль пользователя") 
 
 
+@app.route('/read_cfg',methods = ['POST', 'GET'])
+# Ф-я для получения конфига для просмотра
+def read_cfg():
+    id_cfg = request.form['index']# name="index" in ..html
+    print(id_cfg)
+    if id_cfg == '1':
+        id_cfg="cfg_GRE.yaml"
+    print(id_cfg)
+    with open(f'../templates_cfg/{id_cfg}', 'r') as file:
+        text = file.readlines()
+    return render_template(
+        f'/read_cfg.html',
+        menu=dbase.getMainmenu(),
+        constants = dbase.getConstants_trident(),
+        title="Просмотр конфигурции",text=text)
 
 """socketio and PTY"""
 

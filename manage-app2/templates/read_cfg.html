@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+ 
+{% block content %}
+    {{ super() }}
+    {% for i in text %}
+        {% if '\n' in i %}
+                <br>
+        {% endif %}
+        <li>{{ i }} </li>
+    {% endfor %}
+
+{% endblock content%}
