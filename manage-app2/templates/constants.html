@@ -2,13 +2,28 @@
  
 {% block content %}
 {{ super() }}
-{% for cat, msg in get_flashed_messages(True) %}
-<div class="flash" {{cat}}>{{msg}}</div>
-{% endfor %}
+
 <div class="title">На этой странице можно задать консольный порт для подключения к DUT.
-В меню ниже введите 4-х значный порт вашего устройства:</div>
+</div>
+<br>В меню ниже введите 4-х значный порт устройства:
 <form action="{{url_for('add_constants')}}" method="post" class="form-contact">
-    <p><label> Port console:</label><input type="text" name="port" value="" required</p>
-    <p><input type="submit" value="Submitted"</p>
-    
+<p><label> Port console:</label><input type="text" name="port" value="" required</p>
+<p><input type="submit" value="Submitted"</p>
+</form>
+
+<form action="{{url_for('get_ver_sw')}}" method="POST">
+    <input type="hidden" name="index" value="Ver request start.">
+    <input type="submit" class="btn btn-dark" value="VERSION">
+</form>
+
+{% for i in text %}
+    {% if '\n' in i %}
+            <br>
+    {% endif %}
+    <li>{{ i }} </li>
+{% endfor %}
+
+{% for cat, msg in get_flashed_messages(True) %}
+    <div class="flash {{cat}}">{{msg}}</div>
+{% endfor %}
 {% endblock %}

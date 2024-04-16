@@ -40,6 +40,23 @@ class Connect():
                     style='fail')
             exit()
 
+
+    def sh_ver(self):
+        ""
+        self.check_connection(self.VALUE_CONS_CONNECT)
+        self.ssh.enable()
+        try:
+            temp = self.ssh.send_command('show version',read_timeout=2)
+            for i in temp:
+                with open("../sh_ver.txt", 'a+') as file:
+                     file.write(i)
+
+        except FileNotFoundError:
+            print('Файл отсутствует.')
+        except ValueError as v_e:
+            print(v_e)
+
+
     def send_command(self, command):
         """Redefinition send_command - no use."""
         self.check_connection(self.VALUE_CONS_CONNECT)

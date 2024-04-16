@@ -126,11 +126,10 @@ def add_constants():
         port_con = request.form.get('port')
         print(port_con)
         if not res:
-            flash("Error changed value")
+            flash("Error changed port value")
         else:
-            flash("Settings changed and transferred to the database!")
-        if res:
-            flash("OK")
+            flash("Настройки консольного порта сохранены в БД.")
+       
     # return render_template(
     #     'add_constants.html',
     #     title = "Меню настройки console",
@@ -139,7 +138,29 @@ def add_constants():
     return redirect(url_for("get_constants"))
 
 
-@app.route("/constants")
+@app.route("/get_ver_sw", methods=['POST', 'GET'])
+def get_ver_sw():
+    "Обработчик выводит на страницу версию устр-ва"
+    if request.method == "POST":
+        response = request.form['index']  # name="index" in reset.html
+        print(response)
+        temp = os.system("python3 ../sh_ver.py")
+        time.sleep(2)
+        file_ver = '../sh_ver.txt'
+        for line in file_ver:
+            with open(file_ver, 'r') as file:
+                text = file.readlines()
+        with open("../sh_ver.txt", 'w') as file:
+            file.write('')      
+        return render_template('constants.html',
+        title = "Настройки",
+        menu = dbase.getMainmenu(),
+        constants = dbase.getConstants_trident(),
+        text=text
+    )
+
+
+@app.route("/constants", methods=['POST', 'GET'])
 def get_constants():
     """Обработчик выводит страницу настройки устр-ва."""
     cur = db.cursor()  # Создаем курсор для выполнения SQL-запросов
@@ -161,7 +182,7 @@ def get_constants():
         print(f.read())
     # global constants
     return render_template('constants.html',
-        title = "Constants",
+        title = "Настройки",
         menu = dbase.getMainmenu(),
         constants = dbase.getConstants_trident(),
         )
@@ -186,7 +207,7 @@ def reset():
             # print("stdout:", line.decode('utf-8'))
             with open("../process_reset.txt", 'a') as file:
                 str_result = line.decode('utf-8')
-                file.write(str_result)
+                file.write(str_result) 
 
                     
         #     result = os.system("python3 ../reset_cfg.py")
@@ -286,9 +307,9 @@ def get_test_html():
         
 @app.route("/cfg",methods = ['GET'])
 def cfg():
-    """Ф-я открывает страницу с заливкой конфига"""
+    """Ф-я открыextended_reset_cfg1вает страницу с заливкой конфига"""
     return render_template(
-        'cfg.html', title = "Заливка конфига",
+        'cfg.html', title = "Конфигурация устройства",
         menu = dbase.getMainmenu(),
         constants = dbase.getConstants_trident(),
         thirdmenu = dbase.getThirdmenu(),
@@ -369,7 +390,6 @@ def login():
 @app.route("/register", methods=["POST", "GET"])
 def register():
     """Обработчик для регистрации пользователя"""@app.route('/get_content',methods = ['POST', 'GET'])
-# Ф-я для получения вывода с консоли записаного в файл.
 
     if request.method == "POST":
         session.pop('_flashes', None)

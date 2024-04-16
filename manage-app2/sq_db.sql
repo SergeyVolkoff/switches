@@ -50,10 +50,10 @@ INSERT INTO read_cfg (title, url) VALUES ('Просмотр конфигурац
 INSERT INTO read_cfg (title, url) VALUES ('Просмотр конфигурации под тест 2', '/read_cfg/2');
 INSERT INTO read_cfg (title, url) VALUES ('Просмотр конфигурации под тест 3', '/read_cfg/3');
 
-INSERT INTO mainmenu (title, url) VALUES ('Меню тестов устройства', '/');
-INSERT INTO mainmenu (title, url) VALUES ('Меню конфигурации устройства', '/cfg');
-INSERT INTO mainmenu (title, url) VALUES ('Меню сброса настроек устройства', '/reset');
-INSERT INTO mainmenu (title, url) VALUES ('Меню настроек теста', '/constants');
+INSERT INTO mainmenu (title, url) VALUES ('Тесты устройства', '/');
+INSERT INTO mainmenu (title, url) VALUES ('Конфигурация устройства', '/cfg');
+INSERT INTO mainmenu (title, url) VALUES ('Сброс настроек устройства', '/reset');
+INSERT INTO mainmenu (title, url) VALUES ('Настройки', '/constants');
 INSERT INTO mainmenu (title, url) VALUES ('Авторизация пользователя', '/login');
 
 INSERT INTO secondmenu (title, url) VALUES ('Проверка поддержки GRE', '1');
