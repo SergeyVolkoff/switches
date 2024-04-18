@@ -11,7 +11,21 @@ html, body {
   max-width: 1850px;
   margin: 0 auto;
 }
-
+.button {
+  display: inline-block;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: none;
+  background-color: #4CAF50;
+  color: white;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  }
+  .button:hover {
+    background-color: #45a049; 
+    }
 .page {
   min-height: 90%;
   padding-bottom: 90px;

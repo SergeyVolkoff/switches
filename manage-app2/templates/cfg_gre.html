@@ -3,18 +3,17 @@
 {% block content %}
     {{ super() }}
     
-    <!-- <div class="title">
-        Ниже находится ссылка просмотра конфига под тест GRE:
+
+    <div class="title">
+        Ниже находится кнопка просмотра конфига под тест GRE:
     </div>
-    <p><a href="/read_cfg" target="_blank">Просмотр конфигурации устр-ва под тест GRE</a></li> -->
-    
     <div>
         <form action="/read_cfg" method="POST"class ="form_contact">
             <!-- скрытый параметр -->
-            <input type="hidden" name="index" value="1">
-            <input type="submit" class="btn btn-dark" value="Просмотр конфигурации устр-ва под тест GRE">
+            <input type="hidden" name="index" value="Просмотр конфигурации">
+            <input type="submit" class="btn btn-dark" value="Просмотр конфигурации">
+        </form>
     </div>
-
     <br>
     <div class="title">
         Ниже находится кнопка заливки конфига под тест GRE:
@@ -22,10 +21,14 @@
     <div>
         <form action="{{url_for('getCfgPage',id_post='1')}}" method="POST"class ="form_contact">
             <!-- скрытый параметр -->
-            <input type="hidden" name="index" value="Запущена настройка конфигурации устр-ва">
+            <input type="hidden" name="index1" value="Настройка конфигурации">
             <input type="submit" class="btn btn-dark" value="НАСТРОЙКА КОНФИГУРАЦИИ">
+        </form>
     </div>
+
     <br>
+    <br>
+    
     <hr>
     <div class="title"> Здесь может быть отчет о ходе заливки конфига!</div>
     <br> 
@@ -61,6 +64,8 @@
     {% for cat, msg in get_flashed_messages(True) %}
         <div class="flash {{cat}}">{{msg}}</div>
     {% endfor %}
-    <li>{{ result }} </li>
+<br>   
+<a class="button"  href="/cfg" >Назад</a>
+    {{ result }} 
 
 {% endblock content%}

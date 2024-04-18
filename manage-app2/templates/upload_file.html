@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {{ super() }}
+    <title>Загрузить новый файл</title>
+    <h1>Загрузить новый файл</h1>
+    <form method=post enctype=multipart/form-data>
+      <input type=file name=file>
+      <input type=submit value=Upload>
+    </form>
+    <br>
+{% for cat, msg in get_flashed_messages(True) %}
+    <div class="flash {{cat}}">{{msg}}</div>
+{% endfor %}
+
+<a class="button"  href="/"  >Назад</a>
+    {{ result }} 
+{% endblock content%}

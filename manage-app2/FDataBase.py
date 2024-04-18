@@ -56,6 +56,7 @@ class FDataBase:
             return False
         return True
     
+    
     # def addPost(self,title,schema, test_specification, test_progress,result):
         # try:
         #     self.__cur.execute("INSERT INTO posts VALUES (NULL,?,?,?,?,?)", (title,schema, test_specification, test_progress,result,))

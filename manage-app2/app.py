@@ -9,7 +9,7 @@ import yaml
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from flask import (abort,Flask, Response, 
                    flash, jsonify, make_response,
-                   render_template, redirect,
+                   render_template, redirect, send_from_directory,
                    session, url_for, request, g)
 from flask_login import (
     LoginManager, current_user, login_required, login_user,
@@ -19,6 +19,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from base_gns3 import Base_gns
 from FDataBase import FDataBase
 from UserLogin import UserLogin
+from werkzeug.utils import secure_filename
+
+
 
 # configuration
 app = Flask(__name__)
@@ -30,6 +33,9 @@ app.config["fd"] = None
 socketio = SocketIO(app)
 DATABASE = '/manage_app2/manage_app2.db'
 DEBUG = True
+UPLOAD_FOLDER = '../templates_cfg'
+ALLOWED_EXTENSIONS = {'txt', 'yaml'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 app.config.update(dict(DATABASE=os.path.join(app.root_path, 'manage_app2.db')))
 login_manager = LoginManager(app)
@@ -126,7 +132,7 @@ def add_constants():
         port_con = request.form.get('port')
         print(port_con)
         if not res:
-            flash("Error changed port value")
+            flash("Error changed port value")   
         else:
             flash("Настройки консольного порта сохранены в БД.")
        
@@ -307,7 +313,7 @@ def get_test_html():
         
 @app.route("/cfg",methods = ['GET'])
 def cfg():
-    """Ф-я открыextended_reset_cfg1вает страницу с заливкой конфига"""
+    """Ф-я открывает страницу с заливкой конфига"""
     return render_template(
         'cfg.html', title = "Конфигурация устройства",
         menu = dbase.getMainmenu(),
@@ -320,32 +326,32 @@ def getCfgPage(id_post):
     """Ф-я запускает заливку конфига и возвращает страницу заливки"""
     
     if request.method == "POST":
-        response = request.form['index']# name="index" in ..html
+        response = request.form['index1']# name="index" in ..html
         print(response)
+        if "Настройка конфигурации" in response:
+            # path_cfg="../cfg_gre.py"
+            # result  = subprocess.run(["python3",path_cfg],stdout=subprocess.PIPE, text=True)
+            # # result  = result.returncode 
+            # result = result.stdout.split('\n')
 
-        # path_cfg="../cfg_gre.py"
-        # result  = subprocess.run(["python3",path_cfg],stdout=subprocess.PIPE, text=True)
-        # # result  = result.returncode 
-        # result = result.stdout.split('\n')
-
-        args=["python3", "../cfg_gre.py"]
-        process = subprocess.Popen(args, stdout=subprocess.PIPE)
-        
-        for line in process.stdout:
-            # print("stdout:", line.decode('utf-8'))
-            with open("../process_reset.txt", 'a') as file:
-                str_result = line.decode('utf-8')
-                file.write(str_result)
-        time.sleep(5)
-        with open("../process_reset.txt", 'w'):
-            pass
-        flash("Устройство успешно сконфигурировано! ",category='success')
-        return render_template(
-            'cfg_gre.html', title = "Настройка устройства под тест",
-            menu = dbase.getMainmenu(),
-            thirdmenu = dbase.getThirdmenu(),
-            constants = dbase.getConstants_trident()
-            )
+            args=["python3", "../cfg_gre.py"]
+            process = subprocess.Popen(args, stdout=subprocess.PIPE)
+            
+            for line in process.stdout:
+                # print("stdout:", line.decode('utf-8'))
+                with open("../process_reset.txt", 'a') as file:
+                    str_result = line.decode('utf-8')
+                    file.write(str_result)
+            time.sleep(5)
+            with open("../process_reset.txt", 'w'):
+                pass
+            flash("Устройство успешно сконфигурировано! ",category='success')
+            return render_template(
+                'cfg_gre.html', title = "Настройка устройства под тест",
+                menu = dbase.getMainmenu(),
+                thirdmenu = dbase.getThirdmenu(),
+                constants = dbase.getConstants_trident()
+                )
     
     return render_template(
         'cfg_gre.html', title = "Конфигурация устройства",
@@ -427,16 +433,56 @@ def profile():
 def read_cfg():
     id_cfg = request.form['index']# name="index" in ..html
     print(id_cfg)
-    if id_cfg == '1':
+    if id_cfg == 'Просмотр конфигурации':
         id_cfg="cfg_GRE.yaml"
-    print(id_cfg)
-    with open(f'../templates_cfg/{id_cfg}', 'r') as file:
-        text = file.readlines()
+        print(id_cfg)
+        with open(f'../templates_cfg/{id_cfg}', 'r') as file:
+            text = file.readlines()
+        return render_template(
+            f'/read_cfg.html',
+            menu=dbase.getMainmenu(),
+            constants = dbase.getConstants_trident(),
+            title="Просмотр конфигурции",text=text)
+    
+
+def allowed_file_type(filename):
+    """ Функция проверки расширения файла """
+    # return '.' in filename and \
+    #     filename.rsplit('.',1)[1].lower() in ALLOWED_EXTENSIONS
+    if '.' in filename and \
+        filename.rsplit('.',1)[1].lower() in ALLOWED_EXTENSIONS:
+        name_cfg = filename.rsplit('.',1)[0].lower()
+        return True
+    else:
+        return False
+    
+@app.route('/upload_file_cfg',methods=['GET', 'POST'])
+def upload_file_cfg():
+    if request.method == 'POST':
+        # проверим, передается ли в запросе файл
+        if 'file' not in request.files:
+            flash('Не могу прочитать файл', category='fail')
+            return redirect(request.url)
+        file = request.files['file']
+        # отправить пустой файл
+        if file.filename == '':
+            flash('Нет выбранного файла', category='fail')
+            return redirect(request.url)
+        if file and allowed_file_type(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            flash('Файл загружен', category='success')
+            return redirect(url_for('download_file_cfg', name=filename))
     return render_template(
-        f'/read_cfg.html',
-        menu=dbase.getMainmenu(),
-        constants = dbase.getConstants_trident(),
-        title="Просмотр конфигурции",text=text)
+            f'/upload_file.html',
+            menu=dbase.getMainmenu(),
+            constants = dbase.getConstants_trident(),
+            title="Загрузка файла конфигурации в БД")
+
+@app.route('/uploads/<name>')
+def download_file_cfg(name):
+    return send_from_directory(app.config['UPLOAD_FOLDER'],name)
+
 
 """socketio and PTY"""
 
