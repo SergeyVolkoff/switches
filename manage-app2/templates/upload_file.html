@@ -2,16 +2,26 @@
 
 {% block content %}
     {{ super() }}
-    <title>Загрузить новый файл</title>
-    <h1>Загрузить новый файл</h1>
+    <br>Загрузить новый файл
+    <br>
+
     <form method=post enctype=multipart/form-data>
       <input type=file name=file>
       <input type=submit value=Upload>
     </form>
     <br>
-{% for cat, msg in get_flashed_messages(True) %}
-    <div class="flash {{cat}}">{{msg}}</div>
-{% endfor %}
+        <table border="1">
+            <caption>Список Файлов</caption>
+            <tr>
+                <th>Путь</th><th>Скачать</th>
+            </tr>
+            {% for listfile in items %}
+            <tr><td><a>{{ listfile }}</a></td><td>1</td></tr>
+            {% endfor %}
+        </table>
+    {% for cat, msg in get_flashed_messages(True) %}
+        <div class="flash {{cat}}">{{msg}}</div>
+    {% endfor %}
 
 <a class="button"  href="/"  >Назад</a>
     {{ result }} 

@@ -395,7 +395,7 @@ def login():
 
 @app.route("/register", methods=["POST", "GET"])
 def register():
-    """Обработчик для регистрации пользователя"""@app.route('/get_content',methods = ['POST', 'GET'])
+    """Обработчик для регистрации пользователя"""
 
     if request.method == "POST":
         session.pop('_flashes', None)
@@ -429,7 +429,7 @@ def profile():
 
 
 @app.route('/read_cfg',methods = ['POST', 'GET'])
-# Ф-я для получения конфига для просмотра
+# Ф-я для получения конфига cfg_GRE.yaml для просмотра
 def read_cfg():
     id_cfg = request.form['index']# name="index" in ..html
     print(id_cfg)
@@ -458,10 +458,11 @@ def allowed_file_type(filename):
     
 @app.route('/upload_file_cfg',methods=['GET', 'POST'])
 def upload_file_cfg():
+    """Обработчик загрузки файла """
     if request.method == 'POST':
         # проверим, передается ли в запросе файл
         if 'file' not in request.files:
-            flash('Не могу прочитать файл', category='fail')
+            flash('Не могу прочитать файл', category='fail') 
             return redirect(request.url)
         file = request.files['file']
         # отправить пустой файл
@@ -472,7 +473,12 @@ def upload_file_cfg():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             flash('Файл загружен', category='success')
-            return redirect(url_for('download_file_cfg', name=filename))
+
+            fileslist = os.listdir(UPLOAD_FOLDER) # читаем список файлов в папке
+            listfile = map(lambda name: os.path.join(UPLOAD_FOLDER, name), fileslist)
+            return  render_template('upload_file.html', items=listfile)
+            
+            # return redirect(url_for('shw_download_file', name=filename))
     return render_template(
             f'/upload_file.html',
             menu=dbase.getMainmenu(),
@@ -480,9 +486,14 @@ def upload_file_cfg():
             title="Загрузка файла конфигурации в БД")
 
 @app.route('/uploads/<name>')
-def download_file_cfg(name):
+def shw_download_file(name):
+    """Обработчик просмотра загруженного файла """
     return send_from_directory(app.config['UPLOAD_FOLDER'],name)
 
+# @app.route('/list_cfg')
+# def list_cfg():
+#     """Обработчик просмотра всех конфигов в папке"""
+#     return send_from_directory(app.config['UPLOAD_FOLDER'])
 
 """socketio and PTY"""
 
