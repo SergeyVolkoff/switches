@@ -459,6 +459,11 @@ def allowed_file_type(filename):
 @app.route('/upload_file_cfg',methods=['GET', 'POST'])
 def upload_file_cfg():
     """Обработчик загрузки файла """
+    # читаем список файлов в директории
+    listfile = os.listdir(UPLOAD_FOLDER) 
+    # получаем объект со списком файлов
+    # listfile = map(lambda name: os.path.join(UPLOAD_FOLDER, name), fileslist) 
+    
     if request.method == 'POST':
         # проверим, передается ли в запросе файл
         if 'file' not in request.files:
@@ -473,27 +478,26 @@ def upload_file_cfg():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             flash('Файл загружен', category='success')
-
-            fileslist = os.listdir(UPLOAD_FOLDER) # читаем список файлов в папке
-            listfile = map(lambda name: os.path.join(UPLOAD_FOLDER, name), fileslist)
             return  render_template('upload_file.html', items=listfile)
-            
-            # return redirect(url_for('shw_download_file', name=filename))
+            # редирект на страницу с загруженным файлом
+            # return redirect(url_for('shw_download_file', name=filename)) 
     return render_template(
             f'/upload_file.html',
             menu=dbase.getMainmenu(),
             constants = dbase.getConstants_trident(),
-            title="Загрузка файла конфигурации в БД")
+            title="Загрузка файла конфигурации в БД",
+            items=listfile,
+            )
 
 @app.route('/uploads/<name>')
 def shw_download_file(name):
-    """Обработчик просмотра загруженного файла """
+    """Обработчик просмотра загруженного файла - dont use now"""
     return send_from_directory(app.config['UPLOAD_FOLDER'],name)
 
-# @app.route('/list_cfg')
-# def list_cfg():
-#     """Обработчик просмотра всех конфигов в папке"""
-#     return send_from_directory(app.config['UPLOAD_FOLDER'])
+@app.route('/get_file_cfg/<filename>')
+def get_file_cfg(filename):
+    """Обработчик просмотра конфига из папки по ссылке"""
+    return send_from_directory(app.config['UPLOAD_FOLDER'],filename)
 
 """socketio and PTY"""
 

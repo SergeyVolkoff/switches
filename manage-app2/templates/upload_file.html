@@ -2,27 +2,33 @@
 
 {% block content %}
     {{ super() }}
-    <br>Загрузить новый файл
-    <br>
+    
 
+    <table border="1">
+        <caption>Список имеющихся файлов конфигурации </caption>
+        <tr>
+            <th>Имя файла</th><th>Действие</th>
+        </tr>
+        {% for i in items %}
+            <tr><td><a href="{{ i }}" class="table-link">{{i}}</a>
+            </td><td>
+                <a href="{{ url_for('get_file_cfg',filename = i) }}">Скачать/Просмотреть</a>
+            </td></tr>
+        {% endfor %}
+    </table>
+    <br>
+    Загрузить новый файл в базу конфигов
+    <br>
     <form method=post enctype=multipart/form-data>
       <input type=file name=file>
       <input type=submit value=Upload>
     </form>
     <br>
-        <table border="1">
-            <caption>Список Файлов</caption>
-            <tr>
-                <th>Путь</th><th>Скачать</th>
-            </tr>
-            {% for listfile in items %}
-            <tr><td><a>{{ listfile }}</a></td><td>1</td></tr>
-            {% endfor %}
-        </table>
+    
     {% for cat, msg in get_flashed_messages(True) %}
         <div class="flash {{cat}}">{{msg}}</div>
     {% endfor %}
 
-<a class="button"  href="/"  >Назад</a>
+<a class="button"  href="/cfg">Назад</a>
     {{ result }} 
 {% endblock content%}
