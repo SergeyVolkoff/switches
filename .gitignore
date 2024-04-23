@@ -169,5 +169,5 @@ cython_debug/
 #.idea/
 
 # My ignore
-templates/BULAT_TEST_TRIDENT_GRE.html
-*/allure_report
+**/BULAT_TEST_TRIDENT_GRE.html
+**/allure_report
