@@ -1,0 +1,8 @@
+{ 
+   "enable",  
+   "conf t",
+   "hostname DDDDDDDDDDDD",
+   "end",
+   "wr",
+   "exit"
+}
