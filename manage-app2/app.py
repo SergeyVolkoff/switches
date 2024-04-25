@@ -224,10 +224,10 @@ def reset():
         #     flash('Сброс прошел с ошибкой',category='error' )
         time.sleep(5)
         with open("../process_reset.txt", 'w'):
-            pass
+            pass  # не удальть - очищает файл
         flash(
             "Внимание! Коммутатор сброшен на заводские настройки",
-            category='error')
+            category='success')
         return render_template(
             'reset.html',
             title="Сброс конфига на дефолтные",
@@ -460,11 +460,14 @@ def allowed_file_type(filename):
 def upload_file_cfg():
     """Обработчик загрузки файла """
     # читаем список файлов в директории
-    listfile = os.listdir(UPLOAD_FOLDER) 
+    listfile = os.listdir(UPLOAD_FOLDER)
+    # path_name= os.path.join(UPLOAD_FOLDER)
+    # print(path_name)
     # получаем объект со списком файлов
     # listfile = map(lambda name: os.path.join(UPLOAD_FOLDER, name), fileslist) 
     
     if request.method == 'POST':
+        
         # проверим, передается ли в запросе файл
         if 'file' not in request.files:
             flash('Не могу прочитать файл', category='fail') 
@@ -478,22 +481,73 @@ def upload_file_cfg():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             flash('Файл загружен', category='success')
-            return  render_template('upload_file.html', items=listfile)
+            return  render_template(
+                'upload_file_cfg.html',
+                constants = dbase.getConstants_trident(),
+                items=listfile)
             # редирект на страницу с загруженным файлом
             # return redirect(url_for('shw_download_file', name=filename)) 
     return render_template(
-            f'/upload_file.html',
+            'upload_file_cfg.html',
+            title="Загрузка файла конфигурации в БД",
             menu=dbase.getMainmenu(),
             constants = dbase.getConstants_trident(),
-            title="Загрузка файла конфигурации в БД",
             items=listfile,
             )
 
-@app.route('/uploads/<name>')
-def shw_download_file(name):
-    """Обработчик просмотра загруженного файла - dont use now"""
-    return send_from_directory(app.config['UPLOAD_FOLDER'],name)
+@app.route('/view_cfg_table',methods=['GET'],)
+def view_cfg_table():
+    """Обработчик просмотра файла конфига из таблицы"""
+    listfile = os.listdir(UPLOAD_FOLDER)
 
+    return render_template(
+        'cfg_from_table.html', title="Операции с файлом конфига",
+        menu=dbase.getMainmenu(),
+        constants = dbase.getConstants_trident(),
+        items=listfile,
+        )    
+
+@app.route('/pull_cfg_sw/<filename>',methods=['GET','POST'],)
+def pull_cfg_sw(filename):
+    """Обработчик заливки конфига из таблицы"""
+    filename = request.path.split('/')[-1]
+    global path_name
+    listfile = os.listdir(UPLOAD_FOLDER)
+    path_name= os.path.join(UPLOAD_FOLDER, filename)
+    result =''
+    str_result=''
+
+    if request.method == "POST":
+        response = request.form['index']  # name="index" in reset.html
+        args=["python3", "../cfgFromFile.py"]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE) 
+        for line in process.stdout:
+            print(line)
+            with open("../process_reset.txt", 'a') as file:
+                str_result = line.decode('utf-8')
+                file.write(str_result) 
+
+        time.sleep(5)
+        with open("../process_reset.txt", 'w'):
+            pass  # не удальть - очищает файл
+        flash(
+            "Внимание! Коммутатор get cfg",
+            category='success')
+        return render_template(
+            'cfg_from_table.html',
+            title="Добавить конфиг в коммутатор",
+            menu=dbase.getMainmenu(),
+            constants = dbase.getConstants_trident(),
+            items=listfile,
+            result=str_result,
+            filename=filename
+            )    
+    return render_template(
+        'cfg_from_table.html', title="Операции с файлом конфига",
+        menu=dbase.getMainmenu(),
+        constants = dbase.getConstants_trident(),
+        items=listfile,
+        )  
 @app.route('/get_file_cfg/<filename>')
 def get_file_cfg(filename):
     """Обработчик просмотра конфига из папки по ссылке"""

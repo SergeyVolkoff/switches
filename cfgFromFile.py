@@ -12,16 +12,17 @@ from constants_trident import (
     CONSOLE,
 )
 from cfg_switch import  TridentCfg
-
-from app import get_file_cfg
-
+import importlib
+manage_app = importlib.import_module("manage-app")
+# from .switches.manage_app import app
+from manage_app.app import pull_cfg_sw
 
 if __name__ == "__main__":
     tr1 = TridentCfg()
     tr1.check_connection()
     tr1.ssh.enable()
     # команды настройки конфига...
-    
+    print(path_name)
     with open(path_name) as commands:
         commands_template = yaml.safe_load(commands)
     # ...построчно передаются в cfg_base которая вызовет cfg_template
