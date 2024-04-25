@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+{{ super() }}
+<div class="title">
+        Используя ниже расположенные ссылки  
+        можно перейти в меню настройки конфигов коммутатора:
+</div>
+{%- block thirdmenu -%}
+<ul class="thirdmenu">
+        {% for m in thirdmenu -%}
+            <li><a href="{{m.url}}">{{m.title}}</a></li>
+        {% endfor -%}
+</ul>
+        {% endblock thirdmenu -%} 
+
+<div class="title">
+        Используя ниже расположенные ссылки  
+        можно перейти в меню загрузки файлов конфигурации:
+</div>
+<p><a href='/upload_file_cfg' target="_blank">Загрузка файла конфигурации в базу</a></li>
+    
+</form>
+{% endblock content%}

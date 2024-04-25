@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {{ super() }}
+    
+
+    <table border="1">
+        <caption>Список имеющихся файлов конфигурации </caption>
+        <tr>
+            <th>Имя файла</th><th>Действие</th>
+        </tr>
+        {% for i in items %}
+            <tr>
+                <td><a href="{{ i }}" class="table-link">{{i}}</a></td>
+                <td><a href="{{ url_for('get_file_cfg',filename = i) }}">Просмотр файла</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+    
+
+    <br>
+    Загрузить новый файл в базу конфигов
+    <br>
+    <br>
+    <form method=post enctype=multipart/form-data>
+      <input type=file name=file>
+      <input type=submit value=Upload>
+    </form>
+    <br>
+    
+    <a href="{{ url_for('view_cfg_table') }}">Операции с файлом конфига</a>
+
+
+
+    {% for cat, msg in get_flashed_messages(True) %}
+        <div class="flash {{cat}}">{{msg}}</div>
+    {% endfor %}
+    <br>
+    <br>
+<a class="button"  href="/cfg">Назад</a>
+{{ result }} 
+{% endblock content%}

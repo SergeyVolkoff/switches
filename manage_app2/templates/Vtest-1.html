@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+ 
+{% block content %}
+{{ super() }}
+
+<div>
+<h3>Название: {{title}}</h3>
+<p>Цель: убедиться в работоспособности</p>
+<p>Версия </p>
+    <div>
+    <p>Топология:</p>   
+    <br><img src={{ image_path }} >
+    </div>
+
+    <p>Начальные условия:  Собрать схему согласно топологии выше.</p>
+    <p>Настройки: Выполнить конфигурацию устройств согласно файлам конфигурации.</p>
+    <p>Процедура:</p>
+    <ol>
+        <li>На DUT1 создать интерфейс Tunnel указав:
+            <ul>
+                <li>mode gre;</li>
+                <li>source xe1;</li>
+                <li>destination 100.100.100.x;</li>
+                <li>ip address 192.168.0.1/30.</li>
+            </ul>
+        </li>
+        <li>На DUT1 создать два статических маршрута:
+            <ul>
+                <li>к подсети 2.2.2.0/24 через интерфейс Tunnel</li>
+                <li>к подсети 100.100.100.0/30 через 200.200.200.x;</li>
+            </ul>
+        </li>
+        <li>На DUT2 создать интерфейс Tunnel указав:
+            <ul>
+                <li>mode gre;</li>
+                <li>source xe1;</li>
+                <li>destination 200.200.200.x;</li>
+                <li>ip address 192.168.0.2/30.</li>
+            </ul>
+        </li>
+        <li>На DUT2 создать два статических маршрута:
+            <ul>
+                <li>к подсети 1.1.1.0/24 через туннельный интерфейс;</li>
+                <li>к подсети 200.200.200.0/30 через 100.100.100.x.</li>
+            </ul>
+        </li>
+        <li>Посредством CLI убедиться, что интерфейсы Tunnel находятся состоянии «UP».</li>
+        <li>Убедиться, что трасерт между хостами проходит через тоннель</li>
+    </ol>
+    <p>Ожидаемый результат:
+        <ol>
+        <li>Поддерживается протокол туннелирования GRE.</li>
+        <li>При передаче трафика посредством GRE отсутствуют потери пакетов,
+            трасерт проходит через тоннель.</li>
+        </ol>
+    
+</div>
+<hr>
+<p>Ниже находится кнопка вызова тестов:
+<form action="{{ url_for('get_test',id_post='1') }}" method="POST">
+    <!-- скрытый параметр -->
+    <input type="hidden" name="in" value="1">
+    <input type="submit" class="btn btn-dark" value="ЗАПУСК теста">
+</form>
+<br>
+<hr>
+<div class="title">
+    Для перехода на страницу с последним html-отчетом, правой кнопкой окройте ссылку ниже в новом окне.
+    Откроется последний сохранненый в системе отчет: </div>
+<p><a href="file:///home/ssw/Documents/switches/manage-app2/templates/BULAT_TEST_TRIDENT_GRE.html" target="_blank">ОТЧЕТ по тесту в html</a></li>
+<br>
+<hr>
+    <p>Ниже находится кнопка запуска сервера отчетов сервера Allure:
+<form action=" {{ url_for('get_test_html',id_post='999') }} " method="POST">
+    <!-- скрытый параметр -->
+    <input type="hidden" name="in" value="999" >
+    <input type="submit" class="btn btn-dark" value="СТАРТ сервера Allure">
+</form>
+<br>
+<hr>
+<div class="title">
+    Для перехода на страницу с последним Allure-отчетом, правой кнопкой окройте ссылку ниже в новом окне.
+    Откроется последний сохранненый в системе отчет: 
+</div>
+<p><a href='http://127.0.1.1:38671/index.html' target="_blank">ОТЧЕТ по тесту в Allure</a></li>
+
+<br>
+<hr>
+<div class="title"> Здесь может быть отчет о выполенном тесте!
+</div>
+<br> 
+<body>
+    <ul id="content-list"></ul>
+
+    
+    <script>
+        // функция будет вызываться для получения содержимого.
+        function getContent() {
+            fetch('/get_content') //для отправки запроса на сервер по URL
+                .then(response => response.json()) // метод json() для преобразования ответа в формат JSON
+                // полученные данные обрабатываются в функции обратного вызова, где извлекается список содержимого data.content.
+                .then(data => {
+                    const contentList = document.getElementById('content-list');  // выбирается элемент с id '-list' и очищается его содержимое.
+                    contentList.innerHTML = '';
+                    // Для каждого элемента в списке содержимого создается новый элемент списка <li> и добавляется текстовое содержимое (line).
+                    data.content.forEach(line => { 
+                        const li = document.createElement('li');
+                        li.textContent = line;
+                        contentList.appendChild(li); //Новый элемент списка добавляется в родительский элемент 'content-list'.
+                    });
+                    lastUpdateTime = Date.now(); // обновляем время последнего обновления
+                });
+                // Проверяем, прошло ли уже 10 секунд с момента последнего обновления
+                if (Date.now()- lastUpdateTime > 10000) {
+                clearInterval(intervalID); // останавливаем выполнение скрипта
+                }
+        }
+        const intervalID = setInterval(getContent, 2000); // Обновление содержимого каждую секунду
+        getContent(); // Получение содержимого при загрузке страницы!!
+    </script>
+</body>
+{% for cat, msg in get_flashed_messages(True) %}
+    <div class="flash {{cat}}">{{msg}}</div>
+{% endfor %}
+
+<br>   
+<a class="button"  href="/" >Назад</a>
+
+
+{{ result }}
+{% endblock %}
+

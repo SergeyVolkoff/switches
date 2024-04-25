@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+ 
+{% block content %}
+{{ super() }}
+
+<br>Используя нижерасположенную кнопку СБРОС КОНФИГУРАЦИИ
+ можно сбросить коммутатор на дефолтные настройки. 
+ <p>ВНИМАНИЕ!</p>
+ <p>Сброс будет проведен сразу после нажатия!</p>
+ <p>Сброс пройдет на коммутаторе, 
+настройки которого указаны в таблице справа вверху
+"Текущие настройки подключения".</p>
+<p> Номер консольного порта можно настроить в МЕНЮ НАСТРОЕК</p>
+<br><hr><br>
+<form action="/reset" method="POST">
+    <!-- скрытый параметр -->
+    <input type="hidden" name="index" value="Запущен сброс конфига!">
+    <input type="submit" class="btn btn-dark" value="СБРОС КОНФИГУРАЦИИ">
+</form>
+<br>
+<body>
+    <ul id="content-list"></ul>
+    <script>
+        let lastUpdateTime = Date.now();
+        // функция будет вызываться для получения содержимого.
+        function getContent() {
+            fetch('/get_content') //для отправки запроса на сервер по URL
+                .then(response => response.json()) // метод json() для преобразования ответа в формат JSON
+                // полученные данные обрабатываются в функции обратного вызова, где извлекается список содержимого data.content.
+                .then(data => {
+                    const contentList = document.getElementById('content-list');  // выбирается элемент с id '-list' и очищается его содержимое.
+                    contentList.innerHTML = '';
+                    // Для каждого элемента в списке содержимого создается новый элемент списка <li> и добавляется текстовое содержимое (line).
+                    data.content.forEach(line => { 
+                        const li = document.createElement('li');
+                        li.textContent = line;
+                        contentList.appendChild(li); //Новый элемент списка добавляется в родительский элемент 'content-list'.
+                    });
+                    lastUpdateTime = Date.now(); // обновляем время последнего обновления
+                });
+                // Проверяем, прошло ли уже 10 секунд с момента последнего обновления
+                if (Date.now()- lastUpdateTime > 10000) {
+                clearInterval(intervalID); // останавливаем выполнение скрипта
+                }
+        }
+        const intervalID = setInterval(getContent, 2000); // Обновление содержимого каждую секунду
+        getContent(); // Получение содержимого при загрузке страницы!!
+    </script>
+</body>
+{% for cat, msg in get_flashed_messages(True) %}
+    <div class="flash {{cat}}">{{msg}}</div>
+{% endfor %}
+
+{{ result }}
+<!-- <meta http-equiv="refresh" content="10"> -->
+<!-- {% for i in result %}
+    {% if 'please' in i %}
+            <br>
+    {% endif %}
+    <li>{{ i }} </li>
+{% endfor %} -->
+
+{% endblock %}

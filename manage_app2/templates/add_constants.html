@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+ 
+{% block content %}
+{{ super() }}
+
+Меню настройки port console
+
+<form action="{{url_for('add_constants')}}" method="post" class="form-contact">
+<p><label> Port console:</label><input type="text" name="port" value="" required</p>
+<p><input type="submit" value="Submitted"</p>
+
+{% for cat, msg in get_flashed_messages(True) %}
+    <div class="flash {{cat}}">{{msg}}</div>
+{% endfor %}
+
+</form>
+{% endblock %}

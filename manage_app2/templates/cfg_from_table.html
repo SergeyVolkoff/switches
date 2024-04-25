@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+ 
+{% block content %}
+{{ super() }}
+
+<br>Используя нижерасположенную кнопку ЗАГРУЗКА КОНФИГУРАЦИИ ИЗ ФАЙЛА
+<br>можно добавить конфигурацию из файла {{filename}} на коммутатор.
+ <p>ВНИМАНИЕ!</p>
+ <p>загрузка будет проведена сразу после нажатия!</p>
+ <p>загрузка пройдет на коммутаторе, 
+настройки которого указаны в таблице справа вверху
+"Текущие настройки подключения".</p>
+<p> Номер консольного порта можно настроить в МЕНЮ НАСТРОЕК</p>
+<br><hr><br>
+
+<table border="1">
+    <caption>Список имеющихся файлов конфигурации </caption>
+    <tr>
+        <th>Имя файла</th><th>Действие</th>
+    </tr>
+    {% for i in items %}
+        <tr>
+            <td><a href="{{ i }}" class="table-link">{{i}}</a></td>
+            <td><form action="{{ url_for('pull_cfg_sw',filename=i) }}" method="POST"class ="form_contact">
+                <!-- скрытый параметр -->
+                <input type="hidden" name="index" value="Настройка конфигурации">
+                <input type="submit" class="btn btn-dark" value="НАСТРОЙКА КОНФИГУРАЦИИ">
+            </form></td>
+        </tr>
+    {% endfor %}
+</table>
+
+
+<br>
+<body>
+    <ul id="content-list"></ul>
+    <script>
+        let lastUpdateTime = Date.now();
+        // функция будет вызываться для получения содержимого.
+        function getContent() {
+            fetch('/get_content') //для отправки запроса на сервер по URL
+                .then(response => response.json()) // метод json() для преобразования ответа в формат JSON
+                // полученные данные обрабатываются в функции обратного вызова, где извлекается список содержимого data.content.
+                .then(data => {
+                    const contentList = document.getElementById('content-list');  // выбирается элемент с id '-list' и очищается его содержимое.
+                    contentList.innerHTML = '';
+                    // Для каждого элемента в списке содержимого создается новый элемент списка <li> и добавляется текстовое содержимое (line).
+                    data.content.forEach(line => { 
+                        const li = document.createElement('li');
+                        li.textContent = line;
+                        contentList.appendChild(li); //Новый элемент списка добавляется в родительский элемент 'content-list'.
+                    });
+                    lastUpdateTime = Date.now(); // обновляем время последнего обновления
+                });
+                // Проверяем, прошло ли уже 10 секунд с момента последнего обновления
+                if (Date.now()- lastUpdateTime > 10000) {
+                clearInterval(intervalID); // останавливаем выполнение скрипта
+                }
+        }
+        const intervalID = setInterval(getContent, 2000); // Обновление содержимого каждую секунду
+        getContent(); // Получение содержимого при загрузке страницы!!
+    </script>
+</body>
+
+
+
+    {% for cat, msg in get_flashed_messages(True) %}
+        <div class="flash {{cat}}">{{msg}}</div>
+    {% endfor %}
+
+{{ result }}
+
+
+{% endblock %}
