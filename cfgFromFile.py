@@ -6,16 +6,18 @@ from netmiko import (
 )
 import sys
 import os
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
+# sys.path.insert(1, os.path.join(sys.path[0], '..'))
 import yaml
 from constants_trident import (
     CONSOLE,
 )
 from cfg_switch import  TridentCfg
-import importlib
-manage_app = importlib.import_module("manage-app")
-# from .switches.manage_app import app
-from manage_app.app import pull_cfg_sw
+
+# import importlib
+# manage_app = importlib.import_module("manage-app")
+# print(manage_app)
+from switches.manage_app2 import app
+# from manage_app.app import pull_cfg_sw
 
 if __name__ == "__main__":
     tr1 = TridentCfg()
