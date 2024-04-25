@@ -48,7 +48,7 @@ class Connect():
         try:
             temp = self.ssh.send_command('show version',read_timeout=2)
             for i in temp:
-                with open("../sh_ver.txt", 'a+') as file:
+                with open("../process_reset.txt", 'a+') as file:
                      file.write(i)
 
         except FileNotFoundError:

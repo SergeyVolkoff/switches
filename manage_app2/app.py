@@ -17,8 +17,8 @@ from flask_login import (
 from flask_socketio import SocketIO
 from werkzeug.security import generate_password_hash, check_password_hash
 from base_gns3 import Base_gns
-from FDataBase import FDataBase
-from UserLogin import UserLogin
+from manage_app2.FDataBase import FDataBase
+from manage_app2.UserLogin import UserLogin
 from werkzeug.utils import secure_filename
 
 
@@ -152,11 +152,11 @@ def get_ver_sw():
         print(response)
         temp = os.system("python3 ../sh_ver.py")
         time.sleep(2)
-        file_ver = '../sh_ver.txt'
+        file_ver = '../process_reset.txt'
         for line in file_ver:
             with open(file_ver, 'r') as file:
                 text = file.readlines()
-        with open("../sh_ver.txt", 'w') as file:
+        with open("../process_reset.txt", 'w') as file:
             file.write('')      
         return render_template('constants.html',
         title = "Настройки",
@@ -507,6 +507,8 @@ def view_cfg_table():
         items=listfile,
         )    
 
+
+
 @app.route('/pull_cfg_sw/<filename>',methods=['GET','POST'],)
 def pull_cfg_sw(filename):
     """Обработчик заливки конфига из таблицы"""
@@ -514,9 +516,10 @@ def pull_cfg_sw(filename):
     global path_name
     listfile = os.listdir(UPLOAD_FOLDER)
     path_name= os.path.join(UPLOAD_FOLDER, filename)
+    with open("../path_name.txt", 'a') as file:
+        file.write(path_name) 
     result =''
     str_result=''
-
     if request.method == "POST":
         response = request.form['index']  # name="index" in reset.html
         args=["python3", "../cfgFromFile.py"]
@@ -530,6 +533,8 @@ def pull_cfg_sw(filename):
         time.sleep(5)
         with open("../process_reset.txt", 'w'):
             pass  # не удальть - очищает файл
+        with open("../path_name.txt", 'w') as file:
+            pass
         flash(
             "Внимание! Коммутатор get cfg",
             category='success')
@@ -540,7 +545,7 @@ def pull_cfg_sw(filename):
             constants = dbase.getConstants_trident(),
             items=listfile,
             result=str_result,
-            filename=filename
+            filename=filename,
             )    
     return render_template(
         'cfg_from_table.html', title="Операции с файлом конфига",
@@ -548,6 +553,8 @@ def pull_cfg_sw(filename):
         constants = dbase.getConstants_trident(),
         items=listfile,
         )  
+
+
 @app.route('/get_file_cfg/<filename>')
 def get_file_cfg(filename):
     """Обработчик просмотра конфига из папки по ссылке"""

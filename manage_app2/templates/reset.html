@@ -50,7 +50,8 @@
 {% for cat, msg in get_flashed_messages(True) %}
     <div class="flash {{cat}}">{{msg}}</div>
 {% endfor %}
-
+<br>
+<br>
 {{ result }}
 <!-- <meta http-equiv="refresh" content="10"> -->
 <!-- {% for i in result %}
@@ -59,5 +60,4 @@
     {% endif %}
     <li>{{ i }} </li>
 {% endfor %} -->
-
 {% endblock %}
