@@ -32,15 +32,13 @@ class CfgTemplate(Connect):
             if "do reload" in command:
                 output = self.ssh.send_command(
                     command, expect_string="reboot system",
-                    read_timeout=.2)
+                    read_timeout=.45)
                 result_command = "- команда проверяется, пожалуйста, подождите."
                 CONSOLE.print(command, result_command, style='success')
                 result_command = self.ssh.send_command(
                     "y", expect_string="")
                 CONSOLE.print(command, result_command, style='success')
                 time.sleep(5)
-
-                
 
                 #  читаем из файла присвоеный ip_eth0:
                 with open("../ip_eth0.txt", 'r') as file:

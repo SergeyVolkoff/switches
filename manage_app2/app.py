@@ -531,13 +531,13 @@ def pull_cfg_sw(filename):
                 file.write(str_result) 
 
         time.sleep(5)
-        with open("../process_reset.txt", 'w'):
-            pass  # не удальть - очищает файл
+        flash(
+            f"Внимание! На коммутатор загружен конфиг из файла {filename}",
+            category='success')
         with open("../path_name.txt", 'w') as file:
             pass
-        flash(
-            "Внимание! Коммутатор get cfg",
-            category='success')
+        with open("../process_reset.txt", 'w'):
+            pass  # не удальть - очищает файл
         return render_template(
             'cfg_from_table.html',
             title="Добавить конфиг в коммутатор",

@@ -26,3 +26,4 @@ if __name__ == "__main__":
         commands_template = yaml.safe_load(commands)
     # ...построчно передаются в cfg_base которая вызовет cfg_template
     print(tr1.cfg_base(commands_template))
+   
