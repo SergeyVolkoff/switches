@@ -14,9 +14,11 @@ from constants_trident import (
 )
 from ping3 import ping
 from cfg_switch import  TridentCfg
+from connect import Connect
+
 
 if __name__ == "__main__":
     tr1 = TridentCfg()
     # tr1.check_connection()
     tr1.ssh.enable()
-    print(tr1.extended_reset_cfg1())
+    print(tr1.sh_ver())
