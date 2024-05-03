@@ -14,12 +14,19 @@ from flask import (abort,Flask, Response,
 from flask_login import (
     LoginManager, current_user, login_required, login_user,
     logout_user)
+
+from wtforms import (Form,BooleanField, StringField,
+                     PasswordField, ValidationError, validators)
+from wtforms.validators import InputRequired, Regexp
+
+
 from flask_socketio import SocketIO
 from werkzeug.security import generate_password_hash, check_password_hash
 from base_gns3 import Base_gns
 from manage_app2.FDataBase import FDataBase
 from manage_app2.UserLogin import UserLogin
 from werkzeug.utils import secure_filename
+
 
 
 
@@ -100,6 +107,7 @@ def before_request():
 #         g.link_db.close()
 
 
+
 @app.route("/post/<alias>")
 @login_required
 def showPost(alias):
@@ -120,13 +128,13 @@ def index():
         constants=dbase.getConstants_trident())
 
 
-
 @app.route("/add_constants", methods=['POST', 'GET'])
 def add_constants():
     """Add in table constants.
 
     Обработчик ввода порта в табличку настройки устр-ва и возвращает
     страницу настроек."""
+    
     if request.method == 'POST':
         res = dbase.addConstants_trident(request.form['port'])
         port_con = request.form.get('port')
@@ -165,10 +173,21 @@ def get_ver_sw():
         text=text
     )
 
+class ValidValueConsolePort(Form):
+    # port = StringField('Port console',
+    #                    [
+    #                     validators.Length(min=4,max=4,
+    #                     message='Длина port должна быть в диапазоне от 4 до 14.'),
+    #                     validators.Regexp(r'^\d+$', message='Номер порта - это только цифры.'),
+    #                     validators.NumberRange(min=1111,max=3000,message='Номер порта - это только цифры.'),
+    #                     validators.InputRequired(message='Это обязательное поле.')
+    #                     ])
+    port = StringField('Port console', validators=[InputRequired(), Regexp(r'^\d+$', message='Please enter only digits')])
 
 @app.route("/constants", methods=['POST', 'GET'])
 def get_constants():
     """Обработчик выводит страницу настройки устр-ва."""
+    form = ValidValueConsolePort()
     cur = db.cursor()  # Создаем курсор для выполнения SQL-запросов
     # Выполняем запрос для получения данных из таблицы constants_trident
     cur.execute("SELECT title, val FROM constants_trident")
@@ -191,6 +210,7 @@ def get_constants():
         title = "Настройки",
         menu = dbase.getMainmenu(),
         constants = dbase.getConstants_trident(),
+        form=form
         )
 
 @app.route("/reset", methods=['POST', 'GET'])
@@ -392,26 +412,47 @@ def login():
         flash('Неверная пара логин\пароль','error')
     return render_template('login.html',title="Авторизация", menu=dbase.getMainmenu())
 
+class RegistrationForm(Form):
+    """Класс для модуля WTForm - проверка данных в полях регистрации"""
+    name = StringField('Имя пользователя',
+                       [validators.Length(
+                           min=4,max=10,
+                           message='Длина имени должна быть в диапазоне от 4 до 25.')])
+    email = StringField('Email-адрес',
+                        [validators.Length(min=6, max=15,message='Длина email должна быть в диапазоне от 6 до 15.'),
+                        #  validators.Regexp(r'^[-\w\.]+@([-\w]+\.)+[-\w]{2,4}$',message='Неправильный формат email.'),
+                         validators.Email(message='Неправильный формат email.')
+                         ])
+    psw = PasswordField('Новый пароль', [
+        validators.DataRequired(),          
+        validators.EqualTo('psw2', message='Пароли должны совпадать')
+    ])
+    psw2 = PasswordField('Повторите пароль')
 
 @app.route("/register", methods=["POST", "GET"])
 def register():
     """Обработчик для регистрации пользователя"""
-
-    if request.method == "POST":
+    form = RegistrationForm(request.form)    
+    # если HTTP-метод GET, то просто отрисовываем форму
+    if request.method == "POST" and form.validate():
         session.pop('_flashes', None)
-        if len(request.form['name']) >= 4 and len(request.form['email']) >= 4 \
-            and len(request.form['psw']) >= 4 and request.form['psw'] == request.form['psw2']:
-            hash = generate_password_hash(request.form['psw'])
-            res = dbase.addUser(request.form['name'], request.form['email'], hash)
-            if res:
-                flash("Вы успешно зарегистрированы", "success")
-                return redirect(url_for('login'))
-            else:
-                flash("Ошибка при добавлении в БД", "error")
+        hash = generate_password_hash(request.form['psw'])
+        res = dbase.addUser(request.form['name'], request.form['email'], hash)
+        if res:
+            flash("Вы успешно зарегистрированы", "success")
+            return redirect(url_for('login'))
         else:
-            flash("Неверно заполнены поля", "error")
- 
-    return render_template("register.html", menu=dbase.getMainmenu(), title="Регистрация") 
+            flash("Ошибка при добавлении в БД", "error")
+            return render_template("register.html",
+                    menu=dbase.getMainmenu(),
+                    title="Регистрация",
+                    form=form,
+                        ) 
+    return render_template("register.html",
+                           menu=dbase.getMainmenu(),
+                           title="Регистрация",
+                           form=form,
+                           ) 
 
 @app.route('/logout')
 @login_required
