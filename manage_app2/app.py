@@ -15,7 +15,7 @@ from flask_login import (
     LoginManager, current_user, login_required, login_user,
     logout_user)
 
-from wtforms import (Form,BooleanField, StringField,
+from wtforms import (DecimalField, Form,BooleanField, StringField,
                      PasswordField, ValidationError, validators)
 from wtforms.validators import InputRequired, Regexp
 
@@ -128,28 +128,7 @@ def index():
         constants=dbase.getConstants_trident())
 
 
-@app.route("/add_constants", methods=['POST', 'GET'])
-def add_constants():
-    """Add in table constants.
 
-    Обработчик ввода порта в табличку настройки устр-ва и возвращает
-    страницу настроек."""
-    
-    if request.method == 'POST':
-        res = dbase.addConstants_trident(request.form['port'])
-        port_con = request.form.get('port')
-        print(port_con)
-        if not res:
-            flash("Error changed port value")   
-        else:
-            flash("Настройки консольного порта сохранены в БД.")
-       
-    # return render_template(
-    #     'add_constants.html',
-    #     title = "Меню настройки console",
-    #     menu = dbase.getMainmenu(),
-    #     )
-    return redirect(url_for("get_constants"))
 
 
 @app.route("/get_ver_sw", methods=['POST', 'GET'])
@@ -173,21 +152,45 @@ def get_ver_sw():
         text=text
     )
 
+
+@app.route("/add_constants", methods=['POST', 'GET'])
+def add_constants():
+    """Add in table constants.
+
+    Обработчик ввода порта в табличку настройки устр-ва и возвращает
+    страницу настроек."""
+    if request.method == 'POST':
+        res = dbase.addConstants_trident(request.form['port'])
+        port_con = request.form.get('port')
+        print(port_con)
+        if not res:
+            flash("Error changed port value")   
+        else:
+            flash("Настройки консольного порта сохранены в БД.")
+       
+    # return render_template(
+    #     'add_constants.html',
+    #     title = "Меню настройки console",
+    #     menu = dbase.getMainmenu(),
+    #     )
+    return redirect(url_for("get_constants"))
+
 class ValidValueConsolePort(Form):
-    # port = StringField('Port console',
-    #                    [
-    #                     validators.Length(min=4,max=4,
-    #                     message='Длина port должна быть в диапазоне от 4 до 14.'),
-    #                     validators.Regexp(r'^\d+$', message='Номер порта - это только цифры.'),
-    #                     validators.NumberRange(min=1111,max=3000,message='Номер порта - это только цифры.'),
-    #                     validators.InputRequired(message='Это обязательное поле.')
-    #                     ])
-    port = StringField('Port console', validators=[InputRequired(), Regexp(r'^\d+$', message='Please enter only digits')])
+    port = DecimalField('Port console',
+                       [
+                        validators.Length(min=4,max=4,
+                        message='Длина port должна быть в диапазоне от 4 до 4.'),
+                        # validators.Regexp(r'^\d+$', message='Номер порта - это только цифры.'),
+                        validators.NumberRange(min=2000,max=2066,message='Номер порта консольного сервера в диапазоне 2003-2066.'),
+                        validators.InputRequired(message='Это обязательное поле.')
+                        ])
+    # port = StringField('Port console', validators=[InputRequired(), Regexp(r'^\d+$', message='Please enter only digits')])
+
 
 @app.route("/constants", methods=['POST', 'GET'])
 def get_constants():
     """Обработчик выводит страницу настройки устр-ва."""
-    form = ValidValueConsolePort()
+    form = ValidValueConsolePort(request.form)
     cur = db.cursor()  # Создаем курсор для выполнения SQL-запросов
     # Выполняем запрос для получения данных из таблицы constants_trident
     cur.execute("SELECT title, val FROM constants_trident")
