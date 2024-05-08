@@ -19,6 +19,7 @@ from wtforms import (DecimalField, Form,BooleanField, StringField,
                      PasswordField, ValidationError, validators)
 from wtforms.validators import InputRequired, Regexp
 
+from doc_reporter import report_doc
 
 from flask_socketio import SocketIO
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -34,6 +35,7 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 SECRET_KEY = '*'
 MAX_CONTENT_LEN = 1024*1024
+
 app.config.from_object(__name__)
 app.config["child_pid"] = None
 app.config["fd"] = None
@@ -139,11 +141,11 @@ def get_ver_sw():
         print(response)
         temp = os.system("python3 ../sh_ver.py")
         time.sleep(2)
-        file_ver = '../process_reset.txt'
+        file_ver = '../process_temp.txt'
         for line in file_ver:
             with open(file_ver, 'r') as file:
                 text = file.readlines()
-        with open("../process_reset.txt", 'w') as file:
+        with open("../process_temp.txt", 'w') as file:
             file.write('')      
         return render_template('constants.html',
         title = "Настройки",
@@ -234,7 +236,7 @@ def reset():
         process = subprocess.Popen(args, stdout=subprocess.PIPE) 
         for line in process.stdout:
             # print("stdout:", line.decode('utf-8'))
-            with open("../process_reset.txt", 'a') as file:
+            with open("../process_temp.txt", 'a') as file:
                 str_result = line.decode('utf-8')
                 file.write(str_result) 
 
@@ -246,7 +248,7 @@ def reset():
         # else:
         #     flash('Сброс прошел с ошибкой',category='error' )
         time.sleep(5)
-        with open("../process_reset.txt", 'w'):
+        with open("../process_temp.txt", 'w'):
             pass  # не удальть - очищает файл
         flash(
             "Внимание! Коммутатор сброшен на заводские настройки",
@@ -290,11 +292,12 @@ def get_test(id_post):
         process = subprocess.Popen(args, stdout=subprocess.PIPE) 
         for line in process.stdout:
             # print("stdout:", line.decode('utf-8'))
-            with open("../process_reset.txt", 'a') as file:
+            with open("../process_temp.txt", 'a') as file:
                 str_result = line.decode('utf-8')
                 file.write(str_result)
-        with open("../process_reset.txt", 'w'):
+        with open("../process_temp.txt", 'w'):
             pass
+        report_doc() # вызов ф-ии сздания ворд-отчета
         flash(
             "Внимание! Тесты выполнены, ознакомьтесь с результатами в отчетах.",
             category='error')
@@ -362,11 +365,11 @@ def getCfgPage(id_post):
             
             for line in process.stdout:
                 # print("stdout:", line.decode('utf-8'))
-                with open("../process_reset.txt", 'a') as file:
+                with open("../process_temp.txt", 'a') as file:
                     str_result = line.decode('utf-8')
                     file.write(str_result)
             time.sleep(5)
-            with open("../process_reset.txt", 'w'):
+            with open("../process_temp.txt", 'w'):
                 pass
             flash("Устройство успешно сконфигурировано! ",category='success')
             return render_template(
@@ -387,7 +390,7 @@ def getCfgPage(id_post):
 @app.route('/get_content',methods = ['POST', 'GET'])
 # Ф-я для получения вывода с консоли записаного в файл.
 def get_content():
-    with open('../process_reset.txt', 'r') as file:
+    with open('../process_temp.txt', 'r') as file:
         content = file.readlines()
     return jsonify({'content': content})
 
@@ -570,7 +573,7 @@ def pull_cfg_sw(filename):
         process = subprocess.Popen(args, stdout=subprocess.PIPE) 
         for line in process.stdout:
             print(line)
-            with open("../process_reset.txt", 'a') as file:
+            with open("../process_temp.txt", 'a') as file:
                 str_result = line.decode('utf-8')
                 file.write(str_result) 
 
@@ -580,7 +583,7 @@ def pull_cfg_sw(filename):
             category='success')
         with open("../path_name.txt", 'w') as file:
             pass
-        with open("../process_reset.txt", 'w'):
+        with open("../process_temp.txt", 'w'):
             pass  # не удальть - очищает файл
         return render_template(
             'cfg_from_table.html',
@@ -603,6 +606,7 @@ def pull_cfg_sw(filename):
 def get_file_cfg(filename):
     """Обработчик просмотра конфига из папки по ссылке"""
     return send_from_directory(app.config['UPLOAD_FOLDER'],filename)
+
 
 """socketio and PTY"""
 
