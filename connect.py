@@ -24,9 +24,9 @@ class Connect():
         """Init Connect-class."""
         self.word_ping = "ping ",
         self.ip_inet = "8.8.8.8",
-        with open("../constants_trident1.yaml") as f2:
-                temp = yaml.safe_load(f2)
-        self.VALUE_CONS_CONNECT = temp
+        # with open("../constants_trident1.yaml") as f2:
+        #         temp = yaml.safe_load(f2)
+        # self.VALUE_CONS_CONNECT = temp
         try:
             with open("../constants_trident1.yaml") as f2:
                 self.VALUE_CONS_CONNECT = yaml.safe_load(f2)
@@ -37,6 +37,20 @@ class Connect():
                     self.VALUE_CONS_CONNECT['host'],
                     'port:', self.VALUE_CONS_CONNECT['port'], "*" * 5,
                     "\nConnection refused - Console is busy!",
+                    style='fail')
+            exit()
+
+    def check_mode(self):
+        check_mode_conn = self.ssh.check_config_mode()
+        try:
+            if check_mode_conn == True:
+                self.ssh.exit_config_mode()
+        except ConnectionError as err:
+            CONSOLE.print(
+                    "*" * 5, "Error connection to:",
+                    self.VALUE_CONS_CONNECT['host'],
+                    'port:', self.VALUE_CONS_CONNECT['port'], "*" * 5,
+                    err,
                     style='fail')
             exit()
 
@@ -229,5 +243,5 @@ class Connect():
 
 if __name__=="__main__":
     tr1 = Connect()
-    print(tr1.send_command('sh run'))
+    print(tr1.check_mode())
 

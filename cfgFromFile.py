@@ -19,6 +19,7 @@ from cfg_switch import  TridentCfg
 if __name__ == "__main__":
     tr1 = TridentCfg()
     tr1.check_connection()
+    tr1.check_mode()
     file =  open("../path_name.txt", 'r')
     path_name = file.readline()
     # команды настройки конфига...
