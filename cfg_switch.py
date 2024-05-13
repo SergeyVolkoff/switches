@@ -17,30 +17,25 @@ from connect import Connect
 class CfgTemplate(Connect):
     """Class for cfg trident from tamplate."""
 
-    def check_flask_out():
-        print('ok')
-        return "Host OK"
-
     def cfg_template(self, commands_template):
         """
         Function for configuration DUT from template,
         with start control DUT after reboot.
         """
+        self.check_mode()
         result = {}
         # в цикле проверяются команды и отправляются на исполнение
         for command in commands_template:
             if "do reload" in command:
                 output = self.ssh.send_command(
                     command, expect_string="reboot system",
-                    read_timeout=.2)
+                    read_timeout=.45)
                 result_command = "- команда проверяется, пожалуйста, подождите."
                 CONSOLE.print(command, result_command, style='success')
                 result_command = self.ssh.send_command(
                     "y", expect_string="")
                 CONSOLE.print(command, result_command, style='success')
                 time.sleep(5)
-
-                
 
                 #  читаем из файла присвоеный ip_eth0:
                 with open("../ip_eth0.txt", 'r') as file:
@@ -98,6 +93,7 @@ class TridentCfg(CfgTemplate):
         with control start DUT after a reboot.
         """
         self.check_connection(self.VALUE_CONS_CONNECT)
+        self.check_mode()
         self.ssh.enable()
         CONSOLE.print(
             "Do you realy want to reset config!?",
@@ -167,7 +163,7 @@ class TridentCfg(CfgTemplate):
         replica
         """
         # self.check_connection(self.VALUE_CONS_CONNECT)
-        
+        self.check_mode()
         self.ssh.enable()
         
         # CONSOLE.print(

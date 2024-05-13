@@ -3,6 +3,8 @@
    "conf t",
    "hostname DDDDDDDDDDDD",
    "end",
-   "wr",
-   "exit"
+   "write",
+   "sh hostname",
+   "exit",
+   
 }

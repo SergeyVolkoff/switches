@@ -62,6 +62,8 @@
     </script>
 </body>
 
+<br>
+<br>
 {% for cat, msg in get_flashed_messages(True) %}
     <div class="flash {{cat}}">{{msg}}</div>
 {% endfor %}
@@ -71,5 +73,11 @@
 <br>
 <br>
 <a class="button"  href="/upload_file_cfg">Назад</a>
-
+<!-- <meta http-equiv="refresh" content="10"> -->
+<!-- {% for i in result %}
+    {% if 'please' in i %}
+            <br>
+    {% endif %}
+    <li>{{ i }} </li>
+{% endfor %} -->
 {% endblock %}

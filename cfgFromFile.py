@@ -19,6 +19,7 @@ from cfg_switch import  TridentCfg
 if __name__ == "__main__":
     tr1 = TridentCfg()
     tr1.check_connection()
+    tr1.check_mode()
     file =  open("../path_name.txt", 'r')
     path_name = file.readline()
     # команды настройки конфига...
@@ -26,3 +27,4 @@ if __name__ == "__main__":
         commands_template = yaml.safe_load(commands)
     # ...построчно передаются в cfg_base которая вызовет cfg_template
     print(tr1.cfg_base(commands_template))
+   
