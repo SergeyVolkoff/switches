@@ -20,5 +20,6 @@ from connect import Connect
 if __name__ == "__main__":
     tr1 = TridentCfg()
     # tr1.check_connection()
+    tr1.check_mode()
     tr1.ssh.enable()
     print(tr1.sh_ver())
