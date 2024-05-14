@@ -46,6 +46,21 @@ title text NOT NULL,
 url text
 );
 
+CREATE TABLE IF NOT EXISTS device_type (
+id integer  PRIMARY KEY AUTOINCREMENT,
+type text NOT NULL,
+device text NOT NULL,
+url text
+);
+
+CREATE TABLE IF NOT EXISTS test_category (
+id integer  PRIMARY KEY AUTOINCREMENT,
+type text NOT NULL,
+device text NOT NULL,
+url text
+);
+
+
 INSERT INTO read_cfg (title, url) VALUES ('Просмотр конфигурации под тест GRE', '/read_cfg/1');
 INSERT INTO read_cfg (title, url) VALUES ('Просмотр конфигурации под тест 2', '/read_cfg/2');
 INSERT INTO read_cfg (title, url) VALUES ('Просмотр конфигурации под тест 3', '/read_cfg/3');

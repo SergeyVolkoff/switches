@@ -121,15 +121,22 @@ def showPost(alias):
         'post.html', menu=dbase.getMenu(), title=title, post=post)
 
 
-@app.route("/")
-def index():
-    """Обработчик main-страницы."""
+@app.route("/base_tests")
+def base_tests():
+    """Обработчик base_tests-страницы."""
     return render_template(
-        'index.html', menu=dbase.getMainmenu(),
+        'base_tests.html', menu=dbase.getMainmenu(),
         secondmenu=dbase.getSecondmenu(),
         constants=dbase.getConstants_trident())
 
 
+@app.route("/")
+def index():
+    """Обработчик base_main-страницы."""
+    return render_template(
+        'index.html', menu=dbase.getMainmenu(),
+        secondmenu=dbase.getSecondmenu(),
+        constants=dbase.getConstants_trident())
 
 
 
