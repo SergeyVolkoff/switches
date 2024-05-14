@@ -121,6 +121,19 @@ def showPost(alias):
         'post.html', menu=dbase.getMenu(), title=title, post=post)
 
 
+@app.route("/")
+def index():
+    """Обработчик base_main-страницы."""
+    return render_template(
+        'index.html', menu=dbase.getMainmenu(),
+        secondmenu=dbase.getSecondmenu(),
+        constants=dbase.getConstants_trident(),
+        tests_category = dbase.getTests_category(),
+        device_type = dbase.getDevice_type(),
+        device = dbase.getDevice(),
+        )
+
+
 @app.route("/base_tests")
 def base_tests():
     """Обработчик base_tests-страницы."""
@@ -128,16 +141,6 @@ def base_tests():
         'base_tests.html', menu=dbase.getMainmenu(),
         secondmenu=dbase.getSecondmenu(),
         constants=dbase.getConstants_trident())
-
-
-@app.route("/")
-def index():
-    """Обработчик base_main-страницы."""
-    return render_template(
-        'index.html', menu=dbase.getMainmenu(),
-        secondmenu=dbase.getSecondmenu(),
-        constants=dbase.getConstants_trident())
-
 
 
 @app.route("/get_ver_sw", methods=['POST', 'GET'])

@@ -47,6 +47,36 @@ class FDataBase:
             print("Error read from DB")
         return res 
     
+    def getTests_category(self):
+        sql = '''SELECT * FROM tests_category'''
+        try:
+            self.__cur.execute(sql) #
+            res = self.__cur.fetchall() # вычитываем все записи
+            if res: return res
+        except:
+            print("Error read from DB")
+        return res 
+    
+    def getDevice_type(self):
+        sql = '''SELECT * FROM device_type'''
+        try:
+            self.__cur.execute(sql) #
+            res = self.__cur.fetchall() # вычитываем все записи
+            if res: return res
+        except:
+            print("Error read from DB")
+        return res 
+    
+    def getDevice(self):
+        sql = '''SELECT * FROM device'''
+        try:
+            self.__cur.execute(sql) #
+            res = self.__cur.fetchall() # вычитываем все записи
+            if res: return res
+        except:
+            print("Error read from DB")
+        return res
+    
     def addConstants_trident(self,val):
         try:
             self.__cur.execute("UPDATE constants_trident SET val=(?) WHERE id = 6",(val,))

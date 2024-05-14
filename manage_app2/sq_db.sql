@@ -46,19 +46,45 @@ title text NOT NULL,
 url text
 );
 
-CREATE TABLE IF NOT EXISTS device_type (
+CREATE TABLE IF NOT EXISTS device (
 id integer  PRIMARY KEY AUTOINCREMENT,
-type text NOT NULL,
-device text NOT NULL,
+tag text,
+name_dev text NOT NULL,
 url text
 );
 
-CREATE TABLE IF NOT EXISTS test_category (
+CREATE TABLE IF NOT EXISTS device_type (
 id integer  PRIMARY KEY AUTOINCREMENT,
-type text NOT NULL,
-device text NOT NULL,
+tag text NOT NULL,
+type_dev text NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS tests_category (
+id integer  PRIMARY KEY AUTOINCREMENT,
+tag text,
+name NOT NULL,
 url text
 );
+
+
+INSERT INTO device (tag, name_dev, url) VALUES ('bm10-hp', 'BM10-HP-2xLTE', '/bm10hp2xle');
+INSERT INTO device (tag, name_dev, url) VALUES ('bm1300', 'BM1300', '/bm1300');
+INSERT INTO device (tag, name_dev, url) VALUES ('trident', 'Trident','/BS751048x6q');
+
+INSERT INTO device_type (tag, type_dev) VALUES ('cpe', 'CPE');
+INSERT INTO device_type (tag, type_dev) VALUES ('router', 'Router');
+INSERT INTO device_type (tag, type_dev) VALUES ('switchboard', 'Switchboard');
+
+INSERT INTO tests_category (tag, name, url) VALUES ('l2', 'L2 тесты', '/l2');
+INSERT INTO tests_category (tag, name, url) VALUES ('l3', 'L3 тесты', '/l3');
+INSERT INTO tests_category (tag, name, url) VALUES ('manage', 'Management тесты', '/manag_categor');
+INSERT INTO tests_category (tag, name, url) VALUES ('secur', 'Security тесты', '/secur_categor');
+INSERT INTO tests_category (tag, name, url) VALUES ('amount1', 'Тесты с использованием 1 устройства', '/amount1_categor ');
+INSERT INTO tests_category (tag, name, url) VALUES ('amount2', 'Тесты с использованием 2 устройства', '/amount2_categor ');
+INSERT INTO tests_category (tag, name, url) VALUES ('amount3', 'Тесты с использованием 3 и более устройств', '/amount3_categor ');
+INSERT INTO tests_category (tag, name, url) VALUES ('ixia', 'Тесты с использованием IXIA', '/ixia_categor');
+INSERT INTO tests_category (tag, name, url) VALUES ('gns', 'Тесты с использованием GNS3', '/gns_categor');
+
 
 
 INSERT INTO read_cfg (title, url) VALUES ('Просмотр конфигурации под тест GRE', '/read_cfg/1');

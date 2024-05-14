@@ -2,13 +2,29 @@
  
 {% block content %}
 {{ super() }}
-<h2>Выбор тестов</h2>
-{%- block secondmenu -%}
-<ul class="secondmenu">
-        {% for m in secondmenu -%}
-                <li><a href="{{m.url}}">{{m.title}}</a></li>
+
+<h2>Выбор категории платформы:</h2>
+
+{%- block device_type -%}
+<ul class="device_type">
+        {% for m in device_type -%}
+                {% for n in device %}
+                        <li>{{m.tag}} {{m.type_dev}}</li>
+                        <li><a href="{{n.url}}">{{n.name_dev}}</a></li>
+                {% endfor -%}     
         {% endfor -%}
 </ul>
-        {% endblock secondmenu -%}
+        {% endblock device_type -%}
+
+
+<h2>Выбор категории тестов:</h2>
+
+{%- block tests_category -%}
+<ul class="tests_category">
+        {% for m in tests_category -%}
+                <li><a href="{{m.url}}">{{m.name}}</a></li>
+        {% endfor -%}
+</ul>
+        {% endblock tests_category -%}
 
 {% endblock %}
