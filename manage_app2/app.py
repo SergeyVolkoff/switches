@@ -129,8 +129,8 @@ def index():
         secondmenu=dbase.getSecondmenu(),
         constants=dbase.getConstants_trident(),
         tests_category = dbase.getTests_category(),
-        device_type = dbase.getDevice_type(),
         device = dbase.getDevice(),
+        device_type = dbase.getDevice_type()
         )
 
 

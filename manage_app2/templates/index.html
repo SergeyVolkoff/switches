@@ -3,19 +3,22 @@
 {% block content %}
 {{ super() }}
 
-<h2>Выбор категории платформы:</h2>
+<h2>Выбор платформы и устройства:</h2>
 
 {%- block device_type -%}
-<ul class="device_type">
-        {% for m in device_type -%}
-                {% for n in device %}
-                        <li>{{m.tag}} {{m.type_dev}}</li>
-                        <li><a href="{{n.url}}">{{n.name_dev}}</a></li>
-                {% endfor -%}     
-        {% endfor -%}
-</ul>
-        {% endblock device_type -%}
-
+<nav>
+	<ul class="device">
+		{% for m in device_type %}
+			Категория: {{m.type_dev }} </li>
+			{% for n in device %}
+				{% if n.tag_type==m.tag %}
+					<a href="{{n.url}}">{{n.device_name}}</a>
+				{% endif-%}
+			{% endfor -%}
+		{% endfor -%}
+	</ul>
+</nav>
+{% endblock device_type %}
 
 <h2>Выбор категории тестов:</h2>
 

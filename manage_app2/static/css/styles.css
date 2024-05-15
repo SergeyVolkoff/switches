@@ -124,3 +124,31 @@ div.content {
     margin: 0 auto 10px;
   }
 }
+nav {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  width: 200px;
+}
+nav a {
+  background-color: #949494;
+  color: #fff;
+  padding: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  border-left: 5px solid #33ADFF;
+  display: block;
+}
+nav li {
+  border-left: 5px solid #666;
+  border-bottom: 1px solid #666;
+}
+nav a:hover {
+  background-color: #666;
+  border-left: 5px solid #3333FF;
+}
+nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}

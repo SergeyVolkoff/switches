@@ -48,8 +48,10 @@ url text
 
 CREATE TABLE IF NOT EXISTS device (
 id integer  PRIMARY KEY AUTOINCREMENT,
-tag text,
-name_dev text NOT NULL,
+tag_type text,
+tag_name text,
+device_tag text,
+device_name text NOT NULL,
 url text
 );
 
@@ -67,9 +69,10 @@ url text
 );
 
 
-INSERT INTO device (tag, name_dev, url) VALUES ('bm10-hp', 'BM10-HP-2xLTE', '/bm10hp2xle');
-INSERT INTO device (tag, name_dev, url) VALUES ('bm1300', 'BM1300', '/bm1300');
-INSERT INTO device (tag, name_dev, url) VALUES ('trident', 'Trident','/BS751048x6q');
+INSERT INTO device (tag_type, tag_name, device_tag, device_name, url) VALUES ('cpe', 'CPE', 'bm10-hp', 'BM10-HP-2xLTE', '/bm10hp2xlte');
+INSERT INTO device (tag_type, tag_name, device_tag, device_name,  url) VALUES ('cpe', 'CPE', 'bm10-lte', 'BM10-LTE', '/bm10lte');
+INSERT INTO device (tag_type, tag_name, device_tag, device_name,  url) VALUES ('router', 'Router','bm1300', 'BM1300', '/bm1300');
+INSERT INTO device (tag_type, tag_name, device_tag, device_name,  url) VALUES ('switchboard', 'Switchboard','trident', 'Trident','/BS751048x6q');
 
 INSERT INTO device_type (tag, type_dev) VALUES ('cpe', 'CPE');
 INSERT INTO device_type (tag, type_dev) VALUES ('router', 'Router');
