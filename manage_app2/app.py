@@ -123,15 +123,26 @@ def showPost(alias):
 
 @app.route("/")
 def index():
-    """Обработчик base_main-страницы."""
+    """Обработчик index-страницы."""
     return render_template(
         'index.html', menu=dbase.getMainmenu(),
         secondmenu=dbase.getSecondmenu(),
         constants=dbase.getConstants_trident(),
-        tests_category = dbase.getTests_category(),
         device = dbase.getDevice(),
-        device_type = dbase.getDevice_type()
+        device_type = dbase.getDevice_type(),
+        tests_category = dbase.getTests_category(),
+        l2_test = dbase.getL2_test(),
         )
+@app.route("/bm10hp2xlte")
+def bm10hp2xlte():
+    return render_template(
+        "bm10hp2xlte.html",
+        menu=dbase.getMainmenu(),
+        secondmenu=dbase.getSecondmenu(),
+        constants=dbase.getConstants_trident(),
+        tests_category = dbase.getTests_category(),
+
+    )
 
 
 @app.route("/base_tests")

@@ -1,0 +1,14 @@
+<!-- страница-шаблон, содержит базу для формирования страницы ПМИ-->
+{% extends 'base.html' %}
+
+{% block content %}
+  {{ super() }}
+  <h2>Выбор категории тестов:</h2>
+    {%- block tests_category -%}
+      <ul class="tests_category">
+        {% for m in tests_category -%}
+          <li><a href="{{m.url}}">{{m.name}}</a></li>
+        {% endfor -%}
+      </ul>
+    {% endblock tests_category -%}
+{% endblock %}

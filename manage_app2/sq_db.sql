@@ -64,10 +64,16 @@ type_dev text NOT NULL
 CREATE TABLE IF NOT EXISTS tests_category (
 id integer  PRIMARY KEY AUTOINCREMENT,
 tag text,
-name NOT NULL,
+name text NOT NULL,
 url text
 );
 
+CREATE TABLE IF NOT EXISTS l2_test (
+id integer  PRIMARY KEY AUTOINCREMENT,
+tag text,
+namel2_test text NOT NULL,
+url text
+);
 
 INSERT INTO device (tag_type, tag_name, device_tag, device_name, url) VALUES ('cpe', 'CPE', 'bm10-hp', 'BM10-HP-2xLTE', '/bm10hp2xlte');
 INSERT INTO device (tag_type, tag_name, device_tag, device_name,  url) VALUES ('cpe', 'CPE', 'bm10-lte', 'BM10-LTE', '/bm10lte');
@@ -88,17 +94,23 @@ INSERT INTO tests_category (tag, name, url) VALUES ('amount3', 'Тесты с и
 INSERT INTO tests_category (tag, name, url) VALUES ('ixia', 'Тесты с использованием IXIA', '/ixia_categor');
 INSERT INTO tests_category (tag, name, url) VALUES ('gns', 'Тесты с использованием GNS3', '/gns_categor');
 
+INSERT INTO l2_test (tag, namel2_test, url) VALUES ('l2', 'Проверка механизмов Learning, Forwarding, Filtering, Flooding', '/l2_1');
+INSERT INTO l2_test (tag, namel2_test, url) VALUES ('l2', 'Проверка поддержки Jumbo frame', '/l2_2');
+INSERT INTO l2_test (tag, namel2_test, url) VALUES ('l2', 'Проверка статических записей в MAC-таблице', '/l2_3');
+INSERT INTO l2_test (tag, namel2_test, url) VALUES ('l2', 'Проверка ограничения на размер MAC-таблицы per-port/per-bridge', '/l2_4');
+
 
 
 INSERT INTO read_cfg (title, url) VALUES ('Просмотр конфигурации под тест GRE', '/read_cfg/1');
 INSERT INTO read_cfg (title, url) VALUES ('Просмотр конфигурации под тест 2', '/read_cfg/2');
 INSERT INTO read_cfg (title, url) VALUES ('Просмотр конфигурации под тест 3', '/read_cfg/3');
 
-INSERT INTO mainmenu (title, url) VALUES ('Тесты устройства', '/');
+INSERT INTO mainmenu (title, url) VALUES ('Тесты устройства', '/base_tests');
 INSERT INTO mainmenu (title, url) VALUES ('Конфигурация устройства', '/cfg');
 INSERT INTO mainmenu (title, url) VALUES ('Сброс настроек устройства', '/reset');
 INSERT INTO mainmenu (title, url) VALUES ('Настройки', '/constants');
 INSERT INTO mainmenu (title, url) VALUES ('Авторизация пользователя', '/login');
+INSERT INTO mainmenu (title, url) VALUES ('ГЛАВНАЯ', '/');
 
 INSERT INTO secondmenu (title, url) VALUES ('Проверка поддержки GRE', '1');
 INSERT INTO secondmenu (title, url) VALUES ('Проверка поддержки test2', '2');

@@ -1,33 +1,48 @@
+<!-- Главная страница с выбором категории устр-ва и уст-ва-->
+
 {% extends 'base.html' %}
  
 {% block content %}
 {{ super() }}
 
-<h2>Выбор платформы и устройства:</h2>
+<h2>Выбор платформы, устройства, доступных тестов:</h2>
 
 {%- block device_type -%}
-<nav>
-	<ul class="device">
-		{% for m in device_type %}
-			Категория: {{m.type_dev }} </li>
-			{% for n in device %}
-				{% if n.tag_type==m.tag %}
-					<a href="{{n.url}}">{{n.device_name}}</a>
-				{% endif-%}
+	<nav class="menu_color">
+		<ul class="my_menu my_accordion">
+			{% for dev_t in device_type %}
+				<h3>Категория: {{dev_t.type_dev }}</h3>
+				<!-- -->
+				{% for dev in device %}
+					<!-- -->
+					{% if dev.tag_type==dev_t.tag %}
+						<!-- <a href="{{dev.url}}">{{dev.device_name}}</a> -->
+						<li class="parent"><a href="{{dev.url}}">{{dev.device_name}}</a>
+							<ul class="sub-accordion-menu">
+								<h4>Выбор категории тестов:</h4>
+									{%- block tests_category -%}
+											{% for tes_cat in tests_category -%}
+												<li><a href="{{tes_cat.url}}">{{tes_cat.name}}</a></li>
+												<!-- -->
+												<details open>
+													<summary>Выбор тестов из {{tes_cat.name}}:</summary>
+													{% for l in l2_test -%} 
+														{% if tes_cat.tag==l.tag %}
+																<p><input type="checkbox" </p>
+																<span> <a href="{{l.url}}">{{l.namel2_test}}</a></span>
+														</form>
+														{%endif%}
+													{%endfor%}
+												</details>
+											{% endfor -%}
+									{% endblock tests_category -%}
+							</ul>
+						</li>
+					{% endif-%}
+				{% endfor -%}
 			{% endfor -%}
-		{% endfor -%}
-	</ul>
-</nav>
+		</ul>
+	</nav>
 {% endblock device_type %}
-
-<h2>Выбор категории тестов:</h2>
-
-{%- block tests_category -%}
-<ul class="tests_category">
-        {% for m in tests_category -%}
-                <li><a href="{{m.url}}">{{m.name}}</a></li>
-        {% endfor -%}
-</ul>
-        {% endblock tests_category -%}
 
 {% endblock %}

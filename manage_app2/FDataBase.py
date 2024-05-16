@@ -77,6 +77,16 @@ class FDataBase:
             print("Error read from DB")
         return res
     
+    def getL2_test(self):
+        sql = '''SELECT * FROM l2_test'''
+        try:
+            self.__cur.execute(sql) #
+            res = self.__cur.fetchall() # вычитываем все записи
+            if res: return res
+        except:
+            print("Error read from DB")
+        return res
+    
     def addConstants_trident(self,val):
         try:
             self.__cur.execute("UPDATE constants_trident SET val=(?) WHERE id = 6",(val,))
