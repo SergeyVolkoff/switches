@@ -8,41 +8,44 @@
 <h2>Выбор платформы, устройства, доступных тестов:</h2>
 
 {%- block device_type -%}
-	<nav class="menu_color">
-		<ul class="my_menu my_accordion">
+		<ul class="menu_tests">
 			{% for dev_t in device_type %}
-				<h3>Категория: {{dev_t.type_dev }}</h3>
-				<!-- -->
+			<details>
+				<summary>{{dev_t.type_dev }}</summary>
 				{% for dev in device %}
-					<!-- -->
 					{% if dev.tag_type==dev_t.tag %}
-						<!-- <a href="{{dev.url}}">{{dev.device_name}}</a> -->
-						<li class="parent"><a href="{{dev.url}}">{{dev.device_name}}</a>
-							<ul class="sub-accordion-menu">
-								<h4>Выбор категории тестов:</h4>
+						<a href="{{dev.url}}">{{dev.device_name}}</a>
+							<ul>
+								<details>
+									<summary>Выбор категории тестов:</summary>
 									{%- block tests_category -%}
 											{% for tes_cat in tests_category -%}
-												<li><a href="{{tes_cat.url}}">{{tes_cat.name}}</a></li>
-												<!-- -->
-												<details open>
-													<summary>Выбор тестов из {{tes_cat.name}}:</summary>
+												<details >
+												<summary><a href="{{tes_cat.url}}">{{tes_cat.name}}</a></summary>
+												<!-- обработка l2_test-->
 													{% for l in l2_test -%} 
 														{% if tes_cat.tag==l.tag %}
-																<p><input type="checkbox" </p>
-																<span> <a href="{{l.url}}">{{l.namel2_test}}</a></span>
-														</form>
+															<p><input type="checkbox" </p>
+															<span> <a href="{{l.url}}">{{l.namel2_test}}</a></span>
 														{%endif%}
 													{%endfor%}
+												<!-- обработка l2_test-->
+												{% for g in gns_test -%} 
+													{% if tes_cat.tag==g.tag %}
+														<p><input type="checkbox" </p>
+														<span> <a href="{{g.url}}">{{g.nameGNS_test}}</a></span>
+												{%endif%}
+											{%endfor%}
 												</details>
 											{% endfor -%}
+								</details>
 									{% endblock tests_category -%}
 							</ul>
-						</li>
 					{% endif-%}
 				{% endfor -%}
+			</details>
 			{% endfor -%}
 		</ul>
-	</nav>
 {% endblock device_type %}
 
 {% endblock %}

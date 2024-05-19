@@ -124,3 +124,42 @@ div.content {
     margin: 0 auto 10px;
   }
 }
+/* Общие правила для пунктов меню */
+.menu_tests li a {
+  display:block;
+  margin:0;
+  padding:6px 20px;
+  text-decoration: none;
+}
+/*Наведение на активный пункт меню - курсор обычный */
+.menu_tests li.active > a:hover {
+  cursor: default;
+}
+details {
+  font:
+    16px "Open Sans",
+    Calibri,
+    sans-serif;
+  width: 620px;
+}
+
+details > summary {
+  padding: 2px 6px;
+  width: 25em;
+  background-color: #ddd;
+  border: none;
+  box-shadow: 10px 3px 4px black;
+  cursor: pointer;
+}
+
+details > p {
+  border-radius: 0 0 10px 10px;
+  background-color: #ddd;
+  padding: 2px 6px;
+  margin: 0;
+  box-shadow: 3px 3px 4px black;
+}
+
+details[open] > summary {
+  background-color: #ccf;
+}

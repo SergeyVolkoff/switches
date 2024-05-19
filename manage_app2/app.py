@@ -132,6 +132,7 @@ def index():
         device_type = dbase.getDevice_type(),
         tests_category = dbase.getTests_category(),
         l2_test = dbase.getL2_test(),
+        gns_test = dbase.getGNS_test(),
         )
 @app.route("/bm10hp2xlte")
 def bm10hp2xlte():
@@ -288,7 +289,7 @@ def reset():
         constants = dbase.getConstants_trident()
         )
 
-@app.route("/<int:id_post>",methods = ['POST', 'GET'])
+@app.route("/gns_<int:id_post>",methods = ['POST', 'GET'])
 def get_test(id_post):
     """Ф-я выводит в веб страницу тестов,кнопки старта и отчета
       и  текстовый результат тестов """
@@ -323,13 +324,13 @@ def get_test(id_post):
             "Внимание! Тесты выполнены, ознакомьтесь с результатами в отчетах.",
             category='error')
         return render_template(
-            f'Vtest-{id_post}.html', title = "настройка DUT под тест",
+            f'gns_{id_post}.html', title = "настройка DUT под тест",
             menu = dbase.getMainmenu(),
             thirdmenu = dbase.getThirdmenu(),
             result = str_result)
     
     return render_template(
-        f'Vtest-1.html',  # Реализовать вызов универсальных стр(переделать HTML)
+        f'gns_1.html',  # Реализовать вызов универсальных стр(переделать HTML)
         menu = dbase.getMainmenu(), secondmenu = dbase.getSecondmenu(),
         post=id,
         image_path=image_path,

@@ -75,6 +75,13 @@ namel2_test text NOT NULL,
 url text
 );
 
+CREATE TABLE IF NOT EXISTS gns_test (
+id integer  PRIMARY KEY AUTOINCREMENT,
+tag text,
+nameGNS_test text NOT NULL,
+url text
+);
+
 INSERT INTO device (tag_type, tag_name, device_tag, device_name, url) VALUES ('cpe', 'CPE', 'bm10-hp', 'BM10-HP-2xLTE', '/bm10hp2xlte');
 INSERT INTO device (tag_type, tag_name, device_tag, device_name,  url) VALUES ('cpe', 'CPE', 'bm10-lte', 'BM10-LTE', '/bm10lte');
 INSERT INTO device (tag_type, tag_name, device_tag, device_name,  url) VALUES ('router', 'Router','bm1300', 'BM1300', '/bm1300');
@@ -98,6 +105,14 @@ INSERT INTO l2_test (tag, namel2_test, url) VALUES ('l2', 'Проверка ме
 INSERT INTO l2_test (tag, namel2_test, url) VALUES ('l2', 'Проверка поддержки Jumbo frame', '/l2_2');
 INSERT INTO l2_test (tag, namel2_test, url) VALUES ('l2', 'Проверка статических записей в MAC-таблице', '/l2_3');
 INSERT INTO l2_test (tag, namel2_test, url) VALUES ('l2', 'Проверка ограничения на размер MAC-таблицы per-port/per-bridge', '/l2_4');
+INSERT INTO l2_test (tag, namel2_test, url) VALUES ('l2', 'Проверка MAC Ageing Timer', '/l2_5');
+INSERT INTO l2_test (tag, namel2_test, url) VALUES ('l2', 'Проверка механизма Err-Disable', '/l2_6');
+INSERT INTO l2_test (tag, namel2_test, url) VALUES ('l2', 'Проверка механизма Port Security', '/l2_7');
+INSERT INTO l2_test (tag, namel2_test, url) VALUES ('l2', 'Проверка механизма Layer 2 Protocol Tunneling', '/l2_8');
+INSERT INTO l2_test (tag, namel2_test, url) VALUES ('l2', 'Проверка механизма Flow Control', '/l2_9');
+INSERT INTO l2_test (tag, namel2_test, url) VALUES ('l2', 'Проверка конфигурирования MAC на интерфейсе', '/l2_10');
+
+INSERT INTO gns_test (tag, nameGNS_test, url) VALUES ('gns', 'Проверка поддержки GRE', '/gns_1');
 
 
 
