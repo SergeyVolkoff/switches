@@ -103,7 +103,7 @@ def before_request():
 
 # Мешает выводу консоли в html
 # @app.teardown_appcontext
-# def close_db(error):
+# def close_db(error):99999
 #     """Закрываем соединение с БД, если оно установлено."""
 #     if hasattr(g, 'link_db'):
 #         g.link_db.close()
