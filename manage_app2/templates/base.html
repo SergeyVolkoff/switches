@@ -1,7 +1,7 @@
 <!-- Базовая страница-->
 <!DOCTYPE html>
 <html>
-
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <body>
 <div class="wrapper">
     <div class="page">
@@ -10,7 +10,7 @@
             <style type="text/css">
             #toplayer {
                 background: url(static/images/fon_bulat2.jpg) repeat-x; /* Параметры фона */
-                height: 69px; /* Высота слоя */
+                height: 80px; /* Высота слоя */
                 }
             </style>
             <div id="toplayer">
@@ -41,13 +41,13 @@
                     </ul>
                 {% endblock mainmenu -%}
             </div>
-            <div class="content">
+            <!-- <div class="content">
                 {% if title -%}
                     <h1>{{title}}</h1>
                 {% else -%}
                     <h1>Bulat tests</h1>
                 {% endif -%}
-            </div>
+            </div> -->
 
         {% endblock content-%}   
     </div>

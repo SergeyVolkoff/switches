@@ -21,21 +21,14 @@
 									{%- block tests_category -%}
 											{% for tes_cat in tests_category -%}
 												<details >
-												<summary><a href="{{tes_cat.url}}">{{tes_cat.name}}</a></summary>
-												<!-- обработка l2_test-->
-													{% for l in l2_test -%} 
-														{% if tes_cat.tag==l.tag %}
-															<p><input type="checkbox" </p>
-															<span> <a href="{{l.url}}">{{l.namel2_test}}</a></span>
-														{%endif%}
-													{%endfor%}
-												<!-- обработка l2_test-->
-												{% for g in gns_test -%} 
+												<summary>{{tes_cat.name}}</summary>
+												<!-- обработка tests-->
+												{% for g in templ_page -%} 
 													{% if tes_cat.tag==g.tag %}
 														<p><input type="checkbox" </p>
-														<span> <a href="{{g.url}}">{{g.nameGNS_test}}</a></span>
-												{%endif%}
-											{%endfor%}
+														<span> <a href="{{g.tag}}/{{g.id}}">{{g.name}}</a></span>
+													{%endif%}
+												{%endfor%}
 												</details>
 											{% endfor -%}
 								</details>

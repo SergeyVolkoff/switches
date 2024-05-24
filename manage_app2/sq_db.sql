@@ -4,25 +4,10 @@ title text NOT NULL,
 url text NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS secondmenu (
-id integer  PRIMARY KEY AUTOINCREMENT,
-title text NOT NULL,
-url text NOT NULL
-);
-
 CREATE TABLE IF NOT EXISTS thirdmenu (
 id integer  PRIMARY KEY AUTOINCREMENT,
 title text NOT NULL,
 url text NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS posts (
-id integer  PRIMARY KEY AUTOINCREMENT,
-title text DEFAULT NULL,
-schema blob DEFAULT NULL,
-test_specification text DEFAULT NULL,
-test_progress text DEFAULT NULL,
-test_result text DEFAULT NULL
 );
 
 CREATE TABLE IF NOT EXISTS constants_trident (
@@ -71,15 +56,17 @@ url text
 CREATE TABLE IF NOT EXISTS l2_test (
 id integer  PRIMARY KEY AUTOINCREMENT,
 tag text,
-namel2_test text NOT NULL,
-url text
+name text NOT NULL,
+path_schema text,
+path_descr text
 );
 
-CREATE TABLE IF NOT EXISTS gns_test (
+CREATE TABLE IF NOT EXISTS tests_all (
 id integer  PRIMARY KEY AUTOINCREMENT,
 tag text,
-nameGNS_test text NOT NULL,
-url text
+name text NOT NULL,
+path_schema text,
+path_descr text
 );
 
 INSERT INTO device (tag_type, tag_name, device_tag, device_name, url) VALUES ('cpe', 'CPE', 'bm10-hp', 'BM10-HP-2xLTE', '/bm10hp2xlte');
@@ -101,61 +88,48 @@ INSERT INTO tests_category (tag, name, url) VALUES ('amount3', 'Тесты с и
 INSERT INTO tests_category (tag, name, url) VALUES ('ixia', 'Тесты с использованием IXIA', '/ixia_categor');
 INSERT INTO tests_category (tag, name, url) VALUES ('gns', 'Тесты с использованием GNS3', '/gns_categor');
 
-INSERT INTO l2_test (tag, namel2_test, url) VALUES ('l2', 'Проверка механизмов Learning, Forwarding, Filtering, Flooding', '/l2_1');
-INSERT INTO l2_test (tag, namel2_test, url) VALUES ('l2', 'Проверка поддержки Jumbo frame', '/l2_2');
-INSERT INTO l2_test (tag, namel2_test, url) VALUES ('l2', 'Проверка статических записей в MAC-таблице', '/l2_3');
-INSERT INTO l2_test (tag, namel2_test, url) VALUES ('l2', 'Проверка ограничения на размер MAC-таблицы per-port/per-bridge', '/l2_4');
-INSERT INTO l2_test (tag, namel2_test, url) VALUES ('l2', 'Проверка MAC Ageing Timer', '/l2_5');
-INSERT INTO l2_test (tag, namel2_test, url) VALUES ('l2', 'Проверка механизма Err-Disable', '/l2_6');
-INSERT INTO l2_test (tag, namel2_test, url) VALUES ('l2', 'Проверка механизма Port Security', '/l2_7');
-INSERT INTO l2_test (tag, namel2_test, url) VALUES ('l2', 'Проверка механизма Layer 2 Protocol Tunneling', '/l2_8');
-INSERT INTO l2_test (tag, namel2_test, url) VALUES ('l2', 'Проверка механизма Flow Control', '/l2_9');
-INSERT INTO l2_test (tag, namel2_test, url) VALUES ('l2', 'Проверка конфигурирования MAC на интерфейсе', '/l2_10');
+INSERT INTO tests_all (tag, name, path_schema, path_descr) VALUES ('l2', 'Проверка механизмов Learning, Forwarding, Filtering, Flooding', '/static/tests_schema/', '/static/tests_descr/');
+INSERT INTO tests_all (tag, name, path_schema, path_descr) VALUES ('l2', 'Проверка поддержки Jumbo frame', '/static/tests_schema/', '/static/tests_descr/');
+INSERT INTO tests_all (tag, name, path_schema, path_descr) VALUES ('l2', 'Проверка статических записей в MAC-таблице', '/static/tests_schema/', '/static/tests_descr/');
+INSERT INTO tests_all (tag, name, path_schema, path_descr) VALUES ('l2', 'Проверка ограничения на размер MAC-таблицы per-port/per-bridge', '/static/tests_schema/', '/static/tests_descr/');
+INSERT INTO tests_all (tag, name, path_schema, path_descr) VALUES ('l2', 'Проверка MAC Ageing Timer', '/static/tests_schema/', '/static/tests_descr/');
+INSERT INTO tests_all (tag, name, path_schema, path_descr) VALUES ('l2', 'Проверка механизма Err-Disable', '/static/tests_schema/', '/static/tests_descr/');
+INSERT INTO tests_all (tag, name, path_schema, path_descr) VALUES ('l2', 'Проверка механизма Port Security', '/static/tests_schema/', '/static/tests_descr/');
+INSERT INTO tests_all (tag, name, path_schema, path_descr) VALUES ('l2', 'Проверка механизма Layer 2 Protocol Tunneling', '/static/tests_schema/', '/static/tests_descr/');
+INSERT INTO tests_all (tag, name, path_schema, path_descr) VALUES ('l2', 'Проверка механизма Flow Control', '/static/tests_schema/', '/static/tests_descr/');
+INSERT INTO tests_all (tag, name, path_schema, path_descr) VALUES ('l2', 'Проверка конфигурирования MAC на интерфейсе', '/static/tests_schema/', '/static/tests_descr/');
 
-INSERT INTO gns_test (tag, nameGNS_test, url) VALUES ('gns', 'Проверка поддержки GRE', '/gns_1');
+INSERT INTO tests_all (tag, name, path_schema, path_descr) VALUES ('l3', 'Проверка функционирования Static Routing', '/static/tests_schema/', '/static/tests_descr/');
+INSERT INTO tests_all (tag, name, path_schema, path_descr) VALUES ('l3', 'Проверка возможности изменения параметра priority', '/static/tests_schema/', '/static/tests_descr/');
+INSERT INTO tests_all (tag, name, path_schema, path_descr) VALUES ('l3', 'Проверка возможности включения OSPF на интерфейсе', '/static/tests_schema/', '/static/tests_descr/');
 
+INSERT INTO tests_all (tag, name, path_schema, path_descr) VALUES ('manage', 'Проверка доступа (Console, Telnet, SSH)', '/static/tests_schema/', '/static/tests_descr/');
+INSERT INTO tests_all (tag, name, path_schema, path_descr) VALUES ('manage', 'Обновление ПО', '/static/tests_schema/', '/static/tests_descr/');
+INSERT INTO tests_all (tag, name, path_schema, path_descr) VALUES ('manage', 'Сохранение и восстановление конфигурации', '/static/tests_schema/', '/static/tests_descr/');
+
+INSERT INTO tests_all (tag, name, path_schema, path_descr) VALUES ('secur', 'Проверка функционала AAA', '/static/tests_schema/', '/static/tests_descr/');
+INSERT INTO tests_all (tag, name, path_schema, path_descr) VALUES ('secur', 'Проверка механизма Control Plane Protection ACL', '/static/tests_schema/', '/static/tests_descr/');
+INSERT INTO tests_all (tag, name, path_schema, path_descr) VALUES ('secur', 'Проверка функционирования ACL (Access Lits) L2', '/static/tests_schema/', '/static/tests_descr/');
+
+INSERT INTO tests_all (tag, name, path_schema, path_descr) VALUES ('gns','Проверка поддержки GRE', '/static/tests_schema/', '/static/tests_descr/');
+INSERT INTO tests_all (tag, name, path_schema, path_descr) VALUES ('gns','Проверка поддержки Chego_to_Tam', '/static/tests_schema/', '/static/tests_descr/');
 
 
 INSERT INTO read_cfg (title, url) VALUES ('Просмотр конфигурации под тест GRE', '/read_cfg/1');
 INSERT INTO read_cfg (title, url) VALUES ('Просмотр конфигурации под тест 2', '/read_cfg/2');
 INSERT INTO read_cfg (title, url) VALUES ('Просмотр конфигурации под тест 3', '/read_cfg/3');
 
-INSERT INTO mainmenu (title, url) VALUES ('Тесты устройства', '/base_tests');
 INSERT INTO mainmenu (title, url) VALUES ('Конфигурация устройства', '/cfg');
 INSERT INTO mainmenu (title, url) VALUES ('Сброс настроек устройства', '/reset');
 INSERT INTO mainmenu (title, url) VALUES ('Настройки', '/constants');
 INSERT INTO mainmenu (title, url) VALUES ('Авторизация пользователя', '/login');
 INSERT INTO mainmenu (title, url) VALUES ('ГЛАВНАЯ', '/');
 
-INSERT INTO secondmenu (title, url) VALUES ('Проверка поддержки GRE', '1');
-INSERT INTO secondmenu (title, url) VALUES ('Проверка поддержки test2', '2');
-INSERT INTO secondmenu (title, url) VALUES ('Проверка поддержки test3', '3');
-
 INSERT INTO thirdmenu (title, url) VALUES ('Конфигурация устройства под тест GRE', '/cfg/1');
 INSERT INTO thirdmenu (title, url) VALUES ('Конфигурация устройства под test2', '/cfg/2');
 INSERT INTO thirdmenu (title, url) VALUES ('Конфигурация устройства под  test3', '/cfg/3');
 
-INSERT INTO posts (title, schema, test_specification, test_progress, test_result) 
-VALUES (
-'Проверка поддержки GRE', ?,
-'Здесь пока пусто',
-'Здесь будет прогресс теста',
-'Здесь будет результат теста'
-);
-INSERT INTO posts (title, schema, test_specification, test_progress,test_result) 
-VALUES (
-'Test Проверка поддержки test2', ?,
-'Здесь будет описание test2',
-'Здесь будет прогресс test2',
-'Здесь будет результат test2'
-);
-INSERT INTO posts (title, schema, test_specification, test_progress,test_result) 
-VALUES (
-'Тест: Проверка поддержки test3', ?,
-'Здесь будет описание test3',
-'Здесь будет прогресс test3',
-'Здесь будет результат test3'
-);
+
 INSERT INTO constants_trident (title, val, url) VALUES ('device_type', 'cisco_ios_telnet','constants');
 INSERT INTO constants_trident (title, val, url) VALUES ('host', '10.27.193.2','constants');
 INSERT INTO constants_trident (title, val, url) VALUES ('username', 'admin','constants');

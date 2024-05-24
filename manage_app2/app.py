@@ -5,6 +5,7 @@ import sys
 import subprocess
 from threading import Thread
 import time
+import docx
 import yaml
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from flask import (abort,Flask, Response, 
@@ -27,8 +28,6 @@ from base_gns3 import Base_gns
 from manage_app2.FDataBase import FDataBase
 from manage_app2.UserLogin import UserLogin
 from werkzeug.utils import secure_filename
-
-
 
 
 # configuration
@@ -126,23 +125,22 @@ def index():
     """Обработчик index-страницы."""
     return render_template(
         'index.html', menu=dbase.getMainmenu(),
-        secondmenu=dbase.getSecondmenu(),
         constants=dbase.getConstants_trident(),
         device = dbase.getDevice(),
         device_type = dbase.getDevice_type(),
         tests_category = dbase.getTests_category(),
-        l2_test = dbase.getL2_test(),
-        gns_test = dbase.getGNS_test(),
+        templ_page = dbase.getTemplate_testPage(),
         )
+
+
 @app.route("/bm10hp2xlte")
 def bm10hp2xlte():
+    """Обработчик страницы устр-ва."""
     return render_template(
         "bm10hp2xlte.html",
         menu=dbase.getMainmenu(),
-        secondmenu=dbase.getSecondmenu(),
         constants=dbase.getConstants_trident(),
         tests_category = dbase.getTests_category(),
-
     )
 
 
@@ -151,7 +149,6 @@ def base_tests():
     """Обработчик base_tests-страницы."""
     return render_template(
         'base_tests.html', menu=dbase.getMainmenu(),
-        secondmenu=dbase.getSecondmenu(),
         constants=dbase.getConstants_trident())
 
 
@@ -181,7 +178,8 @@ def get_ver_sw():
 def add_constants():
     """Add in table constants.
 
-    Обработчик ввода порта в табличку настройки устр-ва и возвращает
+    Обработчик ввода номера порта конс сервера
+    в табличку настройки устр-ва и возвращает
     страницу настроек."""
     if request.method == 'POST':
         res = dbase.addConstants_trident(request.form['port'])
@@ -191,15 +189,11 @@ def add_constants():
             flash("Error changed port value")   
         else:
             flash("Настройки консольного порта сохранены в БД.")
-       
-    # return render_template(
-    #     'add_constants.html',
-    #     title = "Меню настройки console",
-    #     menu = dbase.getMainmenu(),
-    #     )
     return redirect(url_for("get_constants"))
 
+
 class ValidValueConsolePort(Form):
+    """Класс проверки валидности ввода номера порта."""
     port = DecimalField('Port console',
                        [
                         validators.Length(min=4,max=4,
@@ -208,7 +202,6 @@ class ValidValueConsolePort(Form):
                         validators.NumberRange(min=2000,max=2066,message='Номер порта консольного сервера в диапазоне 2003-2066.'),
                         validators.InputRequired(message='Это обязательное поле.')
                         ])
-    # port = StringField('Port console', validators=[InputRequired(), Regexp(r'^\d+$', message='Please enter only digits')])
 
 
 @app.route("/constants", methods=['POST', 'GET'])
@@ -245,15 +238,6 @@ def reset():
     """Обработчик страницы сброса конфига."""
     result = ''
     if request.method == "POST":
-        
-        response = request.form['index']  # name="index" in reset.html
-        print(response)
-        # result = subprocess.run(
-        #     ["python3",
-        #      "../reset_cfg.py"],
-        #     stdout=subprocess.PIPE, text=True)
-        # result = result.stdout.split('\n')
-
         args=["python3", "../reset_cfg.py"]
         process = subprocess.Popen(args, stdout=subprocess.PIPE) 
         for line in process.stdout:
@@ -261,17 +245,9 @@ def reset():
             with open("../process_temp.txt", 'a') as file:
                 str_result = line.decode('utf-8')
                 file.write(str_result) 
-
-                    
-        #     result = os.system("python3 ../reset_cfg.py")
-           
-        # if '' in result:
-        #     flash('Сброс прошел успешно',category='success')
-        # else:
-        #     flash('Сброс прошел с ошибкой',category='error' )
         time.sleep(5)
         with open("../process_temp.txt", 'w'):
-            pass  # не удальть - очищает файл
+            pass  # не удалять! - очищает файл
         flash(
             "Внимание! Коммутатор сброшен на заводские настройки",
             category='success')
@@ -282,34 +258,34 @@ def reset():
             constants = dbase.getConstants_trident(),
             result=str_result
             )
-    
     return render_template(
         'reset.html', title="Сброс конфига на дефолтные",
         menu=dbase.getMainmenu(),
         constants = dbase.getConstants_trident()
         )
 
-@app.route("/gns_<int:id_post>",methods = ['POST', 'GET'])
-def get_test(id_post):
-    """Ф-я выводит в веб страницу тестов,кнопки старта и отчета
-      и  текстовый результат тестов """
-    id, schema, title, test_specification, test_progress,test_result = dbase.getPost(id_post)
-    image_path=f'static/images/{id_post}.jpg'
-    print(title)
+
+@app.route("/<id_cat>/<int:id_post>",methods = ['POST', 'GET'])
+def get_test(id_cat, id_post):
+    """Ф-я выводит в шаблон страницы запуска тестов
+      кнопки старта, просмотра отчета
+      и  текстовый пошаговый ход тестов """
+    id, tag, name, path_schema, path_descr = dbase.getIDtemplate_testPage(id_cat, id_post)
+    # Получить схему теста
+    image_path=f'{path_schema}{id_post}.jpg'
+    # Получить описание теста"""
+    descr_path = f'{path_descr}{id_post}.html'
+    # получить абсолютный путь до каталога
+    basedir = os.path.abspath(os.getcwd())
+    # к родительскому каталогу
+    work_dir = os.path.abspath(os.path.join(basedir, '../'))
+    report_dir='file:'+work_dir +'/report_doc'
+    print(work_dir)
     if request.method == "POST":
         flash("Button is pushed!")
         current_lab = Base_gns('SSV_auto_Tr_GRE')
         print(current_lab.start_nodes_from_project())
-        response = request.form['in'] # name="index" in Vtest.html
-        
-        # result  = subprocess.run(["python3","../gre_test.py"],stdout=subprocess.PIPE, text=True)
-        # if result:
-        #     flash("Attention! The DUT test is in progress!",category='success')
-        # else:
-        #     flash("Attention!Start test error send!",category='error')
-        # result = result.stdout.split('\n')
-        # print(result)
-
+        response = request.form['in'] # name="index" in template_test.html
         args=["python3", "../gre_test.py"]
         process = subprocess.Popen(args, stdout=subprocess.PIPE) 
         for line in process.stdout:
@@ -319,27 +295,22 @@ def get_test(id_post):
                 file.write(str_result)
         with open("../process_temp.txt", 'w'):
             pass
-        report_doc() # вызов ф-ии сздания ворд-отчета
+        report_doc() # вызов ф-ии создания ворд-отчета
         flash(
             "Внимание! Тесты выполнены, ознакомьтесь с результатами в отчетах.",
             category='error')
-        return render_template(
-            f'gns_{id_post}.html', title = "настройка DUT под тест",
-            menu = dbase.getMainmenu(),
-            thirdmenu = dbase.getThirdmenu(),
-            result = str_result)
-    
     return render_template(
-        f'gns_1.html',  # Реализовать вызов универсальных стр(переделать HTML)
-        menu = dbase.getMainmenu(), secondmenu = dbase.getSecondmenu(),
+        'template_test.html',  # Реализовать вызов универсальных стр(переделать HTML)
+        menu = dbase.getMainmenu(),
         post=id,
-        image_path=image_path,
-        title=title,
-        test_specification=test_specification,
-        test_progress=test_progress,
-        constants = dbase.getConstants_trident()
+        constants = dbase.getConstants_trident(),
+        path_schema=image_path,
+        descr_path=descr_path,
+        name=name,
+        id_post=id_post,
+        id_cat=id_cat,
+        report_dir=report_dir
         )
-
 # переделать маршрут и запуск аллюре из места с тестами!!!
 @app.route("/999",methods = ['GET','POST'])
 def get_test_html():
@@ -358,7 +329,7 @@ def get_test_html():
         secondmenu = dbase.getSecondmenu(),
         constants = dbase.getConstants_trident()
         )
-        
+
 @app.route("/cfg",methods = ['GET'])
 def cfg():
     """Ф-я открывает страницу с заливкой конфига"""
@@ -369,6 +340,7 @@ def cfg():
         thirdmenu = dbase.getThirdmenu(),
         )
 
+
 @app.route("/cfg/<int:id_post>",methods = ['POST', 'GET'])
 def getCfgPage(id_post):
     """Ф-я запускает заливку конфига и возвращает страницу заливки"""
@@ -377,16 +349,9 @@ def getCfgPage(id_post):
         response = request.form['index1']# name="index" in ..html
         print(response)
         if "Настройка конфигурации" in response:
-            # path_cfg="../cfg_gre.py"
-            # result  = subprocess.run(["python3",path_cfg],stdout=subprocess.PIPE, text=True)
-            # # result  = result.returncode 
-            # result = result.stdout.split('\n')
-
             args=["python3", "../cfg_gre.py"]
             process = subprocess.Popen(args, stdout=subprocess.PIPE)
-            
             for line in process.stdout:
-                # print("stdout:", line.decode('utf-8'))
                 with open("../process_temp.txt", 'a') as file:
                     str_result = line.decode('utf-8')
                     file.write(str_result)
@@ -400,7 +365,6 @@ def getCfgPage(id_post):
                 thirdmenu = dbase.getThirdmenu(),
                 constants = dbase.getConstants_trident()
                 )
-    
     return render_template(
         'cfg_gre.html', title = "Конфигурация устройства",
         menu = dbase.getMainmenu(),
@@ -424,19 +388,26 @@ def pageNotFounretd(error):
         title='Страница не найдена, но если она очень нужна - я ее сделаю.',
         menu=dbase.getMainmenu())
 
+
 @app.route("/login", methods=["GET","POST"])
 def login():
-    """Обработчик для авторизации пользователя"""
-    if current_user.is_authenticated:   # через прокси-юзер current_user проверяем: является ли пользователь авторизованным
+    """Обработчик для авторизации пользователя
+    через прокси-юзер current_user проверяем:
+    является ли пользователь авторизованным."""
+    if current_user.is_authenticated:   
         return redirect(url_for('profile')) 
-
     if request.method == 'POST':
-        user= dbase.getUserByEmail(request.form['email']) # обращаемся к БД и считываем информацию о пользователе по email
-        if user and check_password_hash(user['psw'],request.form['psw']): # Если верно введен пароль..
-            userlogin = UserLogin().create(user) #..то формируется объект класса UserLogin
-            rm = True if request.form.get('remainme') else False # проверка чек-бокс Запомнить меня
+        # обращаемся к БД и считываем информацию о пользователе по email
+        user= dbase.getUserByEmail(request.form['email']) 
+        # Если верно введен пароль..
+        if user and check_password_hash(user['psw'],request.form['psw']): 
+            #..то формируется объект класса UserLogin
+            userlogin = UserLogin().create(user) 
+            # проверка чек-бокс Запомнить меня
+            rm = True if request.form.get('remainme') else False 
             login_user(userlogin, remember=rm)
-            return redirect(request.args.get('next') or url_for('profile')) # перейдем либо на предыдущую страницу, либо в профайл
+            # перейдем либо на предыдущую страницу, либо в профайл
+            return redirect(request.args.get('next') or url_for('profile')) 
         flash('Неверная пара логин\пароль','error')
     return render_template('login.html',title="Авторизация", menu=dbase.getMainmenu())
 
@@ -498,8 +469,8 @@ def profile():
 
 
 @app.route('/read_cfg',methods = ['POST', 'GET'])
-# Ф-я для получения конфига cfg_GRE.yaml для просмотра
 def read_cfg():
+    # Ф-я для получения конфига cfg_GRE.yaml для просмотра
     id_cfg = request.form['index']# name="index" in ..html
     print(id_cfg)
     if id_cfg == 'Просмотр конфигурации':
@@ -517,7 +488,6 @@ def read_cfg():
 def allowed_file_type(filename):
     """ Функция проверки расширения файла """
     # return '.' in filename and \
-    #     filename.rsplit('.',1)[1].lower() in ALLOWED_EXTENSIONS
     if '.' in filename and \
         filename.rsplit('.',1)[1].lower() in ALLOWED_EXTENSIONS:
         name_cfg = filename.rsplit('.',1)[0].lower()
@@ -530,13 +500,7 @@ def upload_file_cfg():
     """Обработчик загрузки файла """
     # читаем список файлов в директории
     listfile = os.listdir(UPLOAD_FOLDER)
-    # path_name= os.path.join(UPLOAD_FOLDER)
-    # print(path_name)
-    # получаем объект со списком файлов
-    # listfile = map(lambda name: os.path.join(UPLOAD_FOLDER, name), fileslist) 
-    
     if request.method == 'POST':
-        
         # проверим, передается ли в запросе файл
         if 'file' not in request.files:
             flash('Не могу прочитать файл', category='fail') 
@@ -554,8 +518,6 @@ def upload_file_cfg():
                 'upload_file_cfg.html',
                 constants = dbase.getConstants_trident(),
                 items=listfile)
-            # редирект на страницу с загруженным файлом
-            # return redirect(url_for('shw_download_file', name=filename)) 
     return render_template(
             'upload_file_cfg.html',
             title="Загрузка файла конфигурации в БД",
@@ -564,18 +526,17 @@ def upload_file_cfg():
             items=listfile,
             )
 
+
 @app.route('/view_cfg_table',methods=['GET'],)
 def view_cfg_table():
     """Обработчик просмотра файла конфига из таблицы"""
     listfile = os.listdir(UPLOAD_FOLDER)
-
     return render_template(
         'cfg_from_table.html', title="Операции с файлом конфига",
         menu=dbase.getMainmenu(),
         constants = dbase.getConstants_trident(),
         items=listfile,
         )    
-
 
 
 @app.route('/pull_cfg_sw/<filename>',methods=['GET','POST'],)
@@ -598,7 +559,6 @@ def pull_cfg_sw(filename):
             with open("../process_temp.txt", 'a') as file:
                 str_result = line.decode('utf-8')
                 file.write(str_result) 
-
         time.sleep(5)
         flash(
             f"Внимание! На коммутатор загружен конфиг из файла {filename}",
@@ -622,7 +582,6 @@ def pull_cfg_sw(filename):
         constants = dbase.getConstants_trident(),
         items=listfile,
         )  
-
 
 @app.route('/get_file_cfg/<filename>')
 def get_file_cfg(filename):

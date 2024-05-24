@@ -79,7 +79,7 @@ class FDataBase:
     
 
     def getL2_test(self):
-        sql = '''SELECT * FROM l2_test'''
+        sql = '''SELECT * FROM tests_all'''
         try:
             self.__cur.execute(sql) #
             res = self.__cur.fetchall() # вычитываем все записи
@@ -89,8 +89,29 @@ class FDataBase:
         return res
     
 
-    def getGNS_test(self):
-        sql = '''SELECT * FROM gns_test'''
+    # def getGNS_test(self):
+    #     sql = '''SELECT * FROM gns_test'''
+    #     try:
+    #         self.__cur.execute(sql) #
+    #         res = self.__cur.fetchall() # вычитываем все записи
+    #         if res: return res
+    #     except:
+    #         print("Error read from DB")
+    #     return res
+    
+
+    def getIDtemplate_testPage(self,cat, postId):
+        try:
+            self.__cur.execute(f"SELECT id,tag, name, path_schema, path_descr FROM tests_all WHERE tag = '{cat}' AND id = {postId} ")  #
+            res = self.__cur.fetchone() # вычитываем  запис
+            if res: return res
+        except:
+            print("Error read from DB")
+        return False 
+    
+
+    def getTemplate_testPage(self):
+        sql = '''SELECT * FROM tests_all'''
         try:
             self.__cur.execute(sql) #
             res = self.__cur.fetchall() # вычитываем все записи
@@ -98,6 +119,7 @@ class FDataBase:
         except:
             print("Error read from DB")
         return res
+
 
     def addConstants_trident(self,val):
         try:
