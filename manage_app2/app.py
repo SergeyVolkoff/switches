@@ -34,7 +34,6 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 SECRET_KEY = '*'
 MAX_CONTENT_LEN = 1024*1024
-
 app.config.from_object(__name__)
 app.config["child_pid"] = None
 app.config["fd"] = None
