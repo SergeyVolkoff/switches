@@ -348,7 +348,7 @@ def getCfgPage(id_post):
         response = request.form['index1']# name="index" in ..html
         print(response)
         if "Настройка конфигурации" in response:
-            args=["python3", "../cfg_gre.py"]
+            args=["python3", "../file_for_back/cfg_gre.py"]
             process = subprocess.Popen(args, stdout=subprocess.PIPE)
             for line in process.stdout:
                 with open("../file_for_back/process_temp.txt", 'a') as file:
