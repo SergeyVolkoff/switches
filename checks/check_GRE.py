@@ -6,11 +6,11 @@ import os
 import yaml
 sys.path.insert(1, os.path.join(sys.path[0],'..'))
 # print(sys.path)
-from constants_trident  import (
+from file_for_back.constants_trident  import (
     NAME_DEV
 )
-from cfg_switch import TridentCfg
-from connect import Connect
+from file_for_back.cfg_switch import TridentCfg
+from file_for_back.connect import Connect
 
 #Словарь для временных переменных результатов теста
 global value_result_test

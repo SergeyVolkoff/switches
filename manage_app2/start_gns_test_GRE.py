@@ -7,9 +7,9 @@ import yaml
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 # print(sys.path)
 
-from constants_trident import CONSOLE
-from base_gns3 import Base_gns
-from cfg_switch import TridentCfg
+from file_for_back.constants_trident import CONSOLE
+from file_for_back.base_gns3 import Base_gns
+from file_for_back.cfg_switch import TridentCfg
 
 
 CONSOLE.print(
