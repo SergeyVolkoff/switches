@@ -171,3 +171,4 @@ cython_debug/
 # My ignore
 **/BULAT_TEST_TRIDENT_GRE.html
 **/allure_report
+**/report_doc/
