@@ -1,12 +1,12 @@
  { 
    "enable",  
    "conf t",
-   "interface xe47",
+   "interface xe45",
    "no switchport",
    "speed 1g",
    "ip address 200.200.200.1/30",
 
-   "interface xe48",
+   "interface xe46",
    "no switchport",
    "speed 1g",
    "ip address 1.1.1.1/24",

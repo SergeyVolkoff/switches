@@ -116,7 +116,7 @@ class TridentCfg(CfgTemplate):
                 output,
                 "Swich rebooting! Wait, please +-70sec",
                 style="success")
-            time.sleep(75)
+            time.sleep(90)
             self.ssh.send_command_timing('admin', read_timeout=2)
             self.ssh.send_command_timing('bulat', read_timeout=5)
             with open('../templates_cfg/cfg_hostnamAndint_eth0.yaml') as commands:
@@ -229,6 +229,7 @@ class TridentCfg(CfgTemplate):
                 f"интерфейс {ip_eth0} настроен по dhcp.",
                 style='success')
             exit
+	
         return "Коммутатор сброшен на заводские настройки успешно."
         # else:
         #     CONSOLE.print("Wrong input", style="fail")

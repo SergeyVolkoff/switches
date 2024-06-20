@@ -1,9 +1,4 @@
 import re
-from netmiko import (
-    ConnectHandler,
-    NetmikoTimeoutException,
-    NetmikoAuthenticationException
-)
 import sys
 import os
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
@@ -12,7 +7,7 @@ from file_for_back.constants_trident import (
     CONSOLE,
     NAME_DEV,
 )
-from ping3 import ping
+# from ping3 import ping
 from file_for_back.cfg_switch import  TridentCfg
 from file_for_back.connect import Connect
 

@@ -14,7 +14,7 @@ class FDataBase:
             res = self.__cur.fetchall() # вычитываем все записи
             if res: return res
         except:
-            print("Error read from DB")
+            print("Error read mainmenu from DB")
         return[]
     
     def getSecondmenu(self):
@@ -24,7 +24,7 @@ class FDataBase:
             res = self.__cur.fetchall() # вычитываем все записи
             if res: return res
         except:
-            print("Error read from DB")
+            print("Error read secondmenu from DB")
         return[]
     
     def getThirdmenu(self):
@@ -34,7 +34,7 @@ class FDataBase:
             res = self.__cur.fetchall() # вычитываем все записи
             if res: return res
         except:
-            print("Error read from DB")
+            print("Error read thirdmenu from DB")
         return[]
     
     def getConstants_trident(self):
@@ -44,7 +44,7 @@ class FDataBase:
             res = self.__cur.fetchall() # вычитываем все записи
             if res: return res
         except:
-            print("Error read from DB")
+            print("Error read constants_trident from DB")
         return res 
     
     def getTests_category(self):
@@ -54,7 +54,7 @@ class FDataBase:
             res = self.__cur.fetchall() # вычитываем все записи
             if res: return res
         except:
-            print("Error read from DB")
+            print("Error read tests_category from DB")
         return res 
     
     def getDevice_type(self):
@@ -64,7 +64,7 @@ class FDataBase:
             res = self.__cur.fetchall() # вычитываем все записи
             if res: return res
         except:
-            print("Error read from DB")
+            print("Error read device_type from DB")
         return res 
     
     def getDevice(self):
@@ -74,7 +74,7 @@ class FDataBase:
             res = self.__cur.fetchall() # вычитываем все записи
             if res: return res
         except:
-            print("Error read from DB")
+            print("Error read device from DB")
         return res
     
 
@@ -85,7 +85,7 @@ class FDataBase:
             res = self.__cur.fetchall() # вычитываем все записи
             if res: return res
         except:
-            print("Error read from DB")
+            print("Error read tests_all from DB")
         return res
     
 
@@ -106,7 +106,7 @@ class FDataBase:
             res = self.__cur.fetchone() # вычитываем  запис
             if res: return res
         except:
-            print("Error read from DB")
+            print("Error read id,tag, name, path_schema, path_descr FROM tests_all from DB")
         return False 
     
 
@@ -117,7 +117,7 @@ class FDataBase:
             res = self.__cur.fetchall() # вычитываем все записи
             if res: return res
         except:
-            print("Error read from DB")
+            print("Error read tests_all from DB")
         return res
 
 
@@ -145,7 +145,7 @@ class FDataBase:
             res = self.__cur.fetchone() # вычитываем  запис
             if res: return res
         except:
-            print("Error read from DB")
+            print("Error read id, schema, title, test_specification, test_progress,test_result FROM posts from DB")
         return False 
     
     def readSchemaFromFile(n):
@@ -181,7 +181,7 @@ class FDataBase:
                 return False
             return res
         except sqlite3.Error as er:
-            print("Error get user from DB"+str(er))
+            print("Error get user  WHERE id ='{user_id}' from DB"+str(er))
         return False
         
     def getUserByEmail(self, email):
