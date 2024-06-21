@@ -44,6 +44,7 @@ if __name__ == "__main__":
     """
     print (pytest.main(
         [
+
 	    "-v", "--html=../report_doc/BULAT_TEST_TRIDENT_GRE.html",            
             "--alluredir=allure_report",
             "../tests/test_check_gre.py"
