@@ -283,7 +283,7 @@ def get_test(id_cat, id_post):
     report_dir='file:'+work_dir +'/report_doc'
     listfile = os.listdir(REPORT_DOC) # for table Список имеющихся файлов
     if request.method == "POST":
-        flash("Button is pushed!")
+        # flash("Button is pushed!")
         current_lab = Base_gns('SSV_auto_Tr_GRE')
         print(current_lab.start_nodes_from_project())
         response = request.form['in'] # name="index" in template_test.html
@@ -299,9 +299,9 @@ def get_test(id_cat, id_post):
         report_doc() # вызов ф-ии создания ворд-отчета
         flash(
             "Внимание! Тесты выполнены, ознакомьтесь с результатами в отчетах.",
-            category='error')
+            category='success')
     return render_template(
-        'template_test.html',  # Реализовать вызов универсальных стр(переделать HTML)
+        'template_test.html', 
         menu = dbase.getMainmenu(),
         post=id,
         constants = dbase.getConstants_trident(),
@@ -313,6 +313,8 @@ def get_test(id_cat, id_post):
         report_dir=report_dir,
 	items=listfile
         )
+
+
 # переделать маршрут и запуск аллюре из места с тестами!!!
 @app.route("/999",methods = ['GET','POST'])
 def get_test_html():
@@ -320,6 +322,9 @@ def get_test_html():
     if request.method == "POST":
         flash("Button 'result HTML test' is pushed!")
         os.system("allure serve -p 38671 allure_report")
+    flash(
+           "Внимание! Тесты выполнены, ознакомьтесь с результатами в отчетах.",
+           category='success')
     # print(temp)
     # temp1 = re.search(r'//\d+.\d+.\d+.\d+:(?P<servAllurePort>\d+)',temp)
     # print(temp1)
@@ -331,6 +336,7 @@ def get_test_html():
        #  secondmenu = dbase.getSecondmenu(),
         constants = dbase.getConstants_trident()
         )
+
 
 @app.route("/cfg",methods = ['GET'])
 def cfg():

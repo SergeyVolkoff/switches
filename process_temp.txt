@@ -25,4 +25,8 @@ Compiled on    : Mon, 09 Oct 2023 18:43:53 +0300
 System ID      : 0b870dfb5d35e0ced1996a5e43306ff4d42aeaff
 NOS version    : 2.5.0-rc0-1-g0b870dfb
 Copyright (C) 2023 LLC BULAT
-Device uptime 0 day, 0 hours, 14 minutes
+Device uptime 0 day, 0 hours, 14 minutestraccert_status:Tracert_BAD
+traccert_status:Tracert_BAD
+traccert_status:Tracert_BAD
+traccert_status:Tracert_BAD
+traccert_status:Tracert_BAD

@@ -60,7 +60,7 @@
     <p><a href='http://127.0.1.1:38671/index.html' target="_blank">ОТЧЕТ по тесту в Allure</a></li>
     <br>
     <hr>
-    <div class="title"> Здесь может быть отчет о выполенном тесте!
+    <div class="title"> Ниже будет показан ход выполнения тестов:
     </div>
     <br> 
     <body>
@@ -93,15 +93,13 @@
             getContent(); // Получение содержимого при загрузке страницы!!
         </script>
     </body>
-    {% for cat, msg in get_flashed_messages(True) %}
+    <br>   
+    <a class="button"  href="/" >Назад</a>    
+    {{ result }}
+       {% for cat, msg in get_flashed_messages(True) %}
         <div class="flash {{cat}}">{{msg}}</div>
     {% endfor %}
-    
-    <br>   
-    <a class="button"  href="/" >Назад</a>
-    
-    
-    {{ result }}
+
     {% endblock %}
   </html>
   
