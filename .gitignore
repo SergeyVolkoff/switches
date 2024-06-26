@@ -172,3 +172,5 @@ cython_debug/
 **/BULAT_TEST_TRIDENT_GRE.html
 **/allure_report
 **/report_doc/
+/report_doc/
+*.docx
