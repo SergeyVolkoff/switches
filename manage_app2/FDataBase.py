@@ -1,5 +1,6 @@
 import math
 import sqlite3
+import psycopg
 import time
 
 class FDataBase:

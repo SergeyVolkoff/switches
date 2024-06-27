@@ -1,5 +1,8 @@
 import sqlite3 as sq
 import os
+import psycopg
+from dotenv import load_dotenv
+
 import sys
 import subprocess
 from threading import Thread
@@ -28,15 +31,15 @@ from manage_app2.FDataBase import FDataBase
 from manage_app2.UserLogin import UserLogin
 from werkzeug.utils import secure_filename
 
-
+load_dotenv()
 # configuration
 app = Flask(__name__)
 SECRET_KEY = '*'
 MAX_CONTENT_LEN = 1024*1024
 app.config.from_object(__name__)
-app.config["child_pid"] = None
-app.config["fd"] = None
-socketio = SocketIO(app)
+# app.config["child_pid"] = None
+# app.config["fd"] = None
+# socketio = SocketIO(app)
 DATABASE = '/manage_app2/manage_app2.db'
 DEBUG = True
 UPLOAD_FOLDER = '../templates_cfg'
@@ -45,54 +48,46 @@ ALLOWED_EXTENSIONS = {'txt', 'yaml'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['REPORT_DOC'] = REPORT_DOC
 
+url = os.getenv('DATABASE_URL')
 
 app.config.update(dict(DATABASE=os.path.join(app.root_path, 'manage_app2.db')))
-login_manager = LoginManager(app)
-"""перенаправлять пользователя на форму авторизации, атрибуту
-login_view присваиваем имя функции представления для формы авторизации."""
-login_manager.login_view = 'login'
-login_manager.login_message = "Авторизуйтесь для доступа к закрытым страницам"
-login_manager.login_message_category = "success"
-
-
-
-@login_manager.user_loader
-def load_user(user_id):
-    """объект UserLogin.
-
-    Здесь будет создваться объект UserLogin
-    при каждом запросе, если пользователь авторизован.
-    """
-    print('load_user')
-    return UserLogin().fromDB(user_id, dbase)
-
+# def connect_db():
+#     """методу коннект передаем путь к базе."""
+#     conn = sq.connect(app.config['DATABASE'],check_same_thread=False)
+#     """представит записи из базы в виде словаря."""
+#     conn.row_factory = sq.Row
+#     return conn
 
 def connect_db():
     """методу коннект передаем путь к базе."""
-    conn = sq.connect(app.config['DATABASE'],check_same_thread=False)
+    # conn = psycopg.connect(
+    #         host="localhost",
+    #         database="fapp",
+    #         user='postgres',
+    #         password='pass')
+    conn = psycopg.connect(url)
     """представит записи из базы в виде словаря."""
+    print(conn)
     conn.row_factory = sq.Row
     return conn
-
 
 def create_db():
     """Функция для создания таблиц БД."""
     db = connect_db()
+    print(db)
     # читаем скрипты sql для создания таблиц
-    with app.open_resource('sq_db.sql', mode='r') as f:
-        # из установленного соединения db черезid класс cursor()
+    with app.open_resource('fapp.sql', mode='r') as f:
+        # из установленного соединения db через id класс cursor()
         # запускаем выполнение скриптов sql
         db.cursor().executescript(f.read())
     db.commit()
     db.close()
-
 
 def get_db():
     """Соединение с БД, если оно еще не установлено."""
     if not hasattr(g, 'link_db'):
         g.link_db = connect_db()
     return g.link_db
-
 
 @app.before_request
 def before_request():
@@ -109,7 +104,23 @@ def before_request():
 #     if hasattr(g, 'link_db'):
 #         g.link_db.close()
 
+login_manager = LoginManager(app)
+"""перенаправлять пользователя на форму авторизации, атрибуту
+login_view присваиваем имя функции представления для формы авторизации."""
+login_manager.login_view = 'login'
+login_manager.login_message = "Авторизуйтесь для доступа к закрытым страницам"
+login_manager.login_message_category = "success"
 
+
+@login_manager.user_loader
+def load_user(user_id):
+    """объект UserLogin.
+
+    Здесь будет создваться объект UserLogin
+    при каждом запросе, если пользователь авторизован.
+    """
+    print('load_user')
+    return UserLogin().fromDB(user_id, dbase)
 
 @app.route("/post/<alias>")
 @login_required
@@ -284,7 +295,7 @@ def get_test(id_cat, id_post):
     report_dir='file:'+work_dir +'/report_doc'
     listfile = os.listdir(REPORT_DOC) # for table Список имеющихся файлов
     if request.method == "POST":
-        # flash("Button is pushed!")
+        flash("Button is pushed!")
         current_lab = Base_gns('SSV_auto_Tr_GRE')
         print(current_lab.start_nodes_from_project())
         response = request.form['in'] # name="index" in template_test.html
@@ -300,9 +311,9 @@ def get_test(id_cat, id_post):
         report_doc() # вызов ф-ии создания ворд-отчета
         flash(
             "Внимание! Тесты выполнены, ознакомьтесь с результатами в отчетах.",
-            category='success')
+            category='error')
     return render_template(
-        'template_test.html', 
+        'template_test.html',  # Реализовать вызов универсальных стр(переделать HTML)
         menu = dbase.getMainmenu(),
         post=id,
         constants = dbase.getConstants_trident(),
@@ -314,8 +325,6 @@ def get_test(id_cat, id_post):
         report_dir=report_dir,
 	items=listfile
         )
-
-
 # переделать маршрут и запуск аллюре из места с тестами!!!
 @app.route("/999",methods = ['GET','POST'])
 def get_test_html():
@@ -323,9 +332,6 @@ def get_test_html():
     if request.method == "POST":
         flash("Button 'result HTML test' is pushed!")
         os.system("allure serve -p 38671 allure_report")
-    flash(
-           "Внимание! Тесты выполнены, ознакомьтесь с результатами в отчетах.",
-           category='success')
     # print(temp)
     # temp1 = re.search(r'//\d+.\d+.\d+.\d+:(?P<servAllurePort>\d+)',temp)
     # print(temp1)
@@ -337,7 +343,6 @@ def get_test_html():
        #  secondmenu = dbase.getSecondmenu(),
         constants = dbase.getConstants_trident()
         )
-
 
 @app.route("/cfg",methods = ['GET'])
 def cfg():
