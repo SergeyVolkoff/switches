@@ -55,6 +55,7 @@ login_manager.login_message = "Авторизуйтесь для доступа 
 login_manager.login_message_category = "success"
 
 
+
 @login_manager.user_loader
 def load_user(user_id):
     """объект UserLogin.
