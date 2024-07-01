@@ -50,7 +50,7 @@ app.config['REPORT_DOC'] = REPORT_DOC
 
 url = os.getenv('DATABASE_URL')
 
-app.config.update(dict(DATABASE=os.path.join(app.root_path, 'manage_app2.db')))
+app.config.update(dict(DATABASE=os.path.join(app.root_path, 'fapp.db')))
 # def connect_db():
 #     """методу коннект передаем путь к базе."""
 #     conn = sq.connect(app.config['DATABASE'],check_same_thread=False)
@@ -66,15 +66,16 @@ def connect_db():
     #         user='postgres',
     #         password='pass')
     conn = psycopg.connect(url)
+    # print(conn)
     """представит записи из базы в виде словаря."""
-    print(conn)
-    conn.row_factory = sq.Row
+    # conn.row_factory = sq.Row
+    # with psycopg.connect() as conn, conn.cursor(row_factory=psycopg.rows.dict_row) as cur:
     return conn
 
 def create_db():
     """Функция для создания таблиц БД."""
     db = connect_db()
-    print(db)
+    # print(db)
     # читаем скрипты sql для создания таблиц
     with app.open_resource('fapp.sql', mode='r') as f:
         # из установленного соединения db через id класс cursor()

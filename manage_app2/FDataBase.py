@@ -13,6 +13,7 @@ class FDataBase:
         try:
             self.__cur.execute(sql) #
             res = self.__cur.fetchall() # вычитываем все записи
+            print(res)
             if res: return res
         except:
             print("Error read mainmenu from DB")

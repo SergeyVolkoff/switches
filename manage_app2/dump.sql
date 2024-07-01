@@ -1,10 +1,6 @@
 PRAGMA foreign_keys=OFF;
 BEGIN TRANSACTION;
-CREATE TABLE mainmenu (
-id integer  PRIMARY KEY AUTOINCREMENT,
-title text NOT NULL,
-url text NOT NULL
-);
+
 INSERT INTO mainmenu VALUES(1,'Конфигурация устройства','/cfg');
 INSERT INTO mainmenu VALUES(2,'Сброс настроек устройства','/reset');
 INSERT INTO mainmenu VALUES(3,'Настройки','/constants');
