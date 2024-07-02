@@ -13,7 +13,6 @@ class FDataBase:
         try:
             self.__cur.execute(sql) #
             res = self.__cur.fetchall() # вычитываем все записи
-            print(res)
             if res: return res
         except:
             print("Error read mainmenu from DB")
@@ -125,7 +124,9 @@ class FDataBase:
 
     def addConstants_trident(self,val):
         try:
-            self.__cur.execute("UPDATE constants_trident SET val=(?) WHERE id = 6",(val,))
+            query = "UPDATE constants_trident SET val = (%s) WHERE id = 6;"
+            # self.__cur.execute("UPDATE constants_trident SET val = (?) WHERE id = 6;",(val,))
+            self.__cur.execute(query,(val,))
             self.__db.commit()
         except sqlite3.Error as err:
             print("Add port console error! "+ str(err))
@@ -158,16 +159,20 @@ class FDataBase:
             print(e)
             return False
         
-    def addUser(self, name, email, hpsw):
+    def addUser(self, name, email, psw):
         """Добавления юзера в БД с проверкой мыла на повтор"""
         try:
-            self.__cur.execute(f"SELECT COUNT() as 'count' FROM users WHERE email LIKE '{email}'") # проверям мыло на существование в БД
+            req = f"SELECT count(email) as count FROM users WHERE email LIKE '{email}'"
+            
+            self.__cur.execute(req) # проверям мыло на существование в БД
             res = self.__cur.fetchone() # вычитываем  запис
             if res['count'] > 0:
                 print('Пользователь с таким email уже есть в БД')
                 return False
-            tm = math.floor(time.time())
-            self.__cur.execute("INSERT INTO users VALUES (NULL, ?, ?, ?, ?)", (name, email, hpsw, tm))
+            # tm = math.floor(time.time())
+            insert_query = "INSERT INTO users (name, email, psw) VALUES (%s, %s, %s)"
+            data_to_insert = (name, email, psw)
+            self.__cur.execute(insert_query, data_to_insert)
             self.__db.commit()
         except sqlite3.Error as er:
             print("Error add user into DB"+str(er))

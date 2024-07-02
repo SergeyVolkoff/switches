@@ -51,25 +51,13 @@ app.config['REPORT_DOC'] = REPORT_DOC
 url = os.getenv('DATABASE_URL')
 
 app.config.update(dict(DATABASE=os.path.join(app.root_path, 'fapp.db')))
-# def connect_db():
-#     """методу коннект передаем путь к базе."""
-#     conn = sq.connect(app.config['DATABASE'],check_same_thread=False)
-#     """представит записи из базы в виде словаря."""
-#     conn.row_factory = sq.Row
-#     return conn
 
 def connect_db():
     """методу коннект передаем путь к базе."""
-    # conn = psycopg.connect(
-    #         host="localhost",
-    #         database="fapp",
-    #         user='postgres',
-    #         password='pass')
     conn = psycopg.connect(url)
-    # print(conn)
     """представит записи из базы в виде словаря."""
-    # conn.row_factory = sq.Row
-    # with psycopg.connect() as conn, conn.cursor(row_factory=psycopg.rows.dict_row) as cur:
+    # conn.row_factory = sq.Row 
+    conn.row_factory = psycopg.rows.dict_row
     return conn
 
 def create_db():
@@ -287,6 +275,7 @@ def get_test(id_cat, id_post):
     id, tag, name, path_schema, path_descr = dbase.getIDtemplate_testPage(id_cat, id_post)
     # Получить схему теста
     image_path=f'{path_schema}{id_post}.jpg'
+    print(image_path)
     # Получить описание теста
     descr_path = f'{path_descr}{id_post}.html'
     # получить абсолютный путь до каталога
