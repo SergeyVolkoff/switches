@@ -1,4 +1,4 @@
-import sqlite3 as sq
+# import sqlite3 as sq
 import os
 import psycopg
 from dotenv import load_dotenv
