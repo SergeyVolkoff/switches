@@ -63,7 +63,6 @@ def connect_db():
 def create_db():
     """Функция для создания таблиц БД."""
     db = connect_db()
-    # print(db)
     # читаем скрипты sql для создания таблиц
     with app.open_resource('fapp.sql', mode='r') as f:
         # из установленного соединения db через id класс cursor()
@@ -159,7 +158,6 @@ def get_ver_sw():
     "Обработчик выводит на страницу версию устр-ва"
     if request.method == "POST":
         response = request.form['index']  # name="index" in reset.html
-        print(response)
         temp = os.system("python3 ../file_for_back/sh_ver.py")
         time.sleep(2)
         file_ver = '../file_for_back/process_temp.txt'
@@ -186,7 +184,6 @@ def add_constants():
     if request.method == 'POST':
         res = dbase.addConstants_trident(request.form['port'])
         port_con = request.form.get('port')
-        print(port_con)
         if not res:
             flash("Error changed port value")   
         else:
@@ -272,10 +269,15 @@ def get_test(id_cat, id_post):
     """Ф-я выводит в шаблон страницы запуска тестов
       кнопки старта, просмотра отчета
       и  текстовый пошаговый ход тестов """
-    id, tag, name, path_schema, path_descr = dbase.getIDtemplate_testPage(id_cat, id_post)
+    # id, tag, name, path_schema, path_descr = dbase.getIDtemplate_testPage(id_cat, id_post) работало на SQLite
+    slovar = dbase.getIDtemplate_testPage(id_cat, id_post)
+    path_schema = slovar['path_schema']
+    path_descr = slovar['path_descr']
+    name = slovar['name']
+    id = slovar['id']
+    tag = slovar['tag']
     # Получить схему теста
     image_path=f'{path_schema}{id_post}.jpg'
-    print(image_path)
     # Получить описание теста
     descr_path = f'{path_descr}{id_post}.html'
     # получить абсолютный путь до каталога
@@ -313,7 +315,7 @@ def get_test(id_cat, id_post):
         id_post=id_post,
         id_cat=id_cat,
         report_dir=report_dir,
-	items=listfile
+	    items=listfile
         )
 # переделать маршрут и запуск аллюре из места с тестами!!!
 @app.route("/999",methods = ['GET','POST'])
@@ -322,11 +324,8 @@ def get_test_html():
     if request.method == "POST":
         flash("Button 'result HTML test' is pushed!")
         os.system("allure serve -p 38671 allure_report")
-    # print(temp)
     # temp1 = re.search(r'//\d+.\d+.\d+.\d+:(?P<servAllurePort>\d+)',temp)
-    # print(temp1)
     # servAllurePort = temp1.group('servAllurePort')
-    # print(servAllurePort)
     #     return f"""<a href='http://http://127.0.0.1:38671'</a>"""
     return render_template(
         'index.html',menu = dbase.getMainmenu(),
@@ -351,7 +350,6 @@ def getCfgPage(id_post):
     
     if request.method == "POST":
         response = request.form['index1']# name="index" in ..html
-        print(response)
         if "Настройка конфигурации" in response:
             args=["python3", "../file_for_back/cfg_gre.py"]
             process = subprocess.Popen(args, stdout=subprocess.PIPE)
@@ -476,10 +474,8 @@ def profile():
 def read_cfg():
     # Ф-я для получения конфига cfg_GRE.yaml для просмотра
     id_cfg = request.form['index']# name="index" in ..html
-    print(id_cfg)
     if id_cfg == 'Просмотр конфигурации':
         id_cfg="cfg_GRE.yaml"
-        print(id_cfg)
         with open(f'../templates_cfg/{id_cfg}', 'r') as file:
             text = file.readlines()
         return render_template(
@@ -559,7 +555,6 @@ def pull_cfg_sw(filename):
         args=["python3", "../file_for_back/cfgFromFile.py"]
         process = subprocess.Popen(args, stdout=subprocess.PIPE) 
         for line in process.stdout:
-            print(line)
             with open("../file_for_back/process_temp.txt", 'a') as file:
                 str_result = line.decode('utf-8')
                 file.write(str_result) 
