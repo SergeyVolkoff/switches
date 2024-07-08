@@ -128,7 +128,7 @@ class FDataBase:
             # self.__cur.execute("UPDATE constants_trident SET val = (?) WHERE id = 6;",(val,))
             self.__cur.execute(query,(val,))
             self.__db.commit()
-        except sqlite3.Error as err:
+        except psycopg.Error as err:
             print("Add port console error! "+ str(err))
             return False
         return True
@@ -174,7 +174,7 @@ class FDataBase:
             data_to_insert = (name, email, psw)
             self.__cur.execute(insert_query, data_to_insert)
             self.__db.commit()
-        except sqlite3.Error as er:
+        except psycopg.Error as er:
             print("Error add user into DB"+str(er))
             return False
         return True 
@@ -187,7 +187,7 @@ class FDataBase:
                 print('Пользователь с таким email no')
                 return False
             return res
-        except sqlite3.Error as er:
+        except psycopg.Error as er:
             print("Error get user  WHERE id ='{user_id}' from DB"+str(er))
         return False
         
@@ -199,6 +199,6 @@ class FDataBase:
                 print('Пользователь с таким email no')
                 return False
             return res
-        except sqlite3.Error as er:
+        except psycopg.Error as er:
             print("Error get user from DB"+str(er))
         return False
