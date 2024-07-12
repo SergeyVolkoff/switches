@@ -24,11 +24,11 @@ class Connect():
         """Init Connect-class."""
         self.word_ping = "ping ",
         self.ip_inet = "8.8.8.8",
-        # with open("../file_for_back/constants_trident1.yaml") as f2:
+        # with open("file_for_back/constants_trident1.yaml") as f2:
         #         temp = yaml.safe_load(f2)
         # self.VALUE_CONS_CONNECT = temp
         try:
-            with open("../file_for_back/constants_trident1.yaml") as f2:
+            with open("file_for_back/constants_trident1.yaml") as f2:
                 self.VALUE_CONS_CONNECT = yaml.safe_load(f2)
             self.ssh = ConnectHandler(**self.VALUE_CONS_CONNECT)
         except ConnectionRefusedError:
@@ -63,7 +63,7 @@ class Connect():
             temp = self.ssh.send_command('show version',read_timeout=2)
             for i in temp:
                 print(i)
-                with open("../file_for_back/process_temp.txt", 'a+') as file:
+                with open("file_for_back/process_temp.txt", 'a+') as file:
                      file.write(i)
 
         except FileNotFoundError:

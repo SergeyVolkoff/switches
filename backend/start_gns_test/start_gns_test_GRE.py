@@ -36,7 +36,7 @@ CONSOLE.print(
        style='info', sep='\n')
 time.sleep(5)
 # команды настройки конфига...
-with open("../templates_cfg/cfg_GRE.yaml") as commands:
+with open("templates_cfg/cfg_GRE.yaml") as commands:
     commands_template = yaml.safe_load(commands)
 # ...построчно передаются в cfg_base которая вызовет cfg_template
 print(tr1.cfg_base(commands_template))
@@ -53,6 +53,6 @@ pytest.main(
     [
         "-v", "--html=BULAT_TEST_TRIDENT_GRE.html",
         "--alluredir=allure_report",
-        "../tests/test_check_gre.py"
+        "tests/test_check_gre.py"
     ]
         )

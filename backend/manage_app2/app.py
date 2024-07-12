@@ -42,8 +42,8 @@ app.config.from_object(__name__)
 # socketio = SocketIO(app)
 DATABASE = '/manage_app2/manage_app2.db'
 DEBUG = True
-UPLOAD_FOLDER = '../templates_cfg'
-REPORT_DOC = '../report_doc'
+UPLOAD_FOLDER = 'templates_cfg'
+REPORT_DOC = 'report_doc'
 ALLOWED_EXTENSIONS = {'txt', 'yaml'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['REPORT_DOC'] = REPORT_DOC
@@ -107,7 +107,6 @@ def load_user(user_id):
     Здесь будет создваться объект UserLogin
     при каждом запросе, если пользователь авторизован.
     """
-    print('load_user')
     return UserLogin().fromDB(user_id, dbase)
 
 @app.route("/post/<alias>")
@@ -158,13 +157,13 @@ def get_ver_sw():
     "Обработчик выводит на страницу версию устр-ва"
     if request.method == "POST":
         response = request.form['index']  # name="index" in reset.html
-        temp = os.system("python3 ../file_for_back/sh_ver.py")
+        temp = os.system("python3 file_for_back/sh_ver.py")
         time.sleep(2)
-        file_ver = '../file_for_back/process_temp.txt'
+        file_ver = 'file_for_back/process_temp.txt'
         for line in file_ver:
             with open(file_ver, 'r') as file:
                 text = file.readlines()
-        with open("../file_for_back/process_temp.txt", 'w') as file:
+        with open("file_for_back/process_temp.txt", 'w') as file:
             file.write('')      
         return render_template('constants.html',
         title = "Настройки",
@@ -212,7 +211,7 @@ def get_constants():
     cur.execute("SELECT title, val FROM constants_trident")
     VALUE_CONS_CONNECT = cur.fetchall()
     # Открываем файл constants_trident1.yaml в режиме записи
-    with open('../file_for_back/constants_trident1.yaml', 'w') as f:
+    with open('file_for_back/constants_trident1.yaml', 'w') as f:
         # Проходим по всем данным, полученным из БД
         for i in VALUE_CONS_CONNECT:
             # Создаем словарь с ключом "title" и значением "val"
@@ -222,7 +221,7 @@ def get_constants():
                  # Записываем словарь to_file в файл f с использованием YAML
                 yaml.dump(to_file, f)
     # Открываем файл constants_trident1.yaml в режиме чтения
-    with open('../file_for_back/constants_trident1.yaml') as f:
+    with open('file_for_back/constants_trident1.yaml') as f:
         print(f.read())
     # global constants
     return render_template('constants.html',
@@ -237,15 +236,15 @@ def reset():
     """Обработчик страницы сброса конфига."""
     result = ''
     if request.method == "POST":
-        args=["python3", "../file_for_back/reset_cfg.py"]
+        args=["python3", "file_for_back/reset_cfg.py"]
         process = subprocess.Popen(args, stdout=subprocess.PIPE) 
         for line in process.stdout:
             # print("stdout:", line.decode('utf-8'))
-            with open("../file_for_back/process_temp.txt", 'a') as file:
+            with open("file_for_back/process_temp.txt", 'a') as file:
                 str_result = line.decode('utf-8')
                 file.write(str_result) 
         time.sleep(5)
-        with open("../file_for_back/process_temp.txt", 'w'):
+        with open("file_for_back/process_temp.txt", 'w'):
             pass  # не удалять! - очищает файл
         flash(
             "Внимание! Коммутатор сброшен на заводские настройки",
@@ -291,14 +290,14 @@ def get_test(id_cat, id_post):
         current_lab = Base_gns('SSV_auto_Tr_GRE')
         print(current_lab.start_nodes_from_project())
         response = request.form['in'] # name="index" in template_test.html
-        args=["python3", "../file_for_back/gre_test.py"]
+        args=["python3", "file_for_back/gre_test.py"]
         process = subprocess.Popen(args, stdout=subprocess.PIPE) 
         for line in process.stdout:
             # print("stdout:", line.decode('utf-8'))
-            with open("../file_for_back/process_temp.txt", 'a') as file:
+            with open("file_for_back/process_temp.txt", 'a') as file:
                 str_result = line.decode('utf-8')
                 file.write(str_result)
-        with open("../file_for_back/process_temp.txt", 'w'):
+        with open("file_for_back/process_temp.txt", 'w'):
             pass
         report_doc() # вызов ф-ии создания ворд-отчета
         flash(
@@ -351,14 +350,14 @@ def getCfgPage(id_post):
     if request.method == "POST":
         response = request.form['index1']# name="index" in ..html
         if "Настройка конфигурации" in response:
-            args=["python3", "../file_for_back/cfg_gre.py"]
+            args=["python3", "file_for_back/cfg_gre.py"]
             process = subprocess.Popen(args, stdout=subprocess.PIPE)
             for line in process.stdout:
-                with open("../file_for_back/process_temp.txt", 'a') as file:
+                with open("file_for_back/process_temp.txt", 'a') as file:
                     str_result = line.decode('utf-8')
                     file.write(str_result)
             time.sleep(5)
-            with open("../file_for_back/process_temp.txt", 'w'):
+            with open("file_for_back/process_temp.txt", 'w'):
                 pass
             flash("Устройство успешно сконфигурировано! ",category='success')
             return render_template(
@@ -378,7 +377,7 @@ def getCfgPage(id_post):
 @app.route('/get_content',methods = ['POST', 'GET'])
 # Ф-я для получения вывода с консоли записаного в файл.
 def get_content():
-    with open('../file_for_back/process_temp.txt', 'r') as file:
+    with open('file_for_back/process_temp.txt', 'r') as file:
         content = file.readlines()
     return jsonify({'content': content})
 
@@ -476,7 +475,7 @@ def read_cfg():
     id_cfg = request.form['index']# name="index" in ..html
     if id_cfg == 'Просмотр конфигурации':
         id_cfg="cfg_GRE.yaml"
-        with open(f'../templates_cfg/{id_cfg}', 'r') as file:
+        with open(f'templates_cfg/{id_cfg}', 'r') as file:
             text = file.readlines()
         return render_template(
             f'/read_cfg.html',
@@ -546,25 +545,25 @@ def pull_cfg_sw(filename):
     global path_name
     listfile = os.listdir(UPLOAD_FOLDER)
     path_name= os.path.join(UPLOAD_FOLDER, filename)
-    with open("../file_for_back/path_name.txt", 'a') as file:
+    with open("file_for_back/path_name.txt", 'a') as file:
         file.write(path_name) 
     result =''
     str_result=''
     if request.method == "POST":
         response = request.form['index']  # name="index" in reset.html
-        args=["python3", "../file_for_back/cfgFromFile.py"]
+        args=["python3", "file_for_back/cfgFromFile.py"]
         process = subprocess.Popen(args, stdout=subprocess.PIPE) 
         for line in process.stdout:
-            with open("../file_for_back/process_temp.txt", 'a') as file:
+            with open("file_for_back/process_temp.txt", 'a') as file:
                 str_result = line.decode('utf-8')
                 file.write(str_result) 
         time.sleep(5)
         flash(
             f"Внимание! На коммутатор загружен конфиг из файла {filename}",
             category='success')
-        with open("../file_for_back/path_name.txt", 'w') as file:
+        with open("file_for_back/path_name.txt", 'w') as file:
             pass
-        with open("../file_for_back/process_temp.txt", 'w'):
+        with open("file_for_back/process_temp.txt", 'w'):
             pass  # не удальть - очищает файл
         return render_template(
             'cfg_from_table.html',

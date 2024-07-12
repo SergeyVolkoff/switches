@@ -38,11 +38,11 @@ class CfgTemplate(Connect):
                 time.sleep(5)
 
                 #  читаем из файла присвоеный ip_eth0:
-                with open("../ip_eth0.txt", 'r') as file:
+                with open("ip_eth0.txt", 'r') as file:
                     for line in file:
                         ip_eth0 = line
                 # удаляем файл (будет мешать в след итерации):
-                os.remove(path="../ip_eth0.txt")
+                os.remove(path="ip_eth0.txt")
                 # проверяем доступность eth0
                 result = ping(ip_eth0, timeout=2)
                 while result is None:
@@ -119,7 +119,7 @@ class TridentCfg(CfgTemplate):
             time.sleep(90)
             self.ssh.send_command_timing('admin', read_timeout=2)
             self.ssh.send_command_timing('bulat', read_timeout=5)
-            with open('../templates_cfg/cfg_hostnamAndint_eth0.yaml') as commands:
+            with open('templates_cfg/cfg_hostnamAndint_eth0.yaml') as commands:
                 commands_template = yaml.safe_load(commands)
                 for command in commands_template:
                     output = self.ssh.send_command_timing(
@@ -129,7 +129,7 @@ class TridentCfg(CfgTemplate):
             # формируем строку ip_eth0:
             ip_eth0 = str(ip_eth0)
             # пишем строку с ip_eth0 в файл ip_eth0.txt:
-            with open("../ip_eth0.txt", 'w') as file:
+            with open("ip_eth0.txt", 'w') as file:
                 file.write(ip_eth0)
             # проверяем доступность eth0:
             result = ping(ip_eth0, timeout=2)
@@ -194,18 +194,18 @@ class TridentCfg(CfgTemplate):
         time.sleep(75)
         self.ssh.send_command_timing('admin', read_timeout=2)
         self.ssh.send_command_timing('bulat', read_timeout=5)
-        with open('../templates_cfg/cfg_hostnamAndint_eth0.yaml') as commands:
+        with open('templates_cfg/cfg_hostnamAndint_eth0.yaml') as commands:
             commands_template = yaml.safe_load(commands)
             for command in commands_template:
                 output = self.ssh.send_command_timing(
                     command, read_timeout=0)
-        time.sleep(10)
+        time.sleep(20)
         # определяем ip на eth0:
         ip_eth0 = Connect.check_eth0(self)
         # формируем строку ip_eth0:
         ip_eth0 = str(ip_eth0)
         # пишем строку с ip_eth0 в файл ip_eth0.txt:
-        with open("../ip_eth0.txt", 'w') as file:
+        with open("ip_eth0.txt", 'w') as file:
             file.write(ip_eth0)
         # проверяем доступность eth0:
         result = ping(ip_eth0, timeout=2)

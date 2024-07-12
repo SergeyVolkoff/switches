@@ -20,7 +20,7 @@ if __name__ == "__main__":
     tr1 = TridentCfg()
     tr1.check_connection()
     tr1.check_mode()
-    file =  open("../file_for_back/path_name.txt", 'r')
+    file =  open("file_for_back/path_name.txt", 'r')
     path_name = file.readline()
     # команды настройки конфига...
     with open(path_name) as commands:
