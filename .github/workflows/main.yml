@@ -87,14 +87,16 @@ jobs:
 
   send_message:
     runs-on: ubuntu-latest
-    needs: build_gateway_and_push_to_docker_hub
+    needs: 
+      - build_gateway_and_push_to_docker_hub
+      - build_backend_and_push_to_docker_hub
     steps:
     - name: Send message
       uses: appleboy/telegram-action@master
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
-        message: build_gateway_and_push_to_docker_hub  успешно выполнен!
+        message: build backend, gateway and push to docker_hub успешно выполнен!
 
     # Начиная отсюда workflow работать не будет - 
     # сервер размещения находится в серой сети, а  Аction - во внешке
