@@ -1,6 +1,7 @@
 """Base class for switches Trident."""
 
 import re
+import time
 from netmiko import (
     ConnectHandler,
     NetmikoTimeoutException,
@@ -100,8 +101,8 @@ class Connect():
                 style='fail')
             
     def check_eth0(self):
-        
-        temp = self.ssh.send_command('do sh ip interface eth0',read_timeout=10)
+        time.sleep(10)
+        temp = self.ssh.send_command('do sh ip interface eth0',read_timeout=15)
         temp1 = re.search(r'IP address\S\s+(?P<ip_eth0>\d+\S\d+\S\d+\S\d+)',temp)
         try:
             ip_eth0 = temp1.group('ip_eth0')
