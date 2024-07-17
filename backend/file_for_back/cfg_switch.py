@@ -116,7 +116,7 @@ class TridentCfg(CfgTemplate):
                 output,
                 "Swich rebooting! Wait, please +-70sec",
                 style="success")
-            time.sleep(90)
+            time.sleep(70)
             self.ssh.send_command_timing('admin', read_timeout=2)
             self.ssh.send_command_timing('bulat', read_timeout=5)
             with open('templates_cfg/cfg_hostnamAndint_eth0.yaml') as commands:
@@ -191,6 +191,7 @@ class TridentCfg(CfgTemplate):
             output,
             "Коммутатор перезагружается, время ожидания около 70 сек.",
             style="success")
+            
         time.sleep(75)
         self.ssh.send_command_timing('admin', read_timeout=2)
         self.ssh.send_command_timing('bulat', read_timeout=5)
@@ -202,6 +203,7 @@ class TridentCfg(CfgTemplate):
         time.sleep(20)
         # определяем ip на eth0:
         ip_eth0 = Connect.check_eth0(self)
+        print(ip_eth0)
         # формируем строку ip_eth0:
         ip_eth0 = str(ip_eth0)
         # пишем строку с ip_eth0 в файл ip_eth0.txt:
@@ -217,20 +219,19 @@ class TridentCfg(CfgTemplate):
                 )
             time.sleep(5)
         else:
-            try:
-                CONSOLE.print(
-                    f"\nDUT поднялся после перезагрузки и интерфейс eth0 ({ip_eth0}) поднялся!",
-                    "Ждем поднятия всех протоколов.",
-                    style='success')
-                time.sleep(10)
-                dev_name = self.ssh.find_prompt()
-                CONSOLE.print(
-                    f"Устройство доступно! Конфиг сброшен!",
-                    f"Новое имя устр-ва: {dev_name}.",
-                    f"интерфейс {ip_eth0} настроен по dhcp.",
-                    style='success')
-            except (BrokenPipeError, IOError):
-                exit
+            
+            CONSOLE.print(
+                f"\nDUT поднялся после перезагрузки и интерфейс eth0 ({ip_eth0}) поднялся!",
+                "Ждем поднятия всех протоколов.",
+                style='success')
+            time.sleep(10)
+            dev_name = self.ssh.find_prompt()
+            CONSOLE.print(
+                f"Устройство доступно! Конфиг сброшен!",
+                f"Новое имя устр-ва: {dev_name}.",
+                f"интерфейс {ip_eth0} настроен по dhcp.",
+                style='success')
+            exit
 	
         return "Коммутатор сброшен на заводские настройки успешно."
         # else:
