@@ -217,18 +217,20 @@ class TridentCfg(CfgTemplate):
                 )
             time.sleep(5)
         else:
-            CONSOLE.print(
-                f"\nDUT поднялся после перезагрузки и интерфейс eth0 ({ip_eth0}) поднялся!",
-                "Ждем поднятия всех протоколов.",
-                style='success')
-            time.sleep(10)
-            dev_name = self.ssh.find_prompt()
-            CONSOLE.print(
-                f"Устройство доступно! Конфиг сброшен!",
-                f"Новое имя устр-ва: {dev_name}.",
-                f"интерфейс {ip_eth0} настроен по dhcp.",
-                style='success')
-            exit
+            try:
+                CONSOLE.print(
+                    f"\nDUT поднялся после перезагрузки и интерфейс eth0 ({ip_eth0}) поднялся!",
+                    "Ждем поднятия всех протоколов.",
+                    style='success')
+                time.sleep(10)
+                dev_name = self.ssh.find_prompt()
+                CONSOLE.print(
+                    f"Устройство доступно! Конфиг сброшен!",
+                    f"Новое имя устр-ва: {dev_name}.",
+                    f"интерфейс {ip_eth0} настроен по dhcp.",
+                    style='success')
+            except (BrokenPipeError, IOError):
+                exit
 	
         return "Коммутатор сброшен на заводские настройки успешно."
         # else:
