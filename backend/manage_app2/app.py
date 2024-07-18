@@ -596,7 +596,7 @@ def get_file_cfg(filename):
             f'/read_cfg.html',
             menu=dbase.getMainmenu(),
             constants = dbase.getConstants_trident(),
-            title="Просмотр конфигурции",text=text)
+            title="Просмотр конфигурции",text=text,filename=filename)
 
 @app.route('/get_file_report/<filename>')
 def get_file_report(filename):
