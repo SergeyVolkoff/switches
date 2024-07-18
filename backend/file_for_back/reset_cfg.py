@@ -19,4 +19,4 @@ if __name__ == "__main__":
     tr1 = TridentCfg()
     # tr1.check_connection()
     tr1.ssh.enable()
-    print(tr1.reset_cfg_shot())
+    print(tr1.extended_reset_cfg1())
