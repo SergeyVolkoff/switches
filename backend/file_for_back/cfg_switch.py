@@ -31,10 +31,10 @@ class CfgTemplate(Connect):
                     command, expect_string="reboot system",
                     read_timeout=.45)
                 result_command = "- команда проверяется, пожалуйста, подождите."
-                CONSOLE.print(command, result_command, style='success')
+                print(command, result_command)
                 result_command = self.ssh.send_command(
                     "y", expect_string="")
-                CONSOLE.print(command, result_command, style='success')
+                print(command, result_command)
                 time.sleep(5)
 
                 #  читаем из файла присвоеный ip_eth0:
@@ -42,20 +42,21 @@ class CfgTemplate(Connect):
                     for line in file:
                         ip_eth0 = line
                 # удаляем файл (будет мешать в след итерации):
-                os.remove(path="ip_eth0.txt")
+                # os.remove(path="ip_eth0.txt")
+                with open("ip_eth0.txt", 'w') as file:
+                    pass # не удалять! - очищает файл
                 # проверяем доступность eth0
                 result = ping(ip_eth0, timeout=2)
                 while result is None:
                     result = ping(ip_eth0, timeout=2)
-                    CONSOLE.print(
-                        "DUT перезагружается, пожалуйста, подождите!", style='fail')
+                    print(
+                        "DUT перезагружается, пожалуйста, подождите!")
                     time.sleep(5)
                 else:
-                    CONSOLE.print(
-                        "\nDUT поднялся после перезагрузки, ждем поднятия сервисов и протоколов!",
-                        style='success')
+                    print(
+                        "\nDUT поднялся после перезагрузки, ждем поднятия сервисов и протоколов!")
                     time.sleep(40)
-                    CONSOLE.print("Коммутатор доступен!", style='success')
+                    print("Коммутатор доступен!")
                     self.ssh.send_command_timing(
                         'admin', read_timeout=2)
                     self.ssh.send_command_timing(
@@ -66,21 +67,21 @@ class CfgTemplate(Connect):
                 command, expect_string="DUT", read_timeout=2)
             if "wr" or "write" in command:
                 result_command = "- команда проверяется, пожалуйста, подождите."
-                CONSOLE.print(
-                    command, result_command, style='fail')
+                print(
+                    command, result_command)
                 time.sleep(3)
             if "No match input detected" in output:
                 result_command = f"Ошибочная или излишняя команда! {output}"
-                CONSOLE.print(
+                print(
                     f'"{command}" -',
-                    result_command, style='fail')
+                    result_command)
                 result[command] = result_command
             else:
                 result_command = "команда выполнена!"
                 result[command] = output
-                CONSOLE.print(
+                print(
                     f'"{command}" -',
-                    result_command, style='success')
+                    result_command)
         return result
 
 
@@ -152,6 +153,8 @@ class TridentCfg(CfgTemplate):
                     f"New_name device: {dev_name}.",
                     f"interface eth0 ({ip_eth0}) configured",
                     style='success')
+                with open("ip_eth0.txt", 'w') as file:
+                    pass # не удалять! - очищает файл
                 exit
         else:
             CONSOLE.print("Wrong input", style="fail")
@@ -230,6 +233,8 @@ class TridentCfg(CfgTemplate):
                 f"Устройство доступно! Конфиг сброшен!",
                 f"Новое имя устр-ва: {dev_name}.",
                 f"интерфейс {ip_eth0} настроен по dhcp.")
+            with open("ip_eth0.txt", 'w') as file:
+                pass # не удалять! - очищает файл
             exit
 	
         return "Коммутатор сброшен на заводские настройки успешно."
