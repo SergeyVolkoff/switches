@@ -239,7 +239,7 @@ class TridentCfg(CfgTemplate):
         #     self.ssh.exit_config_mode()
         #     exit
 
-    def reset_cfg_shot(self,):
+    def reset_cfg_shot(self):
         self.check_mode()
         self.ssh.enable()
         self.ssh.send_command("copy empty-config startup-config")
