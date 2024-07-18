@@ -26,43 +26,43 @@ class CfgTemplate(Connect):
         result = {}
         # в цикле проверяются команды и отправляются на исполнение
         for command in commands_template:
-            if "do reload" in command:
-                output = self.ssh.send_command(
-                    command, expect_string="reboot system",
-                    read_timeout=.45)
-                result_command = "- команда проверяется, пожалуйста, подождите."
-                print(command, result_command)
-                result_command = self.ssh.send_command(
-                    "y", expect_string="")
-                print(command, result_command)
-                time.sleep(5)
+            # if "do reload" in command:
+            #     output = self.ssh.send_command(
+            #         command, expect_string="reboot system",
+            #         read_timeout=.45)
+            #     result_command = "- команда проверяется, пожалуйста, подождите."
+            #     print(command, result_command)
+            #     result_command = self.ssh.send_command(
+            #         "y", expect_string="")
+            #     print(command, result_command)
+            #     time.sleep(5)
 
-                #  читаем из файла присвоеный ip_eth0:
-                with open("ip_eth0.txt", 'r') as file:
-                    for line in file:
-                        ip_eth0 = line
-                # удаляем файл (будет мешать в след итерации):
-                # os.remove(path="ip_eth0.txt")
-                with open("ip_eth0.txt", 'w') as file:
-                    pass # не удалять! - очищает файл
-                # проверяем доступность eth0
-                result = ping(ip_eth0, timeout=2)
-                while result is None:
-                    result = ping(ip_eth0, timeout=2)
-                    print(
-                        "DUT перезагружается, пожалуйста, подождите!")
-                    time.sleep(5)
-                else:
-                    print(
-                        "\nDUT поднялся после перезагрузки, ждем поднятия сервисов и протоколов!")
-                    time.sleep(40)
-                    print("Коммутатор доступен!")
-                    self.ssh.send_command_timing(
-                        'admin', read_timeout=2)
-                    self.ssh.send_command_timing(
-                        'bulat', read_timeout=5)
-                    self.ssh.disconnect()
-                    break
+            #     #  читаем из файла присвоеный ip_eth0:
+            #     with open("ip_eth0.txt", 'r') as file:
+            #         for line in file:
+            #             ip_eth0 = line
+            #     # удаляем файл (будет мешать в след итерации):
+            #     # os.remove(path="ip_eth0.txt")
+            #     with open("ip_eth0.txt", 'w') as file:
+            #         pass # не удалять! - очищает файл
+            #     # проверяем доступность eth0
+            #     result = ping(ip_eth0, timeout=2)
+            #     while result is None:
+            #         result = ping(ip_eth0, timeout=2)
+            #         print(
+            #             "DUT перезагружается, пожалуйста, подождите!")
+            #         time.sleep(5)
+            #     else:
+            #         print(
+            #             "\nDUT поднялся после перезагрузки, ждем поднятия сервисов и протоколов!")
+            #         time.sleep(40)
+            #         print("Коммутатор доступен!")
+            #         self.ssh.send_command_timing(
+            #             'admin', read_timeout=2)
+            #         self.ssh.send_command_timing(
+            #             'bulat', read_timeout=5)
+            #         self.ssh.disconnect()
+            #         break
             output = self.ssh.send_command(
                 command, expect_string="DUT", read_timeout=2)
             if "wr" or "write" in command:
