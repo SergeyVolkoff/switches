@@ -214,23 +214,22 @@ class TridentCfg(CfgTemplate):
         print(result)
         while result is None:
             result = ping(ip_eth0, timeout=2)
-            CONSOLE.print(
-                "Коммутатор перезагружается, время ожидания около 70 сек.", style='fail'
+            print(
+                "Коммутатор перезагружается, время ожидания около 70 сек.", 
                 )
             time.sleep(5)
         else:
             
-            CONSOLE.print(
+            print(
                 f"\nDUT поднялся после перезагрузки и интерфейс eth0 ({ip_eth0}) поднялся!",
                 "Ждем поднятия всех протоколов.",
-                style='success')
+                )
             time.sleep(10)
             dev_name = self.ssh.find_prompt()
-            CONSOLE.print(
+            print(
                 f"Устройство доступно! Конфиг сброшен!",
                 f"Новое имя устр-ва: {dev_name}.",
-                f"интерфейс {ip_eth0} настроен по dhcp.",
-                style='success')
+                f"интерфейс {ip_eth0} настроен по dhcp.")
             exit
 	
         return "Коммутатор сброшен на заводские настройки успешно."
