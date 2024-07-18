@@ -581,10 +581,21 @@ def pull_cfg_sw(filename):
         items=listfile,
         )  
 
+# @app.route('/get_file_cfg/<filename>')
+# def get_file_cfg(filename):
+#     """Обработчик просмотра конфига из папки по ссылке"""
+#     return send_from_directory(app.config['UPLOAD_FOLDER'],filename)
+
 @app.route('/get_file_cfg/<filename>')
-def get_file_cfg(filename):
-    """Обработчик просмотра конфига из папки по ссылке"""
-    return send_from_directory(app.config['UPLOAD_FOLDER'],filename)
+def get_cfg_from_file():
+    filename = request.path.split('/')[-1]
+    with open(f'templates_cfg/{filename}', 'r') as file:
+        text = file.readlines()
+    return render_template(
+            f'/read_cfg.html',
+            menu=dbase.getMainmenu(),
+            constants = dbase.getConstants_trident(),
+            title="Просмотр конфигурции",text=text)
 
 @app.route('/get_file_report/<filename>')
 def get_file_report(filename):
