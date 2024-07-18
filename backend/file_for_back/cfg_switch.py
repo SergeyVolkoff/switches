@@ -255,6 +255,7 @@ class TridentCfg(CfgTemplate):
             output,
             "Коммутатор перезагружается, время ожидания около 70 сек. Конфиг сброшен!",
             style="success")
+        exit
 
     def cfg_base(self, commands_template):
         """ФУНКЦИЯ-шаблон настройки базового конфига."""
