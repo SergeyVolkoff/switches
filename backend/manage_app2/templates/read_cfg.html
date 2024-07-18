@@ -2,8 +2,7 @@
 
 {% block content %}
     {{ super() }}
-    <div class="title">
-       Ниже находится содержимое конфигурационного файла {{filename}}:
+    Ниже находится содержимое конфигурационного файла {{filename}}:
     <br>
     {% for i in text %}
         {% if '\n' in i %}
