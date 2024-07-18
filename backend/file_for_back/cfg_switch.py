@@ -239,23 +239,8 @@ class TridentCfg(CfgTemplate):
         #     self.ssh.exit_config_mode()
         #     exit
 
-    def reset_cfg_shot(self):
-        self.check_mode()
-        self.ssh.enable()
-        self.ssh.send_command("copy empty-config startup-config")
-        CONSOLE.print(
-            "В коммутатор записан базовый конфиг.",
-            style="success")
-        output = self.ssh.send_command(
-            "reload", expect_string="reboot system",
-            read_timeout=1)
-        
-        output = self.ssh.send_command("y", expect_string="")
-        CONSOLE.print(
-            output,
-            "Коммутатор перезагружается, время ожидания около 70 сек. Конфиг сброшен!",
-            style="success")
-        exit
+
+
 
     def cfg_base(self, commands_template):
         """ФУНКЦИЯ-шаблон настройки базового конфига."""

@@ -237,7 +237,6 @@ def reset():
     result = ''
     if request.method == "POST":
         args=["python3", "file_for_back/reset_cfg.py"]
-        time.sleep(3)
         process = subprocess.Popen(args, stdout=subprocess.PIPE) 
         for line in process.stdout:
             # print("stdout:", line.decode('utf-8'))
