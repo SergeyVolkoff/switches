@@ -283,7 +283,7 @@ def get_test(id_cat, id_post):
     basedir = os.path.abspath(os.getcwd())
     # к родительскому каталогу
     work_dir = os.path.abspath(os.path.join(basedir, '../'))
-    report_dir='file:'+work_dir +'/report_doc'
+    report_dir='file:'+work_dir +'report_doc'
     listfile = os.listdir(REPORT_DOC) # for table Список имеющихся файлов
     if request.method == "POST":
         flash("Button is pushed!")
