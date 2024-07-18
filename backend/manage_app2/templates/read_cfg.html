@@ -3,14 +3,7 @@
 {% block content %}
     {{ super() }}
     <div class="title">
-        Ниже находится кнопка просмотра конфига под тест GRE:
-    </div>
-    <div>
-        <form action="/read_cfg" method="POST"class ="form_contact">
-            <!-- скрытый параметр -->
-            <input type="hidden" name="index" value="1">
-            <input type="submit" class="btn btn-dark" value="Просмотр конфигурации устр-ва под тест GRE">
-    </div>
+       Ниже находится содержимое конфигурационного файла {{filename}}:
     <br>
     {% for i in text %}
         {% if '\n' in i %}
