@@ -12,5 +12,5 @@ RUN apt-get update \
     && pip install psycopg
 COPY . .
 RUN cd manage_app2
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "manage_app2.wsgi", "--timeout 120", "--workers=3", "--threads=3", "--worker-connections=100"] 
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "manage_app2.wsgi", "--timeout 120", "--workers=5", "--threads=5", "--worker-connections=100"] 
 # CMD ["python", "manage_app2/app.py", "runserver"]
