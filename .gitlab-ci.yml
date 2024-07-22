@@ -1,5 +1,4 @@
-# Файл main.yml
-# Имя workflow
+
 name: Main Switches Workflow
 on:
   push:
