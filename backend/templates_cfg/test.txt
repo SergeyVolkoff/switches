@@ -1,0 +1,10 @@
+{ 
+   "enable",  
+   "conf t",
+   "interface xe47",
+   "description 1_TESTTESTTESTTEST",
+   "end",
+   "wr",
+   
+
+}

@@ -1,0 +1,44 @@
+<!-- Главная страница с выбором категории устр-ва и уст-ва-->
+
+{% extends 'base.html' %}
+ 
+{% block content %}
+{{ super() }}
+<!-- <h1> Changes to review </h1> -->
+<h2>Выбор платформы, устройства, доступных тестов:</h2>
+
+{%- block device_type -%}
+		<ul class="menu_tests">
+			{% for dev_t in device_type %}
+			<details>
+				<summary>{{dev_t.type_dev }}</summary>
+				{% for dev in device %}
+					{% if dev.tag_type==dev_t.tag %}
+						<a href="{{dev.url}}">{{dev.device_name}}</a>
+							<ul>
+								<details>
+									<summary>Выбор категории тестов:</summary>
+									{%- block tests_category -%}
+											{% for tes_cat in tests_category -%}
+												<details >
+												<summary>{{tes_cat.name}}</summary>
+												<!-- обработка tests-->
+												{% for g in templ_page -%} 
+													{% if tes_cat.tag==g.tag %}
+														<p><input type="checkbox" </p>
+														<span> <a href="{{g.tag}}/{{g.id}}">{{g.name}}</a></span>
+													{%endif%}
+												{%endfor%}
+												</details>
+											{% endfor -%}
+								</details>
+									{% endblock tests_category -%}
+							</ul>
+					{% endif-%}
+				{% endfor -%}
+			</details>
+			{% endfor -%}
+		</ul>
+{% endblock device_type %}
+
+{% endblock %}

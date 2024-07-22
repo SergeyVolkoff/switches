@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {{ super() }}
+    Ниже находится содержимое конфигурационного файла {{filename}}:
+    <br>
+    {% for i in text %}
+        {% if '\n' in i %}
+                <br>
+        {% endif %}
+        {{ i }} 
+    {% endfor %}
+<br>   
+<a class="button"  href="/cfg/1" >Назад</a>
+<br>
+{% for cat, msg in get_flashed_messages(True) %}
+    <div class="flash {{cat}}">{{msg}}</div>
+{% endfor %}
+{% endblock content%}

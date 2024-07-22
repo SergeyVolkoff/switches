@@ -1,0 +1,9 @@
+{
+    "enable",
+    "conf t",
+    "hostname DUT",
+    "interface eth0",
+    "description ETH0",
+    "ip address dhcp",
+    "do write",
+}

@@ -1,0 +1,105 @@
+<!-- страница-шаблон, содержит базу для формирования страницы ПМИ-->
+{% extends 'base.html' %}
+
+{% block content %}
+  {{ super() }}
+  <html>
+    <h1>{{name}}</h1>
+    <br><img src = '{{ path_schema }}' >
+    <head>
+      <title> chfhg</title>
+      <meta charset="utf-8">
+    </head>
+    <body>
+      <br><iframe src={{descr_path}}  width="900" height="600" scrolling="auto" frameborder="0" ></iframe>
+    </body>
+
+    <hr>
+    <p>Ниже находится кнопка вызова тестов:
+    <form action="{{ url_for('get_test',id_post=id_post,id_cat=id_cat ) }}" method="POST">
+        <!-- скрытый параметр -->
+        <input type="hidden" name="in" value="1">
+        <input type="submit" class="btn btn-dark" value="ЗАПУСК теста">
+    </form>
+    <br>
+    <hr>
+    <div class="title">
+    <br>
+        Для досупа к последнему отчету в word-формате или html, откройте ссылку с именем нужного файла: </div>
+    <!-- <p><a href="file:/home/ssw/Documents/switches/report_doc/report_tests_GRE.docx" target="_blank">ОТЧЕТ по тесту в word</a></li> -->
+        <p>
+	<table border="2">
+            <caption>Список имеющихся файлов  </caption>
+            <br 
+            <tr>
+                <th>Имя файла</th><th>Действие</th>
+            </tr>
+            {% for i in items %}
+                <tr>
+                    <td><a href="{{ i }}" class="table-link">{{i}}</a></td>
+                    <td><a href="{{ url_for('get_file_report',filename = i) }}">Просмотр файла</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+    <br>
+    <hr>
+    <hr>
+        <p>Ниже находится кнопка запуска сервера отчетов сервера Allure:
+    <form action=" {{ url_for('get_test_html',id_post='999') }} " method="POST">
+        <!-- скрытый параметр -->
+        <input type="hidden" name="in" value="999" >
+        <input type="submit" class="btn btn-dark" value="СТАРТ сервера Allure">
+    </form>
+    <br>
+    <hr>
+    <div class="title">
+    <br>
+        Для перехода на страницу с последним Allure-отчетом, правой кнопкой окройте ссылку ниже в новом окне.
+        Откроется последний сохранненый в системе отчет: 
+    </div>
+    <p><a href='http://127.0.1.1:38671/index.html' target="_blank">ОТЧЕТ по тесту в Allure</a></li>
+    <br>
+    <hr>
+    <div class="title"> Ниже будет показан ход выполнения тестов:
+    </div>
+    <br> 
+    <body>
+        <ul id="content-list"></ul>
+    
+        
+        <script>
+            // функция будет вызываться для получения содержимого.
+            function getContent() {
+                fetch('/get_content') //для отправки запроса на сервер по URL
+                    .then(response => response.json()) // метод json() для преобразования ответа в формат JSON
+                    // полученные данные обрабатываются в функции обратного вызова, где извлекается список содержимого data.content.
+                    .then(data => {
+                        const contentList = document.getElementById('content-list');  // выбирается элемент с id '-list' и очищается его содержимое.
+                        contentList.innerHTML = '';
+                        // Для каждого элемента в списке содержимого создается новый элемент списка <li> и добавляется текстовое содержимое (line).
+                        data.content.forEach(line => { 
+                            const li = document.createElement('li');
+                            li.textContent = line;
+                            contentList.appendChild(li); //Новый элемент списка добавляется в родительский элемент 'content-list'.
+                        });
+                        lastUpdateTime = Date.now(); // обновляем время последнего обновления
+                    });
+                    // Проверяем, прошло ли уже 10 секунд с момента последнего обновления
+                    if (Date.now()- lastUpdateTime > 10000) {
+                    clearInterval(intervalID); // останавливаем выполнение скрипта
+                    }
+            }
+            const intervalID = setInterval(getContent, 2000); // Обновление содержимого каждую секунду
+            getContent(); // Получение содержимого при загрузке страницы!!
+        </script>
+    </body>
+    <br>   
+    <a class="button"  href="/" >Назад</a>    
+    {{ result }}
+       {% for cat, msg in get_flashed_messages(True) %}
+        <div class="flash {{cat}}">{{msg}}</div>
+    {% endfor %}
+
+    {% endblock %}
+  </html>
+  

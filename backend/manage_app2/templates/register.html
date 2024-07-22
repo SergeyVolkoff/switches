@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+ 
+{% block content %}
+{{ super() }}
+{% for cat, msg in get_flashed_messages(True) %}
+<div class="flash" {{cat}}>{{msg}}</div>
+{% endfor %}
+ <form action="/register" method="POST" class="form-contact">
+    <!-- В цикле обработка полей из class RegistrationForm  -->
+    {% for field in form %}
+    <p><label>{{ field.label }} {% if field.flags.required %}*{% endif %}</label>
+    <p><label>{{ field }}</label> 
+        {% if field.errors %}
+            <ul class=errors>
+            <!-- В цикле обработка message из class RegistrationForm  -->
+            {% for error in field.errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endfor %}
+<p><input type="submit" value="Registration" />
+<hr align=left width="300px">
+</form>
+
+{% endblock %}

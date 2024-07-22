@@ -1,0 +1,36 @@
+
+version: '3'
+
+volumes:
+  psql_sw_data:
+
+services:
+
+  db:
+    image: postgres:13.10
+    env_file: .env
+
+    volumes:
+      - psql_sw_data:/var/lib/postgresql/data
+
+  backend:
+    image: karryserg/sw_backend
+    # build: ./backend/
+    # ports:
+    #   - 5000:5000
+    env_file: .env
+    # networks:
+    #   - network
+    # depends_on:
+    #   - db
+
+  gateway:
+    image: karryserg/sw_gateway
+    # Сбилдить и запустить образ,
+    # описанный в Dockerfile в папке gateway
+    # build: ./gateway/
+    # Ключ ports устанавливает
+    # перенаправление всех запросов с порта 5000 хоста
+    # на порт 80 контейнера.
+    ports:
+      - 5000:80

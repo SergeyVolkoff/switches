@@ -1,0 +1,24 @@
+ { 
+   "enable",  
+   "conf t",
+   "interface xe47",
+   "no switchport",
+   "speed 1g",
+   "ip address 200.200.200.1/30",
+
+   "interface xe48",
+   "no switchport",
+   "speed 1g",
+   "ip address 1.1.1.1/24",
+
+   "interface Tunnel0",
+   "ip address 192.168.0.1/30",
+   "tunnel mode gre",
+   "tunnel source 200.200.200.1",
+   "tunnel destination 100.100.100.1 ", 
+
+   "ip route 2.2.2.0/24 Tunnel0",
+   "ip route 100.100.100.0/30 200.200.200.2",
+   
+   "do wr"
+ }

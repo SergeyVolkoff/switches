@@ -1,0 +1,65 @@
+<!-- Базовая страница-->
+<!DOCTYPE html>
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<body>
+<div class="wrapper">
+    <div class="page">
+        <head>
+            <link type="text/css" href="{{ url_for('static', filename='css/styles.css')}}" rel="stylesheet" />        
+            <style type="text/css">
+            #toplayer {
+                background: url(static/images/fon_bulat2.jpg) repeat-x; /* Параметры фона */
+                height: 80px; /* Высота слоя */
+                }
+            </style>
+            <div id="toplayer">
+                <img src="/static/images/logo_bulat2.jpg" width="279" height="50" alt="Логотип сайта">
+            </div>
+            <title>Основные категории тестов> - {{title}}</title>
+        </head>
+
+        {% block content -%}
+            {%- block constants -%}
+                <ul class="constants">
+                    <table border="1" align="right">
+                    <tr><td colspan=2> Текущие настройки подключения.</tr></td>
+                        {% for m in constants -%}
+                            <tr><td>{{m.title}}</td><td>{{m.val}}</td></tr>
+                        {% endfor -%}
+                    </table>
+                </ul>
+            {% endblock constants -%} 
+            <div class="mainmenu">
+                {%- block mainmenu -%}
+                
+                    <ul class="mainmenu">
+                        {% for m in menu -%}
+                            <li><a href="{{m.url}}">{{m.title}} </a></li>
+                            
+                        {% endfor -%}
+                    </ul>
+                {% endblock mainmenu -%}
+            </div>
+            <!-- <div class="content">
+                {% if title -%}
+                    <h1>{{title}}</h1>
+                {% else -%}
+                    <h1>Bulat tests</h1>
+                {% endif -%}
+            </div> -->
+
+        {% endblock content-%}   
+    </div>
+
+    <div class="footer">
+        <p>&copy;Какие-то права защищены.</p>
+        <br>
+        <p>Все, что вы делаете здесь с коммутатором, вы делаете на свой страх и риск</p>
+        
+    </div>
+
+</div>
+
+</body>
+</html>

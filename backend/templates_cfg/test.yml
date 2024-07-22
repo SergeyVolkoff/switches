@@ -1,0 +1,10 @@
+{ 
+   "enable",  
+   "conf t",
+   "hostname DUT",
+   "end",
+   "write",
+   "sh hostname",
+   "exit",
+   
+}
